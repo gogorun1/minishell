@@ -1,0 +1,49 @@
+#ifndef MINISHELL_H
+# define MINISHELL_H
+
+# include "libft.h"
+# include <readline/readline.h>
+# include <readline/history.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <unistd.h>
+# include <sys/types.h>
+# include <sys/wait.h>
+# include <string.h>
+
+
+typedef enum e_token_type
+{
+	TOKEN_WORD,			// A sequence of characters that form a word
+	TOKEN_PIPE,			// A pipe (|) indicating a command separator
+	TOKEN_REDIRECT_IN,	// A less-than sign (<) indicating input redirection
+	TOKEN_REDIRECT_OUT, // A greater-than sign (>) indicating output redirection
+	TOKEN_APPEND,	 	// A double greater-than sign (>>) indicating append output redirection
+	TOKEN_HEREDOC,		// A double less-than sign (<<) indicating here-document input redirection
+}	t_token_type;
+
+typedef struct s_token
+{
+	t_token_type	type;	// The type of the token
+	char			*value;	// The value of the token
+	struct s_token	*next;	// Pointer to the next token in the list
+}	t_token;
+
+typedef struct s_cmd
+{
+	char		**args;	// The arguments for the command
+	int			in_fd;	// File descriptor for input redirection
+	int			out_fd; // File descriptor for output redirection
+	int			append_mode; // Flag for append mode
+	char		*heredoc; // Here-document content
+	struct s_cmd	*next;	// Pointer to the next command in the pipeline
+}	t_cmd;
+
+// Function prototypes
+t_token	*create_token(char *value, t_token_type type);
+void	add_token(t_token **head, t_token *new_token);
+void	free_token(t_token *token);
+void	free_token_list(t_token *head);
+t_token	*tokenizer(char *line);
+
+#endif
