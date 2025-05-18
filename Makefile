@@ -14,6 +14,7 @@ INCLUDES = -Iincludes -Ilibft/includes
 
 SRCS = minishell.c \
 		tokenizer.c \
+		utils.c \
 
 OBJS = $(addprefix $(OBJS_DIR), $(SRCS:.c=.o))
 

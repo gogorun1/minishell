@@ -10,6 +10,7 @@
 # include <sys/types.h>
 # include <sys/wait.h>
 # include <string.h>
+# include <stdbool.h>
 
 
 typedef enum e_token_type
@@ -20,6 +21,8 @@ typedef enum e_token_type
 	TOKEN_REDIRECT_OUT, // A greater-than sign (>) indicating output redirection
 	TOKEN_APPEND,	 	// A double greater-than sign (>>) indicating append output redirection
 	TOKEN_HEREDOC,		// A double less-than sign (<<) indicating here-document input redirection
+	TOKEN_SQUOTE,		// A single quote (') indicating a single-quoted string
+	TOKEN_DQUOTE,		// A double quote (") indicating a double-quoted string
 }	t_token_type;
 
 typedef struct s_token
@@ -45,5 +48,14 @@ void	add_token(t_token **head, t_token *new_token);
 void	free_token(t_token *token);
 void	free_token_list(t_token *head);
 t_token	*tokenizer(char *line);
+void	print_tokens(t_token *tokens);
+bool	is_valid_var_char(char c);
+bool	is_special_char(char c);
+void	handle_special_char(char *line, int *i, t_token **tokens);
+char	*find_executable(char *cmd);
+char	*get_env_value(char *var_name);
+char	*expand_variables(char *str);
+int		handle_quotes(char **input, int *i, t_token **tokens);
+char	*ft_strndup(const char *s, size_t n);
 
 #endif
