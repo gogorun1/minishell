@@ -1,29 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtin_pwd.c                                      :+:      :+:    :+:   */
+/*   ft_strrchr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/16 16:56:04 by lcao              #+#    #+#             */
-/*   Updated: 2025/05/16 17:03:39 by lcao             ###   ########.fr       */
+/*   Created: 2024/11/12 18:34:14 by lcao              #+#    #+#             */
+/*   Updated: 2024/12/03 17:53:50 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-int	builtin_pwd(void)
+char	*ft_strrchr(const char *s, int c)
 {
-	/*current working directory*/
-	char	*cwd;
-	
-	cwd = getcwd(NULL, 0);
-	if (!cwd)
+	char	*p;
+	int		i;
+
+	i = ft_strlen(s);
+	p = (char *)s;
+	p += i;
+	if (*p == (char)c)
+		return (p);
+	p--;
+	i--;
+	while (i >= 0)
 	{
-		perror("cwd");
-		return (1);
+		if (*p == (char) c)
+			return (p);
+		p--;
+		i--;
 	}
-	printf("%s\n", cwd);
-	free(cwd);
-	return (0);
+	return (NULL);
 }

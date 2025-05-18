@@ -6,17 +6,20 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 13:55:40 by lcao              #+#    #+#             */
-/*   Updated: 2025/05/16 18:11:22 by lcao             ###   ########.fr       */
+/*   Updated: 2025/05/18 17:45:02 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int main (void)
+int main (int argc, char **argv, char **envp)
 {
 	char	*input;
 	char	**args;
 	pid_t	pid;
+
+	(void)argc;
+	(void)argv;
 
 	while (1)
 	{
@@ -29,13 +32,19 @@ int main (void)
 		}
 		if (*input)
 			add_history(input);
-		if(strcmp(input, "exit") == 0)
-		{
-			free(input);
-			builtin_exit();
-		}
 		args = split_input(input);
 		
+		if (!args || !args[0])
+		{
+			free(input);
+			continue;
+		}
+		if (is_builtin(args[0]))
+		{
+			run_builtin(args, envp);
+			free(input);
+			continue;
+		}
 		pid = fork();
 		if (pid == 0)
 		{
@@ -49,4 +58,3 @@ int main (void)
 	}
 	return (0);
 }
-

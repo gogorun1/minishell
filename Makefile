@@ -3,10 +3,11 @@ NAME = minishell
 SRCS = \
 		main.c \
 		src/split_input.c \
-		src/builtin.c \
-		src/builtin_cd.c \
-		src/builtin_exit.c \
-		src/builtin_pwd.c 
+		src/builtin/builtin.c \
+		src/builtin/builtin_cd.c \
+		src/builtin/builtin_exit.c \
+		src/builtin/builtin_pwd.c \
+		src/builtin/builtin_env.c 
 
 OBJS = $(SRCS:.c=.o)
 

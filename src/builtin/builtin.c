@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 16:30:06 by lcao              #+#    #+#             */
-/*   Updated: 2025/05/16 17:58:03 by lcao             ###   ########.fr       */
+/*   Updated: 2025/05/18 17:39:15 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,15 +27,17 @@ int is_builtin(char *cmd)
 }
 
 /*based on the name to run those builtins*/
-int	run_builtin(char **args)
+int	run_builtin(char **args, char **envp)
 {
 	if(!args || !args[0])
 		return (1);
 	if(strcmp(args[0], "cd") == 0)
 		return(builtin_cd(args));
 	if(strcmp(args[0], "exit") == 0)
-		return(builtin_exit());
+		return(builtin_exit(args));
 	if(strcmp(args[0], "pwd") == 0)
 		return(builtin_pwd());
+	if (strcmp(args[0], "env") == 0)
+		return (builtin_env(envp));
 	return (0);
 }
