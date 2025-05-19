@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 11:50:50 by wding             #+#    #+#             */
-/*   Updated: 2025/05/18 17:54:04 by lcao             ###   ########.fr       */
+/*   Updated: 2025/05/19 17:28:36 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,15 @@ typedef struct s_cmd
 	int		append;
 }	t_cmd;
 
+typedef struct	s_env
+{
+	char			*key;
+	char			*value;
+	struct s_env	*next;
+}	t_env;
+
+t_env	*init_env(char **envp);
+
 /*builtin*/
 int	builtin_cd(char **args);
 int	builtin_pwd(void);
@@ -65,6 +74,9 @@ int	builtin_env(char **envp);
 
 int	is_builtin(char *cmd);
 int	run_builtin(char **args, char **envp);
+
+/*utils*/
+char	*ft_strndup(const char	*s, size_t n);
 
 char	**split_input(char *input);
 

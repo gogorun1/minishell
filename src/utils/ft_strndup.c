@@ -1,29 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtin_pwd.c                                      :+:      :+:    :+:   */
+/*   ft_strndup.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/16 16:56:04 by lcao              #+#    #+#             */
-/*   Updated: 2025/05/19 15:49:52 by lcao             ###   ########.fr       */
+/*   Created: 2025/05/19 16:16:00 by lcao              #+#    #+#             */
+/*   Updated: 2025/05/19 16:20:10 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	builtin_pwd(void)
+char	*ft_strndup(const char	*s, size_t n)
 {
-	/*current working directory*/
-	char	*cwd;
-	
-	cwd = getcwd(NULL, 0);
-	if (!cwd)
+	char	*dup;
+	size_t	i = 0;
+
+	dup = malloc(n + 1);
+	if(!dup)
+		return (NULL);
+	while(i < n && s[i])
 	{
-		perror("pwd");
-		return (1);
+		dup[i] = s[i];
+		i++;
 	}
-	printf("🔍 builtin pwd: %s\n", cwd);
-	free(cwd);
-	return (0);
+	dup[i] = '\0';
+	return (dup);
 }

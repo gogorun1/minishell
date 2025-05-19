@@ -6,28 +6,45 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 17:18:02 by lcao              #+#    #+#             */
-/*   Updated: 2025/05/15 17:30:45 by lcao             ###   ########.fr       */
+/*   Updated: 2025/05/19 16:10:33 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char **split_input(char *input)
+static int	skip_spaces(char *s, int i)
+{
+	while (s[i] && s[i] == ' ')
+		i++;
+	return (i);
+}
+
+static int	skip_word(char *s, int i)
+{
+	while (s[i] && s[i] != ' ')
+		i++;
+	return (i);
+}
+
+char	**split_input(char *input)
 {
 	char	**args;
-	char	*token;
-	int		i;
-	
+	int		i = 0;
+	int		j = 0;
+	int		start;
+
 	args = malloc(sizeof(char *) * 100);
 	if (!args)
 		return (NULL);
-	i = 0;
-	token = strtok(input, " ");
-	while (token)
+	while (input[i])
 	{
-		args[i++] = token;
-		token = strtok(NULL, " ");
+		i = skip_spaces(input, i);
+		start = i;
+		i = skip_word(input, i);
+		if (i > start)
+			args[j++] = ft_strndup(&input[start], i - start);
 	}
-	args[i] = NULL;
+	args[j] = NULL;
 	return (args);
 }
+

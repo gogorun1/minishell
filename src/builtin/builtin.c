@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 16:30:06 by lcao              #+#    #+#             */
-/*   Updated: 2025/05/18 17:39:15 by lcao             ###   ########.fr       */
+/*   Updated: 2025/05/19 15:44:23 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ int is_builtin(char *cmd)
 	if(strcmp(cmd, "exit") == 0)
 		return (1);
 	if(strcmp(cmd, "pwd") == 0)
+		return (1);
+	if (strcmp(cmd, "env") == 0)
 		return (1);
 	return (0);
 }

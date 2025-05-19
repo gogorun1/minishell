@@ -6,11 +6,26 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 13:55:40 by lcao              #+#    #+#             */
-/*   Updated: 2025/05/18 17:45:02 by lcao             ###   ########.fr       */
+/*   Updated: 2025/05/19 16:00:05 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	free_2d(char **arr)
+{
+	int	i;
+
+	if(!arr)
+		return ;
+	i = 0;
+	while(arr[i])
+	{
+		free(arr[i]);
+		i++;
+	}
+	free(arr);
+}
 
 int main (int argc, char **argv, char **envp)
 {
@@ -42,6 +57,7 @@ int main (int argc, char **argv, char **envp)
 		if (is_builtin(args[0]))
 		{
 			run_builtin(args, envp);
+			free_2d(args);
 			free(input);
 			continue;
 		}
