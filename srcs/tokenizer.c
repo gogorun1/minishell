@@ -84,6 +84,7 @@ int handle_quotes(char **input, int *i, t_token **tokens)
     char quote = (*input)[*i];
     int start = *i + 1;
     int j = start;
+	int type = (quote == '"') ? TOKEN_DQUOTE : TOKEN_SQUOTE;
     
     // 寻找匹配的引号
     while ((*input)[j] && (*input)[j] != quote)
@@ -91,7 +92,7 @@ int handle_quotes(char **input, int *i, t_token **tokens)
         
     if (!(*input)[j]) // 未闭合引号处理
     {
-        // 处理多行输入...
+        ft_printf("minishell: unexpected EOF while looking for matching %c\n", quote);
         return 0; // 简化版本
     }
     
@@ -109,7 +110,7 @@ int handle_quotes(char **input, int *i, t_token **tokens)
     // 单引号内保持字面值，不做任何处理
     
     // 创建token并添加到链表
-    add_token(tokens, create_token(content, TOKEN_WORD));
+    add_token(tokens, create_token(content, type));
     
     *i = j + 1; // 更新索引到引号后面
     return 1;
@@ -177,93 +178,96 @@ t_token *tokenizer(char *line)
 {
     t_token *tokens = NULL;
     int i = 0;
-    char *current_word = NULL;
+    int start;
+    char *word = NULL;
+    char *temp;
     bool in_word = false;
     
     while (line[i])
     {
-        // 处理空白字符
-        if (line[i] == ' ' || line[i] == '\t')
-        {
-            if (in_word)
-            {
-                add_token(&tokens, create_token(current_word, TOKEN_WORD));
-                current_word = NULL;
-                in_word = false;
-            }
-            i++;
-            continue;
-        }
-        
         // 处理引号
-        if (line[i] == '\'' || line[i] == '"')
+        if (line[i] == '"' || line[i] == '\'')
         {
             char quote = line[i++];
-            int start = i;
+            start = i;
             
             // 寻找匹配的引号
             while (line[i] && line[i] != quote)
                 i++;
                 
-            if (!line[i]) // 未闭合引号
+            if (!line[i]) // 未闭合引号处理
             {
-                // 处理多行输入...
-                return NULL; // 简化版本
+                return NULL; // 简化版本，实际应该处理多行输入
             }
-            
+            type = (quote == '"') ? TOKEN_DQUOTE : TOKEN_SQUOTE;
             // 提取引号内容
-            char *quoted_content = ft_strndup(line + start, i - start);
-            i++; // 跳过闭合引号
-            
-            // 根据引号类型决定是否进行变量展开
-            if (quote == '"')
-            {
-                // 双引号内进行变量展开
-                char *expanded = expand_variables(quoted_content);
-                free(quoted_content);
-                quoted_content = expanded;
-            }
-            // 单引号内保持字面值
+            temp = ft_strndup(line + start, i - start);
             
             // 如果已经在收集单词，则连接；否则创建新单词
             if (in_word)
             {
-                char *joined = ft_strjoin(current_word, quoted_content);
-                free(current_word);
-                free(quoted_content);
-                current_word = joined;
+                char *joined = ft_strjoin(word, temp);
+                free(word);
+                free(temp);
+                word = joined;
             }
             else
             {
-                current_word = quoted_content;
+                word = temp;
                 in_word = true;
             }
+            
+            i++; // 跳过闭合引号
         }
-        // 处理变量（不在单词内时）
-        else if (line[i] == '$' && !in_word)
+        // 处理变量
+        else if (line[i] == '$' && is_valid_var_char(line[i+1]))
         {
-            int start = i;
+            start = i;
             i++; // 跳过$
             
             // 收集变量名
             while (line[i] && is_valid_var_char(line[i]))
                 i++;
                 
+            // 提取变量名并获取值
             char *var_name = ft_strndup(line + start + 1, i - start - 1);
-            char *var_value = get_env_value(var_name);
+            char *var_value = get_env_value(var_name); // 获取环境变量值
             free(var_name);
             
-            // 创建新单词
-            current_word = var_value ? var_value : ft_strdup("");
-            in_word = true;
+            // 连接到当前单词
+            if (in_word)
+            {
+                char *joined = ft_strjoin(word, var_value ? var_value : "");
+                free(word);
+                free(var_value);
+                word = joined;
+            }
+            else
+            {
+                word = var_value ? var_value : ft_strdup("");
+                in_word = true;
+            }
+        }
+        // 处理空白字符
+        else if (line[i] == ' ' || line[i] == '\t')
+        {
+            // 如果正在收集单词，则结束当前单词
+            if (in_word)
+            {
+                add_token(&tokens, create_token(word, TOKEN_WORD));
+                word = NULL;
+                in_word = false;
+            }
+            i++;
         }
         // 处理特殊字符
         else if (is_special_char(line[i]))
         {
+            // 如果正在收集单词，则结束当前单词
             if (in_word)
             {
-                add_token(&tokens, create_token(current_word, TOKEN_WORD));
-                current_word = NULL;
+                add_token(&tokens, create_token(word, TOKEN_WORD));
+                word = NULL;
                 in_word = false;
             }
             
@@ -273,26 +277,26 @@ t_token *tokenizer(char *line)
         // 处理普通字符
         else
         {
-            int start = i;
+            start = i;
             while (line[i] && !is_special_char(line[i]) && 
                   line[i] != ' ' && line[i] != '\t' && 
                   line[i] != '"' && line[i] != '\'' && 
                   line[i] != '$')
                 i++;
                 
-            char *text = ft_strndup(line + start, i - start);
+            temp = ft_strndup(line + start, i - start);
             
             // 连接到当前单词或创建新单词
             if (in_word)
             {
-                char *joined = ft_strjoin(current_word, text);
-                free(current_word);
-                free(text);
-                current_word = joined;
+                char *joined = ft_strjoin(word, temp);
+                free(word);
+                free(temp);
+                word = joined;
             }
             else
             {
-                current_word = text;
+                word = temp;
                 in_word = true;
             }
         }
@@ -300,7 +304,7 @@ t_token *tokenizer(char *line)
     
     // 处理最后一个单词
     if (in_word)
-        add_token(&tokens, create_token(current_word, TOKEN_WORD));
+        add_token(&tokens, create_token(word, TOKEN_WORD));
         
     return tokens;
 }

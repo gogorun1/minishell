@@ -57,6 +57,8 @@ int main()
 		free_token_list(tokens);
 
 		// Add the line to history
+		add_history(line);
+		free(line);
 	}
 	wait(&status);
 	return EXIT_SUCCESS;
