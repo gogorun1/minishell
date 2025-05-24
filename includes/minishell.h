@@ -21,8 +21,10 @@ typedef enum e_token_type
 	TOKEN_REDIRECT_OUT, // A greater-than sign (>) indicating output redirection
 	TOKEN_APPEND,	 	// A double greater-than sign (>>) indicating append output redirection
 	TOKEN_HEREDOC,		// A double less-than sign (<<) indicating here-document input redirection
-	TOKEN_SQUOTE,		// A single quote (') indicating a single-quoted string
-	TOKEN_DQUOTE,		// A double quote (") indicating a double-quoted string
+	TOKEN_EOF,			// End of file or end of input
+	TOKEN_ERROR			// An error token indicating a parsing error
+	// TOKEN_SQUOTE,		// A single quote (') indicating a single-quoted string
+	// TOKEN_DQUOTE,		// A double quote (") indicating a double-quoted string
 }	t_token_type;
 
 typedef struct s_token
@@ -32,15 +34,57 @@ typedef struct s_token
 	struct s_token	*next;	// Pointer to the next token in the list
 }	t_token;
 
-typedef struct s_cmd
-{
-	char		**args;	// The arguments for the command
-	int			in_fd;	// File descriptor for input redirection
-	int			out_fd; // File descriptor for output redirection
-	int			append_mode; // Flag for append mode
-	char		*heredoc; // Here-document content
-	struct s_cmd	*next;	// Pointer to the next command in the pipeline
-}	t_cmd;
+// typedef struct s_cmd
+// {
+// 	char		**args;	// The arguments for the command
+// 	int			in_fd;	// File descriptor for input redirection
+// 	int			out_fd; // File descriptor for output redirection
+// 	int			append_mode; // Flag for append mode
+// 	char		*heredoc; // Here-document content
+// 	struct s_cmd	*next;	// Pointer to the next command in the pipeline
+// }	t_cmd;
+
+typedef enum {
+    REDIR_IN,
+    REDIR_OUT,
+    REDIR_APPEND,
+    REDIR_HEREDOC
+} redir_type_t;
+
+typedef struct redir {
+    redir_type_t type;
+    char *file;
+    int fd;
+    struct redir *next;
+} redir_t;
+
+typedef struct {
+    char **args;
+    redir_t *redirs;
+} command_t;
+
+typedef enum {
+    AST_COMMAND,
+    AST_PIPE,
+    AST_AND,
+    AST_OR
+} ast_node_type_t;
+
+typedef struct ast_node {
+    ast_node_type_t type;
+    union {
+        command_t command;
+        struct {
+            struct ast_node *left;
+            struct ast_node *right;
+        } binary;
+    } data;
+} ast_node_t;
+
+typedef struct {
+    t_token *tokens;
+    t_token *current;
+} parser_t;
 
 // Function prototypes
 t_token	*create_token(char *value, t_token_type type);
