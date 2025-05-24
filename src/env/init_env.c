@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 17:31:34 by lcao              #+#    #+#             */
-/*   Updated: 2025/05/19 17:53:40 by lcao             ###   ########.fr       */
+/*   Updated: 2025/05/24 18:04:04 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,11 @@ static t_env	*create_env_node(char *str)
 		/*Copy the key (everything before '=')*/
 		new->key = ft_strndup(str, equal - str);
 		/*Copy the value (everything after '=')*/
-		new->value = strdup(equal + 1);
+		new->value = ft_strdup(equal + 1);
 	}
 	else
 	{
-		new->key = strdup(str);
+		new->key = ft_strdup(str);
 		new->value = NULL;
 	}
 	new->next = NULL;

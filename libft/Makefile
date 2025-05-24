@@ -11,6 +11,8 @@
 #                                                                              #
 # **************************************************************************** #
 
+CFLAGS = -Wall -Werror -Wextra -I../includes
+
 SRCS = ft_isalpha.c ft_putnbr_fd.c ft_isdigit.c ft_split.c \
 	ft_isprint.c ft_strjoin.c ft_strtrim.c ft_memset.c \
 	ft_strdup.c ft_tolower.c ft_strlcat.c ft_strchr.c \
@@ -31,7 +33,7 @@ $(NAME) : $(OBJS)
 	ar rc $@ $(OBJS)
 
 %.o : %.c
-	cc -Wall -Werror -Wextra -c $< -o $@
+	cc $(CFLAGS) -c $< -o $@
 
 clean:
 	rm -rf $(OBJS)

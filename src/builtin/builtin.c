@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 16:30:06 by lcao              #+#    #+#             */
-/*   Updated: 2025/05/19 15:44:23 by lcao             ###   ########.fr       */
+/*   Updated: 2025/05/24 19:14:13 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,17 @@ int is_builtin(char *cmd)
 		return (1);
 	if (strcmp(cmd, "env") == 0)
 		return (1);
+	if (strcmp(cmd, "unset") == 0)
+		return (1);
+	if (strcmp(cmd, "export") == 0)
+		return (1);
+	if (strcmp(cmd, "echo") == 0)
+		return (1);
 	return (0);
 }
 
 /*based on the name to run those builtins*/
-int	run_builtin(char **args, char **envp)
+int	run_builtin(char **args, t_env **env_list)
 {
 	if(!args || !args[0])
 		return (1);
@@ -40,6 +46,12 @@ int	run_builtin(char **args, char **envp)
 	if(strcmp(args[0], "pwd") == 0)
 		return(builtin_pwd());
 	if (strcmp(args[0], "env") == 0)
-		return (builtin_env(envp));
+		builtin_env_list(*env_list);
+	if (strcmp(args[0], "unset") == 0)
+		return (builtin_unset(args, env_list));
+	if (strcmp(args[0], "export") == 0)
+		return (builtin_export(args, env_list));
+	if (strcmp(args[0], "echo") == 0)
+		return (builtin_echo(args));
 	return (0);
 }

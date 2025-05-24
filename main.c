@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 13:55:40 by lcao              #+#    #+#             */
-/*   Updated: 2025/05/19 16:00:05 by lcao             ###   ########.fr       */
+/*   Updated: 2025/05/24 15:30:37 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,12 @@ int main (int argc, char **argv, char **envp)
 	char	*input;
 	char	**args;
 	pid_t	pid;
+	t_env	*env_list;
 
 	(void)argc;
 	(void)argv;
+	env_list = init_env(envp);
+	
 
 	while (1)
 	{
@@ -56,7 +59,7 @@ int main (int argc, char **argv, char **envp)
 		}
 		if (is_builtin(args[0]))
 		{
-			run_builtin(args, envp);
+			run_builtin(args, &env_list);
 			free_2d(args);
 			free(input);
 			continue;

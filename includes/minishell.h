@@ -6,13 +6,14 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 11:50:50 by wding             #+#    #+#             */
-/*   Updated: 2025/05/19 17:28:36 by lcao             ###   ########.fr       */
+/*   Updated: 2025/05/24 19:51:23 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+# include "libft.h"
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
@@ -55,8 +56,13 @@ typedef struct s_cmd
 	int		redirect_out;
 	int		heredoc;
 	int		append;
+	struct s_cmd *next;
 }	t_cmd;
 
+/*
+** key   : the environment variable name (e.g., "PATH", "HOME", "USER")
+** value : the environment variable value (e.g., "/usr/bin", "/home/lcao", "lcao")
+*/
 typedef struct	s_env
 {
 	char			*key;
@@ -70,14 +76,22 @@ t_env	*init_env(char **envp);
 int	builtin_cd(char **args);
 int	builtin_pwd(void);
 int	builtin_exit(char **args);
-int	builtin_env(char **envp);
+int	builtin_echo(char **args);
+int	builtin_env_list(t_env *env);
+int	builtin_export(char **args, t_env **env);
+
+/*env*/
+int	builtin_unset(char **args, t_env **env_list);
+t_env	*init_env(char **envp);
 
 int	is_builtin(char *cmd);
-int	run_builtin(char **args, char **envp);
+int	run_builtin(char **args, t_env **env_list);
 
 /*utils*/
 char	*ft_strndup(const char	*s, size_t n);
 
 char	**split_input(char *input);
+
+/*execution*/
 
 #endif
