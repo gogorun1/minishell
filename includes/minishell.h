@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 11:50:50 by wding             #+#    #+#             */
-/*   Updated: 2025/05/24 19:51:23 by lcao             ###   ########.fr       */
+/*   Updated: 2025/05/25 14:34:55 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,19 +33,23 @@
 
 typedef enum e_token_type
 {
-	WORD,
-	PIPE,
-	REDIRECT_IN,
-	REDIRECT_OUT,
-	HEREDOC,
-	APPEND
+	TOKEN_WORD,			// A sequence of characters that form a word
+	TOKEN_PIPE,			// A pipe (|) indicating a command separator
+	TOKEN_REDIRECT_IN,	// A less-than sign (<) indicating input redirection
+	TOKEN_REDIRECT_OUT, // A greater-than sign (>) indicating output redirection
+	TOKEN_APPEND,	 	// A double greater-than sign (>>) indicating append output redirection
+	TOKEN_HEREDOC,		// A double less-than sign (<<) indicating here-document input redirection
+	TOKEN_EOF,			// End of file or end of input
+	TOKEN_ERROR			// An error token indicating a parsing error
+	// TOKEN_SQUOTE,		// A single quote (') indicating a single-quoted string
+	// TOKEN_DQUOTE,		// A double quote (") indicating a double-quoted string
 }	t_token_type;
 
 typedef struct s_token
 {
-	t_token_type	type;
-	char			*value;
-	struct s_token	*next;
+	t_token_type	type;	// The type of the token
+	char			*value;	// The value of the token
+	struct s_token	*next;	// Pointer to the next token in the list
 }	t_token;
 
 typedef struct s_cmd
@@ -59,6 +63,48 @@ typedef struct s_cmd
 	struct s_cmd *next;
 }	t_cmd;
 
+typedef enum {
+    REDIR_IN,
+    REDIR_OUT,
+    REDIR_APPEND,
+    REDIR_HEREDOC
+} redir_type_t;
+
+typedef struct redir {
+    redir_type_t type;
+    char *file;
+    int fd;
+    struct redir *next;
+} redir_t;
+
+typedef struct {
+    char **args;
+    redir_t *redirs;
+} command_t;
+
+typedef enum {
+    AST_COMMAND,
+    AST_PIPE,
+    AST_AND,
+    AST_OR
+} ast_node_type_t;
+
+typedef struct ast_node {
+    ast_node_type_t type;
+    union {
+        command_t command;
+        struct {
+            struct ast_node *left;
+            struct ast_node *right;
+        } binary;
+    } data;
+} ast_node_t;
+
+typedef struct {
+    t_token *tokens;
+    t_token *current;
+} parser_t;
+
 /*
 ** key   : the environment variable name (e.g., "PATH", "HOME", "USER")
 ** value : the environment variable value (e.g., "/usr/bin", "/home/lcao", "lcao")
@@ -71,6 +117,21 @@ typedef struct	s_env
 }	t_env;
 
 t_env	*init_env(char **envp);
+
+
+// Function prototypes
+t_token	*create_token(char *value, t_token_type type);
+void	add_token(t_token **head, t_token *new_token);
+void	free_token(t_token *token);
+void	free_token_list(t_token *head);
+t_token	*tokenizer(char *line);
+void	print_tokens(t_token *tokens);
+void	handle_special_char(char *line, int *i, t_token **tokens);
+char	*find_executable(char *cmd);
+char	*get_env_value(char *var_name);
+char	*expand_variables(char *str);
+int		handle_quotes(char **input, int *i, t_token **tokens);
+char	*ft_strndup(const char *s, size_t n);
 
 /*builtin*/
 int	builtin_cd(char **args);
