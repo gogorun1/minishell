@@ -65,7 +65,7 @@ typedef enum {
 typedef struct redir {
     redir_type_t type;
     char *file;
-    int fd;
+    // int fd; // 在parser中不需要fd，执行时才需要
     struct redir *next;
 } redir_t;
 
