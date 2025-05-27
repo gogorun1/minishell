@@ -90,7 +90,6 @@ typedef struct ast_node {
             struct ast_node *right;
         } binary;
     } data;
-	int exit_status; // Exit status for the command
 } ast_node_t;
 
 typedef struct {
