@@ -12,27 +12,28 @@
 
 #include "minishell.h"
 
-void	free_2d(char **arr)
-{
-	int	i;
+// void	free_2d(char **arr)
+// {
+// 	int	i;
 
-	if(!arr)
-		return ;
-	i = 0;
-	while(arr[i])
-	{
-		free(arr[i]);
-		i++;
-	}
-	free(arr);
-}
+// 	if(!arr)
+// 		return ;
+// 	i = 0;
+// 	while(arr[i])
+// 	{
+// 		free(arr[i]);
+// 		i++;
+// 	}
+// 	free(arr);
+// }
 
-int main1 (int argc, char **argv, char **envp)
+int main (int argc, char **argv, char **envp)
 {
 	char	*input;
-	char	**args;
-	pid_t	pid;
+	t_token	*tokens;
+	// pid_t	pid;
 	t_env	*env_list;
+	// ast_node_t	*ast;
 
 	(void)argc;
 	(void)argv;
@@ -50,30 +51,38 @@ int main1 (int argc, char **argv, char **envp)
 		}
 		if (*input)
 			add_history(input);
-		args = split_input(input);
-		
-		if (!args || !args[0])
+		tokens = tokenizer(input);
+		if (!tokens)
 		{
 			free(input);
 			continue;
 		}
-		if (is_builtin(args[0]))
+		// ast = parse(tokens);
+		// if (!ast)
+		// {
+		// 	fprintf(stderr, "minishell: parse error\n");
+		// 	free_2d(tokens);
+		// 	free(input);
+		// 	continue;
+		// }
+		if (is_builtin(tokens[0].value))
 		{
-			run_builtin(args, &env_list);
-			free_2d(args);
+			run_builtin(tokens[0].value, &env_list);
+			free_token(tokens);
 			free(input);
 			continue;
 		}
-		pid = fork();
-		if (pid == 0)
-		{
-			if (execvp(args[0], args) == -1)
-				perror("minishell");
-			exit(1);
-		}
-		else
-			wait(NULL);
+		// pid = fork();
+		// if (pid == 0)
+		// {
+		// 	if (execvp(args[0], args) == -1)
+		// 		perror("minishell");
+		// 	exit(1);
+		// }
+		// else
+		// 	wait(NULL);
 		free(input);
 	}
+	rl_clear_history();
 	return (0);
 }

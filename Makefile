@@ -13,6 +13,7 @@ LIBFT = $(LIBFT_DIR)libft.a
 INCLUDES = -Iincludes -Ilibft/includes
 
 SRCS = mainprint.c \
+		main.c \
 		split_input.c \
 		builtin/builtin.c \
 		builtin/builtin_cd.c \

@@ -146,7 +146,7 @@ int	builtin_unset(char **args, t_env **env_list);
 t_env	*init_env(char **envp);
 
 int	is_builtin(char *cmd);
-int	run_builtin(char **args, t_env **env_list);
+int	run_builtin(char *arg, t_env **env_list);
 
 /*utils*/
 char	*ft_strndup(const char	*s, size_t n);

@@ -184,8 +184,6 @@ void free_ast(ast_node_t *node) {
             break;
 		// case AST_REDIR:
         case AST_PIPE:
-        case AST_AND:
-        case AST_OR:
             free_ast(node->data.binary.left);
             free_ast(node->data.binary.right);
             break;

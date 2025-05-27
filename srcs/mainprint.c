@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int main()
+int main1()
 {
 	int status;
 	char *line = NULL;
