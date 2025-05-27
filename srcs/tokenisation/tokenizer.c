@@ -12,20 +12,20 @@
 
 #include "minishell.h"
 
-char	*ft_strndup(const char *s, size_t n)
-{
-	char	*dup;
-	size_t	len;
+// char	*ft_strndup(const char *s, size_t n)
+// {
+// 	char	*dup;
+// 	size_t	len;
 
-	len = ft_strlen(s);
-	if (len > n)
-		len = n;
-	dup = (char *)malloc(len + 1);
-	if (!dup)
-		return (NULL);
-	ft_strlcpy(dup, s, len + 1);
-	return (dup);
-}
+// 	len = ft_strlen(s);
+// 	if (len > n)
+// 		len = n;
+// 	dup = (char *)malloc(len + 1);
+// 	if (!dup)
+// 		return (NULL);
+// 	ft_strlcpy(dup, s, len + 1);
+// 	return (dup);
+// }
 
 t_token	*create_token(char *str, t_token_type type)
 {
@@ -79,42 +79,41 @@ void	free_token_list(t_token *head)
 }
 
 // 处理引号内的内容，区分单双引号的行为
-int handle_quotes(char **input, int *i, t_token **tokens)
-{
-    char quote = (*input)[*i];
-    int start = *i + 1;
-    int j = start;
-	int type = (quote == '"') ? TOKEN_DQUOTE : TOKEN_SQUOTE;
+// int handle_quotes(char **input, int *i, t_token **tokens)
+// {
+//     char quote = (*input)[*i];
+//     int start = *i + 1;
+//     int j = start;
     
-    // 寻找匹配的引号
-    while ((*input)[j] && (*input)[j] != quote)
-        j++;
+//     // 寻找匹配的引号
+//     while ((*input)[j] && (*input)[j] != quote)
+//         j++;
         
-    if (!(*input)[j]) // 未闭合引号处理
-    {
-        ft_printf("minishell: unexpected EOF while looking for matching %c\n", quote);
-        return 0; // 简化版本
-    }
+//     if (!(*input)[j]) // 未闭合引号处理
+//     {
+//         ft_printf("minishell: unexpected EOF while looking for matching %c\n", quote);
+//         return 0; // 简化版本
+//     }
     
-    // 提取引号内容
-    char *content = ft_strndup(*input + start, j - start);
+//     // 提取引号内容
+//     char *content = ft_strndup(*input + start, j - start);
     
-    // 根据引号类型决定是否进行变量展开
-    if (quote == '"')
-    {
-        // 双引号内进行变量展开
-        char *expanded = expand_variables(content);
-        free(content);
-        content = expanded;
-    }
-    // 单引号内保持字面值，不做任何处理
+//     // 根据引号类型决定是否进行变量展开
+//     if (quote == '"')
+//     {
+//         // 双引号内进行变量展开
+//         char *expanded = expand_variables(content);
+//         free(content);
+//         content = expanded;
+//     }
+//     // 单引号内保持字面值，不做任何处理
     
-    // 创建token并添加到链表
-    add_token(tokens, create_token(content, type));
+//     // 创建token并添加到链表
+//     add_token(tokens, create_token(content, 0));
     
-    *i = j + 1; // 更新索引到引号后面
-    return 1;
-}
+//     *i = j + 1; // 更新索引到引号后面
+//     return 1;
+// }
 
 // 变量展开函数
 char *expand_variables(char *str)
@@ -181,7 +180,7 @@ t_token *tokenizer(char *line)
     int start;
     char *word = NULL;
     char *temp;
-    bool in_word = false;
+    int in_word = 0;
     
     while (line[i])
     {
@@ -199,10 +198,16 @@ t_token *tokenizer(char *line)
             {
                 return NULL; // 简化版本，实际应该处理多行输入
             }
-            type = (quote == '"') ? TOKEN_DQUOTE : TOKEN_SQUOTE;
             // 提取引号内容
             temp = ft_strndup(line + start, i - start);
             
+			if (quote == '"')
+			{
+				// 双引号内进行变量展开
+				char *expanded = expand_variables(temp);
+				free(temp);
+				temp = expanded;
+			}
             // 如果已经在收集单词，则连接；否则创建新单词
             if (in_word)
             {
@@ -214,39 +219,42 @@ t_token *tokenizer(char *line)
             else
             {
                 word = temp;
-                in_word = true;
+                in_word = 1;
             }
             
             i++; // 跳过闭合引号
+
         }
         // 处理变量
         else if (line[i] == '$' && is_valid_var_char(line[i+1]))
         {
-            start = i;
-            i++; // 跳过$
+			if (!expand_variables(line + i))
+				return NULL; // 如果变量展开失败，返回NULL
+            // start = i;
+            // i++; // 跳过$
             
-            // 收集变量名
-            while (line[i] && is_valid_var_char(line[i]))
-                i++;
+            // // 收集变量名
+            // while (line[i] && is_valid_var_char(line[i]))
+            //     i++;
                 
-            // 提取变量名并获取值
-            char *var_name = ft_strndup(line + start + 1, i - start - 1);
-            char *var_value = get_env_value(var_name); // 获取环境变量值
-            free(var_name);
+            // // 提取变量名并获取值
+            // char *var_name = ft_strndup(line + start + 1, i - start - 1);
+            // char *var_value = get_env_value(var_name); // 获取环境变量值
+            // free(var_name);
             
-            // 连接到当前单词
-            if (in_word)
-            {
-                char *joined = ft_strjoin(word, var_value ? var_value : "");
-                free(word);
-                free(var_value);
-                word = joined;
-            }
-            else
-            {
-                word = var_value ? var_value : ft_strdup("");
-                in_word = true;
-            }
+            // // 连接到当前单词
+            // if (in_word)
+            // {
+            //     char *joined = ft_strjoin(word, var_value ? var_value : "");
+            //     free(word);
+            //     free(var_value);
+            //     word = joined;
+            // }
+            // else
+            // {
+            //     word = var_value ? var_value : ft_strdup("");
+            //     in_word = 1;
+            // }
         }
         // 处理空白字符
         else if (line[i] == ' ' || line[i] == '\t')
@@ -256,7 +264,7 @@ t_token *tokenizer(char *line)
             {
                 add_token(&tokens, create_token(word, TOKEN_WORD));
                 word = NULL;
-                in_word = false;
+                in_word = 0;
             }
             i++;
         }
@@ -268,7 +276,7 @@ t_token *tokenizer(char *line)
             {
                 add_token(&tokens, create_token(word, TOKEN_WORD));
                 word = NULL;
-                in_word = false;
+                in_word = 0;
             }
             
             // 处理特殊字符...
@@ -297,15 +305,17 @@ t_token *tokenizer(char *line)
             else
             {
                 word = temp;
-                in_word = true;
+                in_word = 1;
             }
         }
     }
     
     // 处理最后一个单词
     if (in_word)
+	{
         add_token(&tokens, create_token(word, TOKEN_WORD));
-        
+	}
+	add_token(&tokens, create_token(NULL, TOKEN_EOF)); // 添加EOF标记
     return tokens;
 }
 

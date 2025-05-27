@@ -12,7 +12,7 @@ LIBFT = $(LIBFT_DIR)libft.a
 
 INCLUDES = -Iincludes -Ilibft/includes
 
-SRCS = main.c \
+SRCS = mainprint.c \
 		split_input.c \
 		builtin/builtin.c \
 		builtin/builtin_cd.c \
@@ -23,7 +23,11 @@ SRCS = main.c \
 		env/builtin_env_list.c \
 		env/builtin_unset.c \
 		env/init_env.c \
-		utils/ft_strndup.c
+		tokenisation/tokenizer.c \
+		parsing/parser.c \
+		utils/ft_strndup.c \
+		utils/utils.c \
+		temps/print.c \
 
 OBJS = $(addprefix $(OBJS_DIR), $(SRCS:.c=.o))
 
@@ -37,8 +41,9 @@ $(OBJS_DIR)%.o: $(SRCS_DIR)%.c
 	@mkdir -p $(OBJS_DIR)/builtin \
 				$(OBJS_DIR)/env \
 				$(OBJS_DIR)/utils \
-				$(OBJS_DIR)/utils \
+				$(OBJS_DIR)/parsing \
 				$(OBJS_DIR)/tokenisation \
+				$(OBJS_DIR)/temps \
 
 	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 

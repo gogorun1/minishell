@@ -1,3 +1,5 @@
+#include "minishell.h"
+
 int execute_command(t_token *tokens, char **env)
 {
     if (!tokens)

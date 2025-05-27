@@ -161,3 +161,37 @@ char *expand_variable(char *str)
 
 	return result;
 }
+
+void free_ast(ast_node_t *node) {
+    if (!node)
+        return;
+    
+    switch (node->type) {
+        case AST_COMMAND:
+            if (node->data.command.args) {
+                for (int i = 0; node->data.command.args[i]; i++)
+                    free(node->data.command.args[i]);
+                free(node->data.command.args);
+            }
+            // Free redirections
+            redir_t *redir = node->data.command.redirs;
+            while (redir) {
+                redir_t *next = redir->next;
+                free(redir->file);
+                free(redir);
+                redir = next;
+            }
+            break;
+		// case AST_REDIR:
+        case AST_PIPE:
+        case AST_AND:
+        case AST_OR:
+            free_ast(node->data.binary.left);
+            free_ast(node->data.binary.right);
+            break;
+        // case AST_SUBSHELL:
+        //     free_ast(node->data.child);
+            break;
+    }
+    free(node);
+}

@@ -12,6 +12,7 @@
 # include <sys/wait.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+# include <stdbool.h>
 
 /*
 ** redirect_in: <
@@ -43,16 +44,16 @@ typedef struct s_token
 	struct s_token	*next;	// Pointer to the next token in the list
 }	t_token;
 
-typedef struct s_cmd
-{
-	char	*cmd;
-	char	**args;
-	int		redirect_in;
-	int		redirect_out;
-	int		heredoc;
-	int		append;
-	struct s_cmd *next;
-}	t_cmd;
+// typedef struct s_cmd
+// {
+// 	char	*cmd;
+// 	char	**args;
+// 	int		redirect_in;
+// 	int		redirect_out;
+// 	int		heredoc;
+// 	int		append;
+// 	struct s_cmd *next;
+// }	t_cmd;
 
 typedef enum {
     REDIR_IN,
@@ -75,20 +76,21 @@ typedef struct {
 
 typedef enum {
     AST_COMMAND,
-    AST_PIPE,
-    AST_AND,
-    AST_OR
+    AST_PIPE
 } ast_node_type_t;
 
 typedef struct ast_node {
     ast_node_type_t type;
-    union {
+    union 
+	{
         command_t command;
-        struct {
+        struct 
+		{
             struct ast_node *left;
             struct ast_node *right;
         } binary;
     } data;
+	int exit_status; // Exit status for the command
 } ast_node_t;
 
 typedef struct {
@@ -121,8 +123,16 @@ void	handle_special_char(char *line, int *i, t_token **tokens);
 char	*find_executable(char *cmd);
 char	*get_env_value(char *var_name);
 char	*expand_variables(char *str);
-int		handle_quotes(char **input, int *i, t_token **tokens);
+// int		handle_quotes(char **input, int *i, t_token **tokens);
 char	*ft_strndup(const char *s, size_t n);
+bool is_valid_var_char(char c);
+bool is_special_char(char c);
+void print_tokens(t_token *tokens);
+void print_ast_detailed(ast_node_t *node, int depth, const char *position);
+void free_ast(ast_node_t *node);
+ast_node_t *parse_command(parser_t *parser);
+ast_node_t *parse_pipeline(parser_t *parser);
+ast_node_t *parse(t_token *tokens);
 
 /*builtin*/
 int	builtin_cd(char **args);

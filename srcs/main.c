@@ -27,7 +27,7 @@ void	free_2d(char **arr)
 	free(arr);
 }
 
-int main (int argc, char **argv, char **envp)
+int main1 (int argc, char **argv, char **envp)
 {
 	char	*input;
 	char	**args;

@@ -12,15 +12,6 @@
 
 #include "minishell.h"
 
-void print_tokens(t_token *tokens)
-{
-	while (tokens)
-	{
-		printf("Token: %s, Type: %d\n", tokens->value, tokens->type);
-		tokens = tokens->next;
-	}
-}
-
 int main()
 {
 	int status;
@@ -47,11 +38,19 @@ int main()
 			continue;
 		}
 		print_tokens(tokens);
-		
 		// Parse the tokens into commands
-
+		ast_node_t *ast = parse(tokens);
+		if (ast == NULL)
+		{
+			fprintf(stderr, "Error: Parsing failed\n");
+			free(line);
+			free_token_list(tokens);
+			continue;
+		}
+		print_ast_detailed(ast, 0, "AST: ");
 		// Execute the commands
-		// Free the command list
+		// Free the ast
+		free_ast(ast);
 
 		// Free the token list
 		free_token_list(tokens);
