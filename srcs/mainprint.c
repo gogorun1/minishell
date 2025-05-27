@@ -47,7 +47,12 @@ int main()
 			free_token_list(tokens);
 			continue;
 		}
-		print_ast_detailed(ast, 0, "AST: ");
+		else
+		{
+	        printf("--- 抽象语法树 (AST) 结构 ---\n");
+	        print_ast(ast, 0); // 从根节点开始打印，初始缩进为 0
+	        printf("--- AST 打印结束 ---\n");
+    	}
 		// Execute the commands
 		// Free the ast
 		free_ast(ast);
