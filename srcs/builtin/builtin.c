@@ -37,7 +37,7 @@ int is_builtin(char *cmd)
 /*based on the name to run those builtins*/
 int	run_builtin(char **args, t_env **env_list)
 {
-	if(!args || !args[0])
+	if(!args[0] || !args)
 		return (1);
 	if(strcmp(args[0], "cd") == 0)
 		return(builtin_cd(args));

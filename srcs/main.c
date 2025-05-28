@@ -6,74 +6,129 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 13:55:40 by lcao              #+#    #+#             */
-/*   Updated: 2025/05/24 15:30:37 by lcao             ###   ########.fr       */
+/*   Updated: 2025/05/28 18:51:33 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	free_2d(char **arr)
-{
-	int	i;
+// void	free_2d(char **arr)
+// {
+// 	int	i;
 
-	if(!arr)
-		return ;
-	i = 0;
-	while(arr[i])
+// 	if(!arr)
+// 		return ;
+// 	i = 0;
+// 	while(arr[i])
+// 	{
+// 		free(arr[i]);
+// 		i++;
+// 	}
+// 	free(arr);
+// }
+
+int init_shell(t_shell *shell, char **envp)
+{
+	shell->env_list = init_env(envp);
+	if (!shell->env_list)
 	{
-		free(arr[i]);
-		i++;
+		fprintf(stderr, "Error initializing environment variables\n");
+		return (1);
 	}
-	free(arr);
+	shell->last_exit_status = 0;
+	return (0);
 }
 
 int main (int argc, char **argv, char **envp)
 {
 	char	*input;
-	char	**args;
-	pid_t	pid;
-	t_env	*env_list;
+	t_token	*tokens;
+	// pid_t	pid;
+	t_shell shell;
+	ast_node_t	*ast;
 
 	(void)argc;
 	(void)argv;
-	env_list = init_env(envp);
-	
-
+	if (init_shell(&shell, envp) != 0)
+		return (1);
 	while (1)
 	{
 		input = readline("minishell$");
-		
-		if(!input)
+		if (!input || strcmp(input, "exit") == 0)
 		{
-			printf("bye!\n");
+			free(input);
 			break;
 		}
+		// If the input is empty, continue to the next iteration
 		if (*input)
 			add_history(input);
-		args = split_input(input);
-		
-		if (!args || !args[0])
+		printf("Input received: %s\n", input);
+		tokens = tokenizer(input, &shell);
+		if (!tokens)
 		{
+			fprintf(stderr, "Error: Tokenization failed\n");
 			free(input);
 			continue;
 		}
-		if (is_builtin(args[0]))
+		print_tokens(tokens);
+		// Parse the tokens into an abstract syntax tree (AST)
+		ast = parse(tokens);
+		if (!ast)
 		{
-			run_builtin(args, &env_list);
-			free_2d(args);
+			fprintf(stderr, "minishell: parse error\n");
+			free_token(tokens);
 			free(input);
 			continue;
-		}
-		pid = fork();
-		if (pid == 0)
-		{
-			if (execvp(args[0], args) == -1)
-				perror("minishell");
-			exit(1);
 		}
 		else
-			wait(NULL);
+		{
+			printf("--- 抽象语法树 (AST) 结构 ---\n");
+			print_ast(ast, 0); // 从根节点开始打印，初始缩进为 0
+			printf("--- AST 打印结束 ---\n");
+		}
+		// Execute the command represented by the AST
+		shell.last_exit_status = execute_pipeline(ast, &shell);
+		if (shell.last_exit_status == -1)
+		{
+			fprintf(stderr, "minishell: execution error\n");
+			free_token(tokens);
+			free_ast(ast);
+			free(input);
+			continue;
+		}
+		// Free the tokens and AST after execution
+		free_token(tokens);
+		free_ast(ast);
 		free(input);
+		// if (ast->type != AST_COMMAND)
+		// {
+		// 	fprintf(stderr, "minishell: only single commands are supported\n");
+		// 	free_token(tokens);
+		// 	free_ast(ast);
+		// 	free(input);
+		// 	continue;
+		// }
+		
+		// Check if the command is a builtin
+		// if (is_builtin(ast->data.command.args[0]))
+		// {
+		// 	// If the command is a builtin, run it directly
+		// 	shell.last_exit_status = run_builtin(ast->data.command.args, &shell.env_list);
+		// 	free_token(tokens);
+		// 	free_ast(ast);
+		// 	free(input);
+		// 	continue;
+		// }
+		// pid = fork();
+		// if (pid == 0)
+		// {
+		// 	if (execvp(args[0], args) == -1)
+		// 		perror("minishell");
+		// 	exit(1);
+		// }
+		// else
+		// 	wait(NULL);
 	}
+	rl_clear_history();
 	return (0);
 }

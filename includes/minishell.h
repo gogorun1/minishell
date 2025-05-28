@@ -12,6 +12,8 @@
 # include <sys/wait.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+# include <stdbool.h>
+# include <fcntl.h>
 
 /*
 ** redirect_in: <
@@ -43,16 +45,16 @@ typedef struct s_token
 	struct s_token	*next;	// Pointer to the next token in the list
 }	t_token;
 
-typedef struct s_cmd
-{
-	char	*cmd;
-	char	**args;
-	int		redirect_in;
-	int		redirect_out;
-	int		heredoc;
-	int		append;
-	struct s_cmd *next;
-}	t_cmd;
+// typedef struct s_cmd
+// {
+// 	char	*cmd;
+// 	char	**args;
+// 	int		redirect_in;
+// 	int		redirect_out;
+// 	int		heredoc;
+// 	int		append;
+// 	struct s_cmd *next;
+// }	t_cmd;
 
 typedef enum {
     REDIR_IN,
@@ -64,7 +66,7 @@ typedef enum {
 typedef struct redir {
     redir_type_t type;
     char *file;
-    int fd;
+    // int fd; // 在parser中不需要fd，执行时才需要
     struct redir *next;
 } redir_t;
 
@@ -75,16 +77,16 @@ typedef struct {
 
 typedef enum {
     AST_COMMAND,
-    AST_PIPE,
-    AST_AND,
-    AST_OR
+    AST_PIPE
 } ast_node_type_t;
 
 typedef struct ast_node {
     ast_node_type_t type;
-    union {
+    union 
+	{
         command_t command;
-        struct {
+        struct 
+		{
             struct ast_node *left;
             struct ast_node *right;
         } binary;
@@ -107,7 +109,16 @@ typedef struct	s_env
 	struct s_env	*next;
 }	t_env;
 
-t_env	*init_env(char **envp);
+// --- Main Shell State Struct ---
+// Encapsulates all the shell's runtime data
+typedef struct s_shell {
+    t_env   *env_list;         // Head of the linked list of environment variables
+    int         last_exit_status;  // Value for $?
+    // You might add other fields here as needed:
+    // char        *current_pwd;     // Current working directory (for efficiency, or getcwd)
+    // t_history   *history_data;    // If you manage history beyond readline's built-in
+    // ... any other global-like state
+} t_shell;
 
 
 // Function prototypes
@@ -115,14 +126,22 @@ t_token	*create_token(char *value, t_token_type type);
 void	add_token(t_token **head, t_token *new_token);
 void	free_token(t_token *token);
 void	free_token_list(t_token *head);
-t_token	*tokenizer(char *line);
+t_token	*tokenizer(char *line, t_shell *g_shell);
 void	print_tokens(t_token *tokens);
 void	handle_special_char(char *line, int *i, t_token **tokens);
 char	*find_executable(char *cmd);
 char	*get_env_value(char *var_name);
 char	*expand_variables(char *str);
-int		handle_quotes(char **input, int *i, t_token **tokens);
+// int		handle_quotes(char **input, int *i, t_token **tokens);
 char	*ft_strndup(const char *s, size_t n);
+bool is_valid_var_char(char c);
+bool is_special_char(char c);
+void print_token(t_token *token);
+void print_ast(ast_node_t *node, int indent_level);
+void free_ast(ast_node_t *node);
+ast_node_t *parse_command(parser_t *parser);
+ast_node_t *parse_pipeline(parser_t *parser);
+ast_node_t *parse(t_token *tokens);
 
 /*builtin*/
 int	builtin_cd(char **args);
@@ -135,15 +154,52 @@ int	builtin_export(char **args, t_env **env);
 /*env*/
 int	builtin_unset(char **args, t_env **env_list);
 t_env	*init_env(char **envp);
+char *my_getenv(const char *key, t_env *envp);
+
 
 int	is_builtin(char *cmd);
 int	run_builtin(char **args, t_env **env_list);
 
 /*utils*/
 char	*ft_strndup(const char	*s, size_t n);
-
 char	**split_input(char *input);
+int     ft_fprintf(int fd, const char *format, ...);
 
-/*execution*/
+/* execution */
+int		execute_ast(ast_node_t *node, t_shell *shell);
+int		execute_command(command_t *cmd, t_shell *shell);
+int		execute_external(command_t *cmd, t_shell *shell);
+int		execute_pipeline(ast_node_t *node, t_shell *shell);
+void	execute_left_pipe(ast_node_t *node, int pipe_fd[2], t_shell *shell);
+void	execute_right_pipe(ast_node_t *node, int pipe_fd[2], t_shell *shell);
+void	execute_child(char *path, char **args, t_env *env);
+void	restore_stdio(int saved_fds[2]);
+
+int     wait_and_get_status(pid_t pid, char *path, char **envp);
+int     handle_fork_error(char *path, char **envp);
+
+/*execute pipelines*/
+int handle_pipe_fork_error(int pipe_fd[2]);
+int handle_pipe_fork_error_right(int pipe_fd[2], pid_t left_pid);
+int wait_for_pipeline(pid_t left_pid, pid_t right_pid);
+
+
+/* redirections */
+int		setup_redirections(redir_t *redirs);
+int		handle_single_redirect(redir_t *redir);
+int		handle_input_redirect(char *filename);
+int		handle_output_redirect(char *filename);
+int		handle_append_redirect(char *filename);
+int		handle_heredoc_redirect(char *delimiter);
+int		read_heredoc_input(char *delimiter, int write_fd);
+int		write_heredoc_line(char *line, int write_fd);
+
+/* env utils */
+char	**env_to_array(t_env *env);
+char	*create_env_string(char *key, char *value);
+void	free_env_array(char **envp);
+void	free_env_array_partial(char **envp, int count);
+int		count_env_vars(t_env *env);
+
 
 #endif

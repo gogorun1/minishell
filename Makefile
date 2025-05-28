@@ -1,7 +1,7 @@
 NAME = minishell
 
 CC = cc
-CFLAGS = -Wall -Werror -Wextra -g
+CFLAGS = -Wall -Werror -Wextra -g -MMD
 LIBS = -lreadline
 RM = rm -f
 
@@ -12,7 +12,8 @@ LIBFT = $(LIBFT_DIR)libft.a
 
 INCLUDES = -Iincludes -Ilibft/includes
 
-SRCS = main.c \
+SRCS = mainprint.c \
+		main.c \
 		split_input.c \
 		builtin/builtin.c \
 		builtin/builtin_cd.c \
@@ -23,9 +24,21 @@ SRCS = main.c \
 		env/builtin_env_list.c \
 		env/builtin_unset.c \
 		env/init_env.c \
-		utils/ft_strndup.c
+		tokenisation/tokenizer.c \
+		parsing/parser.c \
+		execution/execute.c \
+		execution/execute_pipeline.c \
+		execution/redirections.c \
+		execution/heredoc_utils.c \
+		execution/execute_utils.c \
+		execution/env_utils.c \
+		utils/ft_strndup.c \
+		utils/ft_fprintf.c \
+		utils/utils.c \
+		temps/print.c \
 
 OBJS = $(addprefix $(OBJS_DIR), $(SRCS:.c=.o))
+DEPS = $(addprefix $(OBJS_DIR), $(SRCS:.c=.d))
 
 # format
 COLOR_GREEN = \033[0;32m
@@ -37,8 +50,10 @@ $(OBJS_DIR)%.o: $(SRCS_DIR)%.c
 	@mkdir -p $(OBJS_DIR)/builtin \
 				$(OBJS_DIR)/env \
 				$(OBJS_DIR)/utils \
-				$(OBJS_DIR)/utils \
+				$(OBJS_DIR)/parsing \
 				$(OBJS_DIR)/tokenisation \
+				$(OBJS_DIR)/temps \
+				$(OBJS_DIR)/execution \
 
 	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
@@ -60,6 +75,8 @@ fclean: clean
 	@$(RM) $(NAME)
 	@make -C $(LIBFT_DIR) fclean
 	@echo "$(COLOR_BLUE)$(COLOR_BOLD)all clear$(COLOR_RESET)"
+
+-include $(DEPS)
 
 re: fclean all
 
