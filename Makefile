@@ -1,7 +1,7 @@
 NAME = minishell
 
 CC = cc
-CFLAGS = -Wall -Werror -Wextra -g
+CFLAGS = -Wall -Werror -Wextra -g -MMD
 LIBS = -lreadline
 RM = rm -f
 
@@ -31,6 +31,7 @@ SRCS = mainprint.c \
 		temps/print.c \
 
 OBJS = $(addprefix $(OBJS_DIR), $(SRCS:.c=.o))
+DEPS = $(addprefix $(OBJS_DIR), $(SRCS:.c=.d))
 
 # format
 COLOR_GREEN = \033[0;32m
@@ -66,6 +67,8 @@ fclean: clean
 	@$(RM) $(NAME)
 	@make -C $(LIBFT_DIR) fclean
 	@echo "$(COLOR_BLUE)$(COLOR_BOLD)all clear$(COLOR_RESET)"
+
+-include $(DEPS)
 
 re: fclean all
 

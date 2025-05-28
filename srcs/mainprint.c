@@ -30,7 +30,7 @@ int main1()
 			break;
 		}
 		// Tokenize the input line
-		tokens = tokenizer(line);
+		tokens = tokenizer(line, NULL);
 		if (tokens == NULL)
 		{
 			fprintf(stderr, "Error: Tokenization failed\n");

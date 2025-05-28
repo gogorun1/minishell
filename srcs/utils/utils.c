@@ -100,6 +100,30 @@ char *find_executable(char *cmd)
     free(path_copy);
     return NULL;
 }
+
+// Custom getenv to work with your envp array
+char *my_getenv(const char *key, t_env *envp) 
+{
+	printf("my_getenv called with key: %s\n", key); // Debugging line
+    if (!key || !envp) 
+	{
+        return NULL;
+    }
+	printf("envp starting with: %s\n", envp->key); // Debugging line
+	t_env *current = envp;
+	printf("Starting from: %s\n", current->key); // Debugging line
+	while (current) 
+	{
+		printf("Checking env key: %s, key: %s\n", current->key, key); // Debugging line
+		if (strcmp(current->key, key) == 0) 
+		{
+			return current->value; // 返回环境变量的值
+		}
+		current = current->next;
+	}
+	return NULL; // 如果没有找到，返回NULL
+}
+
 // 获取环境变量值
 char *get_env_value(char *var_name)
 {
@@ -109,7 +133,7 @@ char *get_env_value(char *var_name)
 	return NULL;
 }
 
-char *expand_variable(char *str)
+char *expand_variable(char *str, t_shell g_shell)
 {
 	char *result = NULL;
 	char *temp;
@@ -134,7 +158,7 @@ char *expand_variable(char *str)
 				i++;
 
 			char *var_name = ft_strndup(str + start, i - start);
-			char *var_value = get_env_value(var_name);
+			char *var_value = my_getenv(var_name, g_shell.env_list); // 使用自定义getenv
 			free(var_name);
 
 			// 添加变量值

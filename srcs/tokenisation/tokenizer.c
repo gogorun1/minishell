@@ -173,7 +173,7 @@ char *expand_variables(char *str)
     return result;
 }
 
-t_token *tokenizer(char *line)
+t_token *tokenizer(char *line, t_shell *g_shell)
 {
     t_token *tokens = NULL;
     int i = 0;
@@ -225,36 +225,39 @@ t_token *tokenizer(char *line)
             i++; // 跳过闭合引号
 
         }
-        // 处理变量
-        else if (line[i] == '$' && is_valid_var_char(line[i+1]))
+        // 处理变量 暂时有segfault
+        else if (line[i] == '$' && is_valid_var_char(line[i + 1]))
         {
-			if (!expand_variables(line + i))
-				return NULL; // 如果变量展开失败，返回NULL
-            // start = i;
-            // i++; // 跳过$
+			printf("Variable found at index %d: %s\n", i, line + i);
+
+			// 处理变量展开
+            start = i;
+            i++; // 跳过$
             
-            // // 收集变量名
-            // while (line[i] && is_valid_var_char(line[i]))
-            //     i++;
+            // 收集变量名
+            while (line[i] && is_valid_var_char(line[i]))
+                i++;
                 
-            // // 提取变量名并获取值
-            // char *var_name = ft_strndup(line + start + 1, i - start - 1);
-            // char *var_value = get_env_value(var_name); // 获取环境变量值
-            // free(var_name);
+            // 提取变量名并获取值
+            char *var_name = ft_strndup(line + start + 1, i - start - 1);
+			printf("Extracted variable name: %s, shell envronment list: %s\n", var_name, g_shell->env_list ? "exists" : "NULL");
+            char *var_value = my_getenv(var_name, g_shell->env_list); // 使用自定义getenv
+			printf("Variable name: %s, Value: %s\n", var_name, var_value ? var_value : "NULL");
+            free(var_name);
             
-            // // 连接到当前单词
-            // if (in_word)
-            // {
-            //     char *joined = ft_strjoin(word, var_value ? var_value : "");
-            //     free(word);
-            //     free(var_value);
-            //     word = joined;
-            // }
-            // else
-            // {
-            //     word = var_value ? var_value : ft_strdup("");
-            //     in_word = 1;
-            // }
+            // 连接到当前单词
+            if (in_word)
+            {
+                char *joined = ft_strjoin(word, var_value ? var_value : "");
+                free(word);
+                free(var_value);
+                word = joined;
+            }
+            else
+            {
+                word = var_value ? var_value : ft_strdup("");
+                in_word = 1;
+            }
         }
         // 处理空白字符
         else if (line[i] == ' ' || line[i] == '\t')

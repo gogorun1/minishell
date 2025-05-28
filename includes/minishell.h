@@ -108,7 +108,21 @@ typedef struct	s_env
 	struct s_env	*next;
 }	t_env;
 
-t_env	*init_env(char **envp);
+// --- Main Shell State Struct ---
+// Encapsulates all the shell's runtime data
+typedef struct s_shell {
+    t_env   *env_list;         // Head of the linked list of environment variables
+    int         last_exit_status;  // Value for $?
+    // You might add other fields here as needed:
+    // char        *current_pwd;     // Current working directory (for efficiency, or getcwd)
+    // t_history   *history_data;    // If you manage history beyond readline's built-in
+    // ... any other global-like state
+} t_shell;
+
+
+
+//
+
 
 
 // Function prototypes
@@ -116,7 +130,7 @@ t_token	*create_token(char *value, t_token_type type);
 void	add_token(t_token **head, t_token *new_token);
 void	free_token(t_token *token);
 void	free_token_list(t_token *head);
-t_token	*tokenizer(char *line);
+t_token	*tokenizer(char *line, t_shell *g_shell);
 void	print_tokens(t_token *tokens);
 void	handle_special_char(char *line, int *i, t_token **tokens);
 char	*find_executable(char *cmd);
@@ -144,9 +158,11 @@ int	builtin_export(char **args, t_env **env);
 /*env*/
 int	builtin_unset(char **args, t_env **env_list);
 t_env	*init_env(char **envp);
+char *my_getenv(const char *key, t_env *envp);
+
 
 int	is_builtin(char *cmd);
-int	run_builtin(char *arg, t_env **env_list);
+int	run_builtin(char **args, t_env **env_list);
 
 /*utils*/
 char	*ft_strndup(const char	*s, size_t n);
