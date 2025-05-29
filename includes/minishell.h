@@ -14,7 +14,10 @@
 # include <readline/history.h>
 # include <stdbool.h>
 # include <fcntl.h>
+# include <signal.h>
 
+/* GLOBAL VARIABLE*/
+extern volatile sig_atomic_t g_signal_status;
 /*
 ** redirect_in: <
 ** redirect_out: >
@@ -200,6 +203,10 @@ char	*create_env_string(char *key, char *value);
 void	free_env_array(char **envp);
 void	free_env_array_partial(char **envp, int count);
 int		count_env_vars(t_env *env);
+
+/* signals */
+void	handle_signal(int sig);
+void	setup_signal_handlers(void);
 
 
 #endif

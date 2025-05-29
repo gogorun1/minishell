@@ -12,8 +12,7 @@ LIBFT = $(LIBFT_DIR)libft.a
 
 INCLUDES = -Iincludes -Ilibft/includes
 
-SRCS = mainprint.c \
-		main.c \
+SRCS = main.c \
 		split_input.c \
 		builtin/builtin.c \
 		builtin/builtin_cd.c \
@@ -36,6 +35,7 @@ SRCS = mainprint.c \
 		utils/ft_fprintf.c \
 		utils/utils.c \
 		temps/print.c \
+		signal/signal.c \
 
 OBJS = $(addprefix $(OBJS_DIR), $(SRCS:.c=.o))
 DEPS = $(addprefix $(OBJS_DIR), $(SRCS:.c=.d))
@@ -54,6 +54,8 @@ $(OBJS_DIR)%.o: $(SRCS_DIR)%.c
 				$(OBJS_DIR)/tokenisation \
 				$(OBJS_DIR)/temps \
 				$(OBJS_DIR)/execution \
+				$(OBJS_DIR)/signal \
+
 
 	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 

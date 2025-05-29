@@ -77,6 +77,8 @@ int	execute_external(command_t *cmd, t_shell *shell)
 	pid = fork();
 	if (pid == 0)
 	{
+		signal(SIGINT, SIG_DFL); // Reset signal handler in child
+		signal(SIGQUIT, SIG_DFL); // Reset signal handler in child
 		execute_child(path, cmd->args, shell->env_list);
 		exit(1);
 	}

@@ -12,6 +12,8 @@
 
 #include "minishell.h"
 
+volatile sig_atomic_t g_signal_status = 0; // For signal handling
+
 // void	free_2d(char **arr)
 // {
 // 	int	i;
@@ -46,6 +48,7 @@ int main (int argc, char **argv, char **envp)
 	// pid_t	pid;
 	t_shell shell;
 	ast_node_t	*ast;
+	setup_signal_handlers(); // Set up signal handlers for Ctrl-C and Ctrl-'\'
 
 	(void)argc;
 	(void)argv;
@@ -53,16 +56,31 @@ int main (int argc, char **argv, char **envp)
 		return (1);
 	while (1)
 	{
+		g_signal_status = 0; // Reset global signal status
+		printf("Debug: about to read input, signal_status: %d\n", g_signal_status);
 		input = readline("minishell$");
-		if (!input || strcmp(input, "exit") == 0)
+		printf("Debug: input read: '%s', signal is %d\n", input ? input : "NULL", g_signal_status);
+		if (!input)
 		{
-			free(input);
-			break;
+			printf("exit\n");
+			break; // Exit if EOF is received (Ctrl-D)
 		}
-		// If the input is empty, continue to the next iteration
-		if (*input)
-			add_history(input);
-		printf("Input received: %s\n", input);
+		if (g_signal_status == SIGINT)
+		{
+			if (input)
+			{
+				free(input); // Free the input if Ctrl-C was pressed
+			}
+			continue; // If Ctrl-C was pressed, just continue to the next prompt
+		}
+
+		if (input[0] == '\0') // Check if the input is empty
+		{
+			printf("Empty input, skipping...\n");
+			free(input); // Free the empty input
+			continue; // Skip to the next iteration
+		}
+		add_history(input);
 		tokens = tokenizer(input, &shell);
 		if (!tokens)
 		{
@@ -70,8 +88,7 @@ int main (int argc, char **argv, char **envp)
 			free(input);
 			continue;
 		}
-		print_tokens(tokens);
-		// Parse the tokens into an abstract syntax tree (AST)
+		// print_tokens(tokens);
 		ast = parse(tokens);
 		if (!ast)
 		{
@@ -80,12 +97,12 @@ int main (int argc, char **argv, char **envp)
 			free(input);
 			continue;
 		}
-		else
-		{
-			printf("--- 抽象语法树 (AST) 结构 ---\n");
-			print_ast(ast, 0); // 从根节点开始打印，初始缩进为 0
-			printf("--- AST 打印结束 ---\n");
-		}
+		// else
+		// {
+		// 	printf("--- 抽象语法树 (AST) 结构 ---\n");
+		// 	print_ast(ast, 0); // 从根节点开始打印，初始缩进为 0
+		// 	printf("--- AST 打印结束 ---\n");
+		// }
 		// Execute the command represented by the AST
 		shell.last_exit_status = execute_ast(ast, &shell);
 		if (shell.last_exit_status == -1)
@@ -100,35 +117,7 @@ int main (int argc, char **argv, char **envp)
 		free_token(tokens);
 		free_ast(ast);
 		free(input);
-		// if (ast->type != AST_COMMAND)
-		// {
-		// 	fprintf(stderr, "minishell: only single commands are supported\n");
-		// 	free_token(tokens);
-		// 	free_ast(ast);
-		// 	free(input);
-		// 	continue;
-		// }
-		
-		// Check if the command is a builtin
-		// if (is_builtin(ast->data.command.args[0]))
-		// {
-		// 	// If the command is a builtin, run it directly
-		// 	shell.last_exit_status = run_builtin(ast->data.command.args, &shell.env_list);
-		// 	free_token(tokens);
-		// 	free_ast(ast);
-		// 	free(input);
-		// 	continue;
-		// }
-		// pid = fork();
-		// if (pid == 0)
-		// {
-		// 	if (execvp(args[0], args) == -1)
-		// 		perror("minishell");
-		// 	exit(1);
-		// }
-		// else
-		// 	wait(NULL);
 	}
 	rl_clear_history();
-	return (0);
+	return (shell.last_exit_status);
 }

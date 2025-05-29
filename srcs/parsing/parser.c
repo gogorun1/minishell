@@ -20,14 +20,14 @@ void add_redirection(command_t *command_data, redir_type_t type, char *filename)
         }
         current->next = new_redir;
     }
-    printf("        Added redirection: type %d, file '%s'\n", type, filename);
+    // printf("        Added redirection: type %d, file '%s'\n", type, filename);
 }
 
 ast_node_t *parse_command(parser_t *parser) {
     // If current token is EOF or PIPE, it's not the start of a command
     if (!parser->current || parser->current->type == TOKEN_EOF ||
         parser->current->type == TOKEN_PIPE) {
-        printf("    parse_command: No command or pipe/EOF encountered, returning NULL.\n");
+        // printf("    parse_command: No command or pipe/EOF encountered, returning NULL.\n");
         return NULL;
     }
 
@@ -35,8 +35,8 @@ ast_node_t *parse_command(parser_t *parser) {
     int arg_count = 0;
     ast_node_t *node = NULL; // Initialize node to NULL
 
-    printf("    Parsing command/redirections starting with: '%s' (type: %d)\n",
-           parser->current->value ? parser->current->value : "NULL", parser->current->type);
+    // printf("    Parsing command/redirections starting with: '%s' (type: %d)\n",
+        //    parser->current->value ? parser->current->value : "NULL", parser->current->type);
 
     // Allocate the command node early
     node = malloc(sizeof(ast_node_t));
@@ -63,7 +63,7 @@ ast_node_t *parse_command(parser_t *parser) {
             }
             args[arg_count] = strdup(parser->current->value);
             args[arg_count + 1] = NULL; // Null-terminate the argument list
-            printf("      Added arg[%d]: '%s'\n", arg_count, args[arg_count]);
+            // printf("      Added arg[%d]: '%s'\n", arg_count, args[arg_count]);
             arg_count++;
             parser->current = parser->current->next; // Consume the word token
         } else if (parser->current->type == TOKEN_REDIRECT_IN) { // Handle '<' (input redirection)
@@ -122,7 +122,7 @@ ast_node_t *parse_command(parser_t *parser) {
     // A command must have at least one argument OR at least one redirection.
     // If neither is present, it's not a valid command.
     if (arg_count == 0 && !node->data.command.redirs) {
-        printf("    parse_command: No arguments or redirections found, returning NULL.\n");
+        // printf("    parse_command: No arguments or redirections found, returning NULL.\n");
         free_ast(node); // Free the allocated node as it's empty
         return NULL;
     }
@@ -130,8 +130,8 @@ ast_node_t *parse_command(parser_t *parser) {
     node->data.command.args = args; // Assign the collected arguments
     // node->data.command.redirs is already populated by add_redirection
 
-    printf("    Created command node with %d args and %s redirections\n",
-           arg_count, node->data.command.redirs ? "some" : "no");
+    // printf("    Created command node with %d args and %s redirections\n",
+        //    arg_count, node->data.command.redirs ? "some" : "no");
     return node;
 }
 
@@ -141,12 +141,12 @@ ast_node_t *parse_pipeline(parser_t *parser) {
     // Parse first command
     ast_node_t *left = parse_command(parser);
     if (!left) {
-        printf("  No left command found\n");
+        // printf("  No left command found\n");
         return NULL;
     }
     
-    printf("  Got left command, current token: %s\n", 
-           parser->current && parser->current->value ? parser->current->value : "NULL/EOF");
+    // printf("  Got left command, current token: %s\n", 
+        //    parser->current && parser->current->value ? parser->current->value : "NULL/EOF");
     
     // Keep parsing pipes
     while (parser->current && parser->current->type == TOKEN_PIPE) {
@@ -155,7 +155,7 @@ ast_node_t *parse_pipeline(parser_t *parser) {
         
         ast_node_t *right = parse_command(parser);
         if (!right) {
-            printf("  ERROR: No command after pipe\n");
+            // printf("  ERROR: No command after pipe\n");
             // free_ast(left); // Commented out for demo
             return NULL;
         }
@@ -171,7 +171,7 @@ ast_node_t *parse_pipeline(parser_t *parser) {
         // The pipe node becomes the new left for the next iteration
         left = pipe_node;
         
-        printf("  Pipe node created, checking for more pipes...\n");
+        // printf("  Pipe node created, checking for more pipes...\n");
     }
     
     printf("  Pipeline parsing complete\n");
