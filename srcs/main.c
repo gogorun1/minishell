@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 13:55:40 by lcao              #+#    #+#             */
-/*   Updated: 2025/05/24 15:30:37 by lcao             ###   ########.fr       */
+/*   Updated: 2025/05/29 15:25:30 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,24 +87,38 @@ int main (int argc, char **argv, char **envp)
 			printf("--- AST 打印结束 ---\n");
 		}
 		// Execute the command represented by the AST
-		if (ast->type != AST_COMMAND)
+		shell.last_exit_status = execute_ast(ast, &shell);
+		if (shell.last_exit_status == -1)
 		{
-			fprintf(stderr, "minishell: only single commands are supported\n");
+			ft_fprintf(2, "minishell: execution error\n");
 			free_token(tokens);
 			free_ast(ast);
 			free(input);
 			continue;
 		}
+		// Free the tokens and AST after execution
+		free_token(tokens);
+		free_ast(ast);
+		free(input);
+		// if (ast->type != AST_COMMAND)
+		// {
+		// 	fprintf(stderr, "minishell: only single commands are supported\n");
+		// 	free_token(tokens);
+		// 	free_ast(ast);
+		// 	free(input);
+		// 	continue;
+		// }
+		
 		// Check if the command is a builtin
-		if (is_builtin(ast->data.command.args[0]))
-		{
-			// If the command is a builtin, run it directly
-			shell.last_exit_status = run_builtin(ast->data.command.args, &shell.env_list);
-			free_token(tokens);
-			free_ast(ast);
-			free(input);
-			continue;
-		}
+		// if (is_builtin(ast->data.command.args[0]))
+		// {
+		// 	// If the command is a builtin, run it directly
+		// 	shell.last_exit_status = run_builtin(ast->data.command.args, &shell.env_list);
+		// 	free_token(tokens);
+		// 	free_ast(ast);
+		// 	free(input);
+		// 	continue;
+		// }
 		// pid = fork();
 		// if (pid == 0)
 		// {

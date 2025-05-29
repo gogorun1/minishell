@@ -26,7 +26,14 @@ SRCS = mainprint.c \
 		env/init_env.c \
 		tokenisation/tokenizer.c \
 		parsing/parser.c \
+		execution/execute.c \
+		execution/execute_pipeline.c \
+		execution/redirections.c \
+		execution/heredoc_utils.c \
+		execution/execute_utils.c \
+		execution/env_utils.c \
 		utils/ft_strndup.c \
+		utils/ft_fprintf.c \
 		utils/utils.c \
 		temps/print.c \
 
@@ -46,6 +53,7 @@ $(OBJS_DIR)%.o: $(SRCS_DIR)%.c
 				$(OBJS_DIR)/parsing \
 				$(OBJS_DIR)/tokenisation \
 				$(OBJS_DIR)/temps \
+				$(OBJS_DIR)/execution \
 
 	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 

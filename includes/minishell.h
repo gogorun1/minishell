@@ -13,6 +13,7 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <stdbool.h>
+# include <fcntl.h>
 
 /*
 ** redirect_in: <
@@ -120,11 +121,6 @@ typedef struct s_shell {
 } t_shell;
 
 
-
-//
-
-
-
 // Function prototypes
 t_token	*create_token(char *value, t_token_type type);
 void	add_token(t_token **head, t_token *new_token);
@@ -166,9 +162,44 @@ int	run_builtin(char **args, t_env **env_list);
 
 /*utils*/
 char	*ft_strndup(const char	*s, size_t n);
-
 char	**split_input(char *input);
+int     ft_fprintf(int fd, const char *format, ...);
 
-/*execution*/
+/* execution */
+int		execute_ast(ast_node_t *node, t_shell *shell);
+int		execute_command(command_t *cmd, t_shell *shell);
+int		execute_external(command_t *cmd, t_shell *shell);
+int		execute_pipeline(ast_node_t *node, t_shell *shell);
+void	execute_left_pipe(ast_node_t *node, int pipe_fd[2], t_shell *shell);
+void	execute_right_pipe(ast_node_t *node, int pipe_fd[2], t_shell *shell);
+void	execute_child(char *path, char **args, t_env *env);
+void	restore_stdio(int saved_fds[2]);
+
+int     wait_and_get_status(pid_t pid, char *path, char **envp);
+int     handle_fork_error(char *path, char **envp);
+
+/*execute pipelines*/
+int handle_pipe_fork_error(int pipe_fd[2]);
+int handle_pipe_fork_error_right(int pipe_fd[2], pid_t left_pid);
+int wait_for_pipeline(pid_t left_pid, pid_t right_pid);
+
+
+/* redirections */
+int		setup_redirections(redir_t *redirs);
+int		handle_single_redirect(redir_t *redir);
+int		handle_input_redirect(char *filename);
+int		handle_output_redirect(char *filename);
+int		handle_append_redirect(char *filename);
+int		handle_heredoc_redirect(char *delimiter);
+int		read_heredoc_input(char *delimiter, int write_fd);
+int		write_heredoc_line(char *line, int write_fd);
+
+/* env utils */
+char	**env_to_array(t_env *env);
+char	*create_env_string(char *key, char *value);
+void	free_env_array(char **envp);
+void	free_env_array_partial(char **envp, int count);
+int		count_env_vars(t_env *env);
+
 
 #endif
