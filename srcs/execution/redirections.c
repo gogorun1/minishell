@@ -6,11 +6,17 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 17:11:29 by lcao              #+#    #+#             */
-/*   Updated: 2025/05/28 18:35:48 by lcao             ###   ########.fr       */
+/*   Updated: 2025/05/29 15:07:31 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int	setup_redirections(redir_t *redirs);
+int	handle_single_redirect(redir_t *redir);
+int	handle_input_redirect(char *filename);
+int	handle_output_redirect(char *filename);
+
 
 // Setup all redirections for a command
 int	setup_redirections(redir_t *redirs)

@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 13:55:40 by lcao              #+#    #+#             */
-/*   Updated: 2025/05/28 18:51:33 by lcao             ###   ########.fr       */
+/*   Updated: 2025/05/29 15:25:30 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,10 +87,10 @@ int main (int argc, char **argv, char **envp)
 			printf("--- AST 打印结束 ---\n");
 		}
 		// Execute the command represented by the AST
-		shell.last_exit_status = execute_pipeline(ast, &shell);
+		shell.last_exit_status = execute_ast(ast, &shell);
 		if (shell.last_exit_status == -1)
 		{
-			fprintf(stderr, "minishell: execution error\n");
+			ft_fprintf(2, "minishell: execution error\n");
 			free_token(tokens);
 			free_ast(ast);
 			free(input);
