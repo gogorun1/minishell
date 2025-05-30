@@ -1,3 +1,15 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: wding <wding@student.42.fr>                +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2025/05/30 00:00:00 by wding             #+#    #+#              #
+#    Updated: 2025/05/30 00:00:00 by wding            ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 NAME = minishell
 
 CC = cc
@@ -13,51 +25,50 @@ LIBFT = $(LIBFT_DIR)libft.a
 INCLUDES = -Iincludes -Ilibft/includes
 
 SRCS = main.c \
-		builtin/builtin.c \
-		builtin/builtin_cd.c \
-		builtin/builtin_exit.c \
-		builtin/builtin_pwd.c \
-		builtin/builtin_export.c \
-		builtin/builtin_echo.c \
-		env/builtin_env_list.c \
-		env/builtin_unset.c \
-		env/init_env.c \
-		tokenisation/tokenizer.c \
-		parsing/parser.c \
-		execution/execute.c \
-		execution/execute_pipeline.c \
-		execution/redirections.c \
-		execution/heredoc_utils.c \
-		execution/execute_utils.c \
-		execution/env_utils.c \
-		utils/ft_strndup.c \
-		utils/ft_fprintf.c \
-		utils/utils.c \
-		temps/print.c \
-		signal/signal.c \
-		expand/get_var_value.c \
+	builtin/builtin.c \
+	builtin/builtin_cd.c \
+	builtin/builtin_exit.c \
+	builtin/builtin_pwd.c \
+	builtin/builtin_export.c \
+	builtin/builtin_echo.c \
+	env/builtin_env_list.c \
+	env/builtin_unset.c \
+	env/init_env.c \
+	tokenisation/tokenizer.c \
+	parsing/parser.c \
+	execution/execute.c \
+	execution/execute_pipeline.c \
+	execution/redirections.c \
+	execution/heredoc_utils.c \
+	execution/execute_utils.c \
+	execution/env_utils.c \
+	utils/ft_strndup.c \
+	utils/ft_fprintf.c \
+	utils/utils.c \
+	temps/print.c \
+	signal/signal.c \
+	expand/get_var_value.c
 
 OBJS = $(addprefix $(OBJS_DIR), $(SRCS:.c=.o))
 DEPS = $(addprefix $(OBJS_DIR), $(SRCS:.c=.d))
 
-# format
 COLOR_GREEN = \033[0;32m
 COLOR_BLUE = \033[0;34m
 COLOR_BOLD = \033[1m
 COLOR_RESET = \033[0m
 
+.PHONY: all clean fclean re
+
 $(OBJS_DIR)%.o: $(SRCS_DIR)%.c
 	@mkdir -p $(OBJS_DIR)/builtin \
-				$(OBJS_DIR)/env \
-				$(OBJS_DIR)/utils \
-				$(OBJS_DIR)/parsing \
-				$(OBJS_DIR)/tokenisation \
-				$(OBJS_DIR)/temps \
-				$(OBJS_DIR)/execution \
-				$(OBJS_DIR)/signal \
-				$(OBJS_DIR)/expand \
-
-
+			$(OBJS_DIR)/env \
+			$(OBJS_DIR)/utils \
+			$(OBJS_DIR)/parsing \
+			$(OBJS_DIR)/tokenisation \
+			$(OBJS_DIR)/temps \
+			$(OBJS_DIR)/execution \
+			$(OBJS_DIR)/signal \
+			$(OBJS_DIR)/expand
 	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 all: $(LIBFT) $(NAME)
@@ -82,5 +93,3 @@ fclean: clean
 -include $(DEPS)
 
 re: fclean all
-
-.PHONY: all clean fclean re
