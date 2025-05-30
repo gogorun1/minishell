@@ -104,17 +104,17 @@ char *find_executable(char *cmd)
 // Custom getenv to work with your envp array
 char *my_getenv(const char *key, t_env *envp) 
 {
-	printf("my_getenv called with key: %s\n", key); // Debugging line
+	// printf("my_getenv called with key: %s\n", key); // Debugging line
     if (!key || !envp) 
 	{
         return NULL;
     }
-	printf("envp starting with: %s\n", envp->key); // Debugging line
+	// printf("envp starting with: %s\n", envp->key); // Debugging line
 	t_env *current = envp;
-	printf("Starting from: %s\n", current->key); // Debugging line
+	// printf("Starting from: %s\n", current->key); // Debugging line
 	while (current) 
 	{
-		printf("Checking env key: %s, key: %s\n", current->key, key); // Debugging line
+		// printf("Checking env key: %s, key: %s\n", current->key, key); // Debugging line
 		if (strcmp(current->key, key) == 0) 
 		{
 			return current->value; // 返回环境变量的值
@@ -133,58 +133,58 @@ char *get_env_value(char *var_name)
 	return NULL;
 }
 
-char *expand_variable(char *str, t_shell g_shell)
-{
-	char *result = NULL;
-	char *temp;
-	int i = 0;
-	int start = 0;
+// char *expand_variable(char *str, t_shell g_shell)
+// {
+// 	char *result = NULL;
+// 	char *temp;
+// 	int i = 0;
+// 	int start = 0;
 
-	while (str[i])
-	{
-		if (str[i] == '$' && (i == 0 || str[i - 1] != '\\'))
-		{
-			// 添加前面的部分
-			if (i > start)
-			{
-				temp = ft_strndup(str + start, i - start);
-				result = ft_strjoin(result, temp);
-				free(temp);
-			}
-			start = i + 1; // 跳过$符号
+// 	while (str[i])
+// 	{
+// 		if (str[i] == '$' && (i == 0 || str[i - 1] != '\\'))
+// 		{
+// 			// 添加前面的部分
+// 			if (i > start)
+// 			{
+// 				temp = ft_strndup(str + start, i - start);
+// 				result = ft_strjoin(result, temp);
+// 				free(temp);
+// 			}
+// 			start = i + 1; // 跳过$符号
 
-			// 查找变量名
-			while (str[i] && is_valid_var_char(str[i]))
-				i++;
+// 			// 查找变量名
+// 			while (str[i] && is_valid_var_char(str[i]))
+// 				i++;
 
-			char *var_name = ft_strndup(str + start, i - start);
-			char *var_value = my_getenv(var_name, g_shell.env_list); // 使用自定义getenv
-			free(var_name);
+// 			char *var_name = ft_strndup(str + start, i - start);
+// 			char *var_value = my_getenv(var_name, g_shell.env_list); // 使用自定义getenv
+// 			free(var_name);
 
-			// 添加变量值
-			if (var_value)
-			{
-				temp = ft_strjoin(result, var_value);
-				free(result);
-				result = temp;
-				free(var_value);
-			}
-			start = i; // 更新起始位置
-		}
-		else
-			i++;
-	}
+// 			// 添加变量值
+// 			if (var_value)
+// 			{
+// 				temp = ft_strjoin(result, var_value);
+// 				free(result);
+// 				result = temp;
+// 				free(var_value);
+// 			}
+// 			start = i; // 更新起始位置
+// 		}
+// 		else
+// 			i++;
+// 	}
 
-	// 添加剩余部分
-	if (str[start])
-	{
-		temp = ft_strjoin(result, str + start);
-		free(result);
-		result = temp;
-	}
+// 	// 添加剩余部分
+// 	if (str[start])
+// 	{
+// 		temp = ft_strjoin(result, str + start);
+// 		free(result);
+// 		result = temp;
+// 	}
 
-	return result;
-}
+// 	return result;
+// }
 
 void free_ast(ast_node_t *node) {
     if (!node)

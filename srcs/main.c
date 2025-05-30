@@ -57,9 +57,9 @@ int main (int argc, char **argv, char **envp)
 	while (1)
 	{
 		g_signal_status = 0; // Reset global signal status
-		printf("Debug: about to read input, signal_status: %d\n", g_signal_status);
+		// printf("Debug: about to read input, signal_status: %d\n", g_signal_status);
 		input = readline("minishell$");
-		printf("Debug: input read: '%s', signal is %d\n", input ? input : "NULL", g_signal_status);
+		// printf("Debug: input read: '%s', signal is %d\n", input ? input : "NULL", g_signal_status);
 		if (!input)
 		{
 			printf("exit\n");

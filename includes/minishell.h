@@ -134,7 +134,6 @@ void	print_tokens(t_token *tokens);
 void	handle_special_char(char *line, int *i, t_token **tokens);
 char	*find_executable(char *cmd);
 char	*get_env_value(char *var_name);
-char	*expand_variables(char *str);
 // int		handle_quotes(char **input, int *i, t_token **tokens);
 char	*ft_strndup(const char *s, size_t n);
 bool is_valid_var_char(char c);
@@ -205,8 +204,12 @@ void	free_env_array_partial(char **envp, int count);
 int		count_env_vars(t_env *env);
 
 /* signals */
-void	handle_signal(int sig);
+void	signal_handler(int sig);
 void	setup_signal_handlers(void);
 
+/* expansion */
+char	*get_variable_value(const char *var_name_start, int var_len, t_shell *shell);
+char	*expand_variables(char *str, t_shell *g_shell);
+int		ft_var_name_len(const char *s);
 
 #endif

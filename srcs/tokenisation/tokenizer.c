@@ -12,21 +12,6 @@
 
 #include "minishell.h"
 
-// char	*ft_strndup(const char *s, size_t n)
-// {
-// 	char	*dup;
-// 	size_t	len;
-
-// 	len = ft_strlen(s);
-// 	if (len > n)
-// 		len = n;
-// 	dup = (char *)malloc(len + 1);
-// 	if (!dup)
-// 		return (NULL);
-// 	ft_strlcpy(dup, s, len + 1);
-// 	return (dup);
-// }
-
 t_token	*create_token(char *str, t_token_type type)
 {
 	t_token	*token;
@@ -77,100 +62,92 @@ void	free_token_list(t_token *head)
 		free_token(temp);
 	}
 }
-
-// 处理引号内的内容，区分单双引号的行为
-// int handle_quotes(char **input, int *i, t_token **tokens)
+// char *expand_variables(char *str, t_shell *g_shell)
 // {
-//     char quote = (*input)[*i];
-//     int start = *i + 1;
-//     int j = start;
-    
-//     // 寻找匹配的引号
-//     while ((*input)[j] && (*input)[j] != quote)
-//         j++;
-        
-//     if (!(*input)[j]) // 未闭合引号处理
-//     {
-//         ft_printf("minishell: unexpected EOF while looking for matching %c\n", quote);
-//         return 0; // 简化版本
-//     }
-    
-//     // 提取引号内容
-//     char *content = ft_strndup(*input + start, j - start);
-    
-//     // 根据引号类型决定是否进行变量展开
-//     if (quote == '"')
-//     {
-//         // 双引号内进行变量展开
-//         char *expanded = expand_variables(content);
-//         free(content);
-//         content = expanded;
-//     }
-//     // 单引号内保持字面值，不做任何处理
-    
-//     // 创建token并添加到链表
-//     add_token(tokens, create_token(content, 0));
-    
-//     *i = j + 1; // 更新索引到引号后面
-//     return 1;
+// 	char *result;
+// 	char *temp;
+// 	char *var_value;
+// 	int var_len;
+// 	int var_start;
+// 	int i = 0;
+// 	int start = 0;
+
+// 	result = ft_strdup("");
+// 	while (str[i])
+// 	{
+// 		if (str[i] == '$' && is_valid_var_char(str[i + 1]))
+// 		{
+// 			if (i > start)
+// 				temp = ft_strjoin(result, ft_strndup(str + start, i - start));
+// 			free(result);
+// 			var_start = i + 1;
+// 			var_len = ft_var_name_len(str + var_start);
+// 			var_value = get_variable_value(str + var_start, var_len, g_shell);
+// 			if (var_value)
+// 			{
+// 				result = ft_strjoin(temp, var_value);
+// 				free(temp);
+// 			}
+// 			free(var_value);
+// 			i = var_start + var_len;
+// 			start = i;
+// 		}
+// 		else
+// 			i++;
+// 	}
+// 	if (str[start])
+// 	{
+// 		temp = ft_strjoin(result, str + start);
+// 		free(result);
+// 		result = temp;
+// 	}
+// 	return result;
 // }
 
-// 变量展开函数
-char *expand_variables(char *str)
+
+// Expands environment variables in the string
+char *expand_variables(char *str, t_shell *g_shell)
 {
-    char *result = ft_strdup("");
-    char *temp;
-    int i = 0;
-    int start = 0;
-    
-    while (str[i])
-    {
-        if (str[i] == '$' && is_valid_var_char(str[i+1]))
-        {
-            // 添加$前面的内容
-            if (i > start)
-            {
-                char *part = ft_strndup(str + start, i - start);
-                temp = ft_strjoin(result, part);
-                free(result);
-                free(part);
-                result = temp;
-            }
-            
-            // 处理变量名
-            int var_start = i + 1;
-            int var_len = 0;
-            
-            while (str[var_start + var_len] && is_valid_var_char(str[var_start + var_len]))
-                var_len++;
-                
-            char *var_name = ft_strndup(str + var_start, var_len);
-            char *var_value = get_env_value(var_name);
-            
-            if (var_value)
-            {
-                temp = ft_strjoin(result, var_value);
-                free(result);
-                result = temp;
-            }
-            
-            free(var_name);
-            i = var_start + var_len;
-            start = i;
-        }
-        else
-            i++;
-    }
-    
-    // 添加剩余部分
-    if (str[start])
-    {
-        temp = ft_strjoin(result, str + start);
-        free(result);
-        result = temp;
-    }
-    
-    return result;
+	char *result;
+	char *temp;
+	int i = 0;
+	int start = 0;
+
+	result = ft_strdup("");
+	while (str[i])
+	{
+		if (str[i] == '$' && is_valid_var_char(str[i + 1]))
+		{
+			if (i > start)
+			{
+				temp = ft_strjoin(result, ft_strndup(str + start, i - start));
+				free(result);
+				result = temp;
+			}
+			int var_start = i + 1;
+			int var_len = 0;
+			while (str[var_start + var_len] && is_valid_var_char(str[var_start + var_len]))
+				var_len++;
+			char *var_value = get_variable_value(str + var_start, var_len, g_shell);
+			if (var_value)
+			{
+				temp = ft_strjoin(result, var_value);
+				free(result);
+				result = temp;
+			}
+			i = var_start + var_len;
+			start = i;
+		}
+		else
+			i++;
+	}
+	if (str[start])
+	{
+		temp = ft_strjoin(result, str + start);
+		free(result);
+		result = temp;
+	}
+	return result;
 }
 
 t_token *tokenizer(char *line, t_shell *g_shell)
@@ -204,7 +181,7 @@ t_token *tokenizer(char *line, t_shell *g_shell)
 			if (quote == '"')
 			{
 				// 双引号内进行变量展开
-				char *expanded = expand_variables(temp);
+				char *expanded = expand_variables(temp, g_shell);
 				free(temp);
 				temp = expanded;
 			}
@@ -225,7 +202,6 @@ t_token *tokenizer(char *line, t_shell *g_shell)
             i++; // 跳过闭合引号
 
         }
-        // 处理变量 暂时有segfault
         else if (line[i] == '$' && is_valid_var_char(line[i + 1]))
         {
 			printf("Variable found at index %d: %s\n", i, line + i);
@@ -240,9 +216,7 @@ t_token *tokenizer(char *line, t_shell *g_shell)
                 
             // 提取变量名并获取值
             char *var_name = ft_strndup(line + start + 1, i - start - 1);
-			printf("Extracted variable name: %s, shell envronment list: %s\n", var_name, g_shell->env_list ? "exists" : "NULL");
-            char *var_value = my_getenv(var_name, g_shell->env_list); // 使用自定义getenv
-			printf("Variable name: %s, Value: %s\n", var_name, var_value ? var_value : "NULL");
+            char *var_value = my_getenv(var_name, g_shell->env_list); 
             free(var_name);
             
             // 连接到当前单词
@@ -294,9 +268,7 @@ t_token *tokenizer(char *line, t_shell *g_shell)
                   line[i] != '"' && line[i] != '\'' && 
                   line[i] != '$')
                 i++;
-                
             temp = ft_strndup(line + start, i - start);
-            
             // 连接到当前单词或创建新单词
             if (in_word)
             {
@@ -312,134 +284,8 @@ t_token *tokenizer(char *line, t_shell *g_shell)
             }
         }
     }
-    
-    // 处理最后一个单词
     if (in_word)
-	{
-        add_token(&tokens, create_token(word, TOKEN_WORD));
-	}
-	add_token(&tokens, create_token(NULL, TOKEN_EOF)); // 添加EOF标记
+		add_token(&tokens, create_token(word, TOKEN_WORD));
+	add_token(&tokens, create_token(NULL, TOKEN_EOF));
     return tokens;
 }
-
-
-// t_token	*tokenizer(char *line)
-// {
-// 	t_token	*tokens = NULL;
-// 	char	*word;
-// 	int		i = 0;
-// 	int		word_start = 0;
-// 	while (line[i])
-// 	{
-// 		if (line[i] == '|')
-// 			add_token(&tokens, create_token(ft_strdup("|"), TOKEN_PIPE));
-// 		else if (line[i] == '<')
-// 		{
-// 			if (line[i + 1] == '<')
-// 			{
-// 				add_token(&tokens, create_token(ft_strdup("<<"), TOKEN_HEREDOC));
-// 				i++;
-// 			}
-// 			else
-// 				add_token(&tokens, create_token(ft_strdup("<"), TOKEN_REDIRECT_IN));
-// 		}
-// 		else if (line[i] == '>')
-// 		{
-// 			if (line[i + 1] == '>')
-// 			{
-// 				add_token(&tokens, create_token(ft_strdup(">>"), TOKEN_APPEND));
-// 				i++;
-// 			}
-// 			else
-// 				add_token(&tokens, create_token(ft_strdup(">"), TOKEN_REDIRECT_OUT));
-// 		}
-// 		else if (line[i] == '\'' || line[i] == '"')
-//         {
-//             char quote = line[i];
-//             t_token_type type = (quote == '"') ? TOKEN_DQUOTE : TOKEN_SQUOTE;
-            
-//             word_start = i + 1;  // 跳过开始的引号
-//             i++;
-            
-//             // 寻找匹配的引号
-//             while (line[i] && line[i] != quote)
-//                 i++;
-                
-//             if (!line[i])  // 未闭合的引号
-//             {
-//                 char *buffer = ft_strndup(line + word_start, i - word_start);
-//                 char *temp;
-//                 bool quote_closed = false;
-                
-//                 // 循环读取新行，直到找到闭合引号
-//                 while (!quote_closed)
-//                 {
-//                     // 添加换行符
-//                     temp = ft_strjoin(buffer, "\n");
-//                     free(buffer);
-//                     buffer = temp;
-                    
-//                     // 读取新行
-//                     char *new_line = readline("> ");
-//                     if (!new_line)  // 处理EOF
-//                     {
-//                         free(buffer);
-//                         fprintf(stderr, "minishell: unexpected EOF while looking for matching `%c'\n", quote);
-//                         return (NULL);
-//                     }
-                    
-//                     // 在新行中查找闭合引号
-//                     int j = 0;
-//                     while (new_line[j] && new_line[j] != quote)
-//                         j++;
-                        
-//                     // 添加新行内容到buffer
-//                     temp = ft_strjoin(buffer, ft_strndup(new_line, j));
-//                     free(buffer);
-//                     buffer = temp;
-                    
-//                     // 如果找到闭合引号
-//                     if (new_line[j] == quote)
-//                     {
-//                         quote_closed = true;
-                        
-//                         // 如果引号后还有内容，需要处理
-//                         if (new_line[j + 1])
-//                         {
-//                             char *remaining = ft_strdup(new_line + j + 1);
-//                             // char *new_input = ft_strjoin(remaining, "");
-//                             // 这里需要处理剩余内容，可能parsing的时候需要递归调用tokenizer
-//                             free(remaining);
-//                         }
-//                     }
-                    
-//                     free(new_line);
-//                 }
-                
-//                 add_token(&tokens, create_token(buffer, type));
-//                 break;  // 退出主循环，因为已经处理完所有输入
-//             }
-//             else  // 找到闭合引号
-//             {
-//                 word = ft_strndup(line + word_start, i - word_start);
-//                 if (!word)
-//                     return (NULL);
-//                 add_token(&tokens, create_token(word, type));
-//                 i++;  // 跳过闭合引号
-//             }
-//         }
-// 		else if (line[i] != ' ' && line[i] != '\t' && line[i] != '\n')
-// 		{
-// 			word_start = i;
-// 			while (line[i] && line[i] != ' ' && line[i] != '\t' && line[i] != '\n'
-// 				&& line[i] != '|' && line[i] != '<' && line[i] != '>')
-// 				i++;
-// 			word = ft_strndup(line + word_start, i - word_start);
-// 			if (!word)
-// 				return (NULL);
-// 			add_token(&tokens, create_token(word, TOKEN_WORD));
-// 		}
-// 		i++;
-// 	}
-// 	return (tokens);
-// }

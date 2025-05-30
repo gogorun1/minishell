@@ -22,6 +22,7 @@ void	execute_child(char *path, char **args, t_env *env)
 		exit(1);
 	if (execve(path, args, envp) == -1)
 	{
+		printf("path: %s, args[0]: %s\n", path, args[0]);
 		perror("execve");
 		free_env_array(envp);
 		exit(127);
