@@ -70,7 +70,7 @@ int	read_heredoc_input(char *delimiter, int write_fd)
 		line = readline("> ");
 		if (!line)
 		{
-			ft_fprintf(STDERR_FILENO, 
+			ft_fprintf(STDERR_FILENO,
 				"minishell: warning: here-document delimited by end-of-file\n");
 			break ;
 		}

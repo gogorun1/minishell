@@ -17,7 +17,6 @@ int	handle_single_redirect(redir_t *redir);
 int	handle_input_redirect(char *filename);
 int	handle_output_redirect(char *filename);
 
-
 // Setup all redirections for a command
 int	setup_redirections(redir_t *redirs)
 {

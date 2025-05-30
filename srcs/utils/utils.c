@@ -32,6 +32,7 @@ char *ft_strjoin3(const char *s1, const char *s2, const char *s3)
 
 static void	handle_special_char_pipe(char *line, int *i, t_token **tokens)
 {
+	(void)line; // Mark 'line' as unused to avoid compiler warning
 	add_token(tokens, create_token(ft_strdup("|"), TOKEN_PIPE));
 	(*i)++;
 }

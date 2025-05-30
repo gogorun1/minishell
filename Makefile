@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: wding <wding@student.42.fr>                +#+  +:+       +#+         #
+#    By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/05/30 00:00:00 by wding             #+#    #+#              #
-#    Updated: 2025/05/30 00:00:00 by wding            ###   ########.fr        #
+#    Updated: 2025/05/30 19:10:10 by lcao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -42,6 +42,7 @@ SRCS = main.c \
 	execution/heredoc_utils.c \
 	execution/execute_utils.c \
 	execution/env_utils.c \
+	execution/execute_env.c \
 	utils/ft_strndup.c \
 	utils/ft_fprintf.c \
 	utils/utils.c \

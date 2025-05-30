@@ -5,124 +5,51 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/28 19:04:31 by lcao              #+#    #+#             */
-/*   Updated: 2025/05/28 19:07:50 by lcao             ###   ########.fr       */
+/*   Created: 2025/05/30 18:06:10 by lcao              #+#    #+#             */
+/*   Updated: 2025/05/30 19:28:07 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-//env_to_array: 将t_env链表转换为execve需要的字符串数组格式
-//create_env_string: 创建"KEY=VALUE"格式的环境变量字符串
-//free_env_array: 释放整个环境变量数组
-//free_env_array_partial: 部分释放数组（错误处理时使用）
-//count_env_vars: 计算环境变量数
+static void	fill_env_string(char *dest, char *key, char *value);
+char		*create_env_string(char *key, char *value);
 
-// Count number of environment variables
-int	count_env_vars(t_env *env)
+static void	fill_env_string(char *dest, char *key, char *value)
 {
-	int		count;
-	t_env	*current;
+	int	i;
+	int	j;
 
-	count = 0;
-	current = env;
-	while (current)
+	i = 0;
+	j = 0;
+	while (key[i])
 	{
-		count++;
-		current = current->next;
+		dest[i] = key[i];
+		i++;
 	}
-	return (count);
+	dest[i++] = '=';
+	while (value[j])
+	{
+		dest[i++] = value[j++];
+	}
+	dest[i] = '\0';
 }
 
-// Create environment string from key and value
+//create_env_string: 创建"KEY=VALUE"格式的环境变量字符串
+//Create an environment variable string in the format 'KEY=VALUE'”
 char	*create_env_string(char *key, char *value)
 {
 	char	*result;
 	int		key_len;
 	int		value_len;
-	int		i;
 
 	if (!key || !value)
 		return (NULL);
-	key_len = strlen(key);
-	value_len = strlen(value);
+	key_len = ft_strlen(key);
+	value_len = ft_strlen(value);
 	result = malloc(key_len + value_len + 2);
 	if (!result)
 		return (NULL);
-	i = 0;
-	while (i < key_len)
-	{
-		result[i] = key[i];
-		i++;
-	}
-	result[i++] = '=';
-	while (i - key_len - 1 < value_len)
-	{
-		result[i] = value[i - key_len - 1];
-		i++;
-	}
-	result[i] = '\0';
+	fill_env_string(result, key, value);
 	return (result);
-}
-
-// Convert environment linked list to array
-char	**env_to_array(t_env *env)
-{
-	char	**envp;
-	int		count;
-	int		i;
-	t_env	*current;
-
-	count = count_env_vars(env);
-	envp = malloc(sizeof(char *) * (count + 1));
-	if (!envp)
-		return (NULL);
-	i = 0;
-	current = env;
-	while (current && i < count)
-	{
-		envp[i] = create_env_string(current->key, current->value);
-		if (!envp[i])
-		{
-			free_env_array_partial(envp, i);
-			return (NULL);
-		}
-		current = current->next;
-		i++;
-	}
-	envp[i] = NULL;
-	return (envp);
-}
-
-// Free environment array completely
-void	free_env_array(char **envp)
-{
-	int	i;
-
-	if (!envp)
-		return ;
-	i = 0;
-	while (envp[i])
-	{
-		free(envp[i]);
-		i++;
-	}
-	free(envp);
-}
-
-// Free environment array partially (for error handling)
-void	free_env_array_partial(char **envp, int count)
-{
-	int	i;
-
-	if (!envp)
-		return ;
-	i = 0;
-	while (i < count)
-	{
-		if (envp[i])
-			free(envp[i]);
-		i++;
-	}
-	free(envp);
 }

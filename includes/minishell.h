@@ -197,11 +197,14 @@ int		read_heredoc_input(char *delimiter, int write_fd);
 int		write_heredoc_line(char *line, int write_fd);
 
 /* env utils */
-char	**env_to_array(t_env *env);
+
 char	*create_env_string(char *key, char *value);
+
+/*exeute_env*/
+int		count_env_vars(t_env *env);
+char	**env_to_array(t_env *env);
 void	free_env_array(char **envp);
 void	free_env_array_partial(char **envp, int count);
-int		count_env_vars(t_env *env);
 
 /* signals */
 void	signal_handler(int sig);
