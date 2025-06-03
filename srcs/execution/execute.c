@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 10:00:00 by lcao              #+#    #+#             */
-/*   Updated: 2025/05/30 19:42:56 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/03 15:28:55 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ int	execute_command(command_t *cmd, t_shell *shell)
 		return (0);
 	}
 	if (is_builtin(cmd->args[0]))
-		result = run_builtin(cmd->args, &(shell->env_list));
+		result = run_builtin(cmd->args, &(shell->env_list), shell);
 	else
 		result = execute_external(cmd, shell);
 	shell->last_exit_status = result;

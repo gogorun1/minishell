@@ -6,7 +6,7 @@
 #    By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/05/30 00:00:00 by wding             #+#    #+#              #
-#    Updated: 2025/05/30 19:10:10 by lcao             ###   ########.fr        #
+#    Updated: 2025/06/03 15:33:24 by lcao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -43,6 +43,11 @@ SRCS = main.c \
 	execution/execute_utils.c \
 	execution/env_utils.c \
 	execution/execute_env.c \
+	error/error.c \
+	error/error1.c \
+	error/error2.c \
+	error/builtin_error.c \
+	error/utility_error.c \
 	utils/ft_strndup.c \
 	utils/ft_fprintf.c \
 	utils/utils.c \
@@ -69,7 +74,8 @@ $(OBJS_DIR)%.o: $(SRCS_DIR)%.c
 			$(OBJS_DIR)/temps \
 			$(OBJS_DIR)/execution \
 			$(OBJS_DIR)/signal \
-			$(OBJS_DIR)/expand
+			$(OBJS_DIR)/expand \
+			$(OBJS_DIR)/error
 	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 all: $(LIBFT) $(NAME)

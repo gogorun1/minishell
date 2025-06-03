@@ -15,6 +15,7 @@
 # include <stdbool.h>
 # include <fcntl.h>
 # include <signal.h>
+# include <errno.h>
 
 /* GLOBAL VARIABLE*/
 extern volatile sig_atomic_t g_signal_status;
@@ -146,21 +147,23 @@ ast_node_t *parse_pipeline(parser_t *parser);
 ast_node_t *parse(t_token *tokens);
 
 /*builtin*/
-int	builtin_cd(char **args);
+int	builtin_cd(char **args, t_shell *shell);
 int	builtin_pwd(void);
 int	builtin_exit(char **args);
 int	builtin_echo(char **args);
-int	builtin_env_list(t_env *env);
-int	builtin_export(char **args, t_env **env);
+int	builtin_env_list(t_env *env, t_shell *shell, char **args);
+int	builtin_export(char **args, t_env **env, t_shell *shell);
+int builtin_error(const char *msg, t_shell *shell);
 
 /*env*/
 int	builtin_unset(char **args, t_env **env_list);
+int print_env_list(t_env *env);
 t_env	*init_env(char **envp);
 char *my_getenv(const char *key, t_env *envp);
 
 
 int	is_builtin(char *cmd);
-int	run_builtin(char **args, t_env **env_list);
+int	run_builtin(char **args, t_env **env_list, t_shell *shell);
 
 /*utils*/
 char	*ft_strndup(const char	*s, size_t n);
@@ -214,5 +217,8 @@ void	setup_signal_handlers(void);
 char	*get_variable_value(const char *var_name_start, int var_len, t_shell *shell);
 char	*expand_variables(char *str, t_shell *g_shell);
 int		ft_var_name_len(const char *s);
+
+/*error*/
+void	error_msg(char *command, char *message, int exit_code, t_shell *shell);
 
 #endif

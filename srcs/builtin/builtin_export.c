@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 16:27:42 by lcao              #+#    #+#             */
-/*   Updated: 2025/05/24 18:49:22 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/03 16:41:11 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,18 @@ static void	update_or_add(char *key, char *value, t_env **env)
 	}
 	add_node(key, value, env);
 }
+
+static int is_valid_var_name(const char *s)
+{
+	if (!s || !is_valid_var_char(s[0]) || s[0] == '\0' || (s[0] >= '0' && s[0] <= '9'))
+		return 0;
+	for (int i = 1; s[i] && s[i] != '='; i++)
+	{
+		if (!is_valid_var_char(s[i]) && s[i] != '_')
+			return 0;
+	}
+	return 1;
+}
 /*
 ** builtin_export:
 **   - args: ["export", "VAR1=ls", "VAR2=-l", ..., NULL]
@@ -69,26 +81,38 @@ static void	update_or_add(char *key, char *value, t_env **env)
    ls, cat, env, echo, etc...
 */
 
-int	builtin_export(char **args, t_env **env)
+int	builtin_export(char **args, t_env **env, t_shell *shell)
 {
-	int		i;
-	char	*eq;
-	char	*key;
-	char	*value;
+	int i = 1;
+	char *eq;
+	char *key;
+	char *value;
+	int has_error = 0;
 
-	i = 1;
-	while(args[i])
+	while (args[i])
 	{
 		eq = ft_strchr(args[i], '=');
-		if(eq)
+		if (eq)
 		{
-			/*Duplicate key (chars before '=')*/
-			key = ft_strndup(args[i], eq-args[i]);
-			/*Duplicate value (chars after '=')*/
-			value = strdup(eq + 1);
-			update_or_add(key, value, env);
+			key = ft_strndup(args[i], eq - args[i]);
+			if (!is_valid_var_name(key))
+			{
+				builtin_error(args[i], shell);
+				free(key);
+				has_error = 1;
+			}
+			else
+			{
+				value = strdup(eq + 1);
+				update_or_add(key, value, env);
+			}
+		}
+		else if (!is_valid_var_name(args[i]))
+		{
+			builtin_error(args[i], shell);
+			has_error = 1;
 		}
 		i++;
 	}
-	return (0);
+	return has_error;
 }
