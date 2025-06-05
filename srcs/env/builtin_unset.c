@@ -1,16 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   buitin_unset.c                                     :+:      :+:    :+:   */
+/*   builtin_unset.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 15:04:03 by lcao              #+#    #+#             */
-/*   Updated: 2025/05/24 15:13:14 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/05 16:08:27 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+// 声明外部实现的变量名检查和错误输出函数
+bool is_valid_var_name(const char *s);
+void error_unset(const char *identifier, t_shell *shell);
 
 /* Helper to compare variable names */
 static int is_match(const char *a, const char *b)
@@ -46,13 +50,23 @@ static void	remove_env_key(const char *key, t_env **env_list)
 
 int	builtin_unset(char **args, t_env **env_list)
 {
-	int	i = 1;
+	int i;
+	int has_error;
 
+	i = 1;
+	has_error = 0;
 	while (args[i])
 	{
-		remove_env_key(args[i], env_list);
+		if (!is_valid_var_name(args[i]))
+		{
+			error_unset(args[i], NULL);
+			has_error = 1;
+		}
+		else
+		{
+			remove_env_key(args[i], env_list);
+		}
 		i++;
 	}
-	return (0);
+	return has_error;
 }
-

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: wding <wding@student.42.fr>                #+#  +:+       +#+        */
+/*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025-05-18 15:45:50 by wding             #+#    #+#             */
-/*   Updated: 2025-05-18 15:45:50 by wding            ###   ########.fr       */
+/*   Created: 2025/05/18 15:45:50 by wding             #+#    #+#             */
+/*   Updated: 2025/06/05 17:23:25 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,13 +91,29 @@ char	*expand_variables(char *str, t_shell *g_shell)
 	char	*temp;
 	int		i;
 	int		start;
+	char	status_str[12];
 
 	i = 0;
 	start = 0;
 	result = ft_strdup("");
 	while (str[i])
 	{
-		if (str[i] == '$' && is_valid_var_char(str[i + 1]))
+		if (str[i] == '$' && str[i + 1] == '?')
+		{
+			if (i > start)
+			{
+				temp = ft_strjoin(result, ft_strndup(str + start, i - start));
+				free(result);
+				result = temp;
+			}
+			snprintf(status_str, sizeof(status_str), "%d", g_shell->last_exit_status);
+			temp = ft_strjoin(result, status_str);
+			free(result);
+			result = temp;
+			i += 2;
+			start = i;
+		}
+		else if (str[i] == '$' && is_valid_var_char(str[i + 1]))
 		{
 			if (i > start)
 			{
@@ -111,9 +127,13 @@ char	*expand_variables(char *str, t_shell *g_shell)
 		else
 			i++;
 	}
-	if (!str[start])
-		return (result);
-	else return (ft_strjoin(result, str + start));
+	if (start < (int)ft_strlen(str))
+	{
+		temp = ft_strjoin(result, str + start);
+		free(result);
+		result = temp;
+	}
+	return (result);
 }
 
 static int	tokenizer_handle_quote(const char *line, int *i, char **word, int *in_word, t_shell *g_shell)

@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 16:27:42 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/03 16:41:11 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/05 16:10:38 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ static void	update_or_add(char *key, char *value, t_env **env)
 	add_node(key, value, env);
 }
 
-static int is_valid_var_name(const char *s)
+int is_valid_var_name(const char *s)
 {
 	if (!s || !is_valid_var_char(s[0]) || s[0] == '\0' || (s[0] >= '0' && s[0] <= '9'))
 		return 0;

@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 18:52:40 by lcao              #+#    #+#             */
-/*   Updated: 2025/05/24 19:16:40 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/05 16:44:08 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,33 @@ static int is_option_n(const char *str)
 	return (i > 1);
 }
 
+static void print_arg(const char *arg)
+{
+    int i;
+    int len;
+
+    if (!arg)
+        return;
+    len = (int)ft_strlen(arg);
+    if (len >= 2 && ((arg[0] == '\"' && arg[len - 1] == '\"') ||
+        (arg[0] == '\'' && arg[len - 1] == '\'')) && len > 2)
+    {
+        i = 1;
+        while (i < len - 1)
+        {
+            putchar(arg[i]);
+            i++;
+        }
+    }
+    else if (len == 2 && ((arg[0] == '\"' && arg[1] == '\"') || (arg[0] == '\'' && arg[1] == '\'')))
+    {
+    }
+    else
+    {
+        printf("%s", arg);
+    }
+}
+
 int builtin_echo(char **args)
 {
 	int i;
@@ -35,19 +62,19 @@ int builtin_echo(char **args)
 
 	i = 1;
 	newline = 1;
-	while(args[i] && is_option_n(args[i]))
+	while (args[i] && is_option_n(args[i]))
 	{
 		newline = 0;
 		i++;
 	}
-	while(args[i])
+	while (args[i])
 	{
-		printf("%s", args[i]);
-		if(args[i + 1])
+		print_arg(args[i]);
+		if (args[i + 1])
 			printf(" ");
 		i++;
 	}
-	if(newline)
+	if (newline)
 		printf("\n");
 	return (0);
 }
