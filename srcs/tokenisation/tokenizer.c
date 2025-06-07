@@ -106,7 +106,7 @@ char	*expand_variables(char *str, t_shell *g_shell)
 				free(result);
 				result = temp;
 			}
-			snprintf(status_str, sizeof(status_str), "%d", g_shell->last_exit_status);
+			printf("%d", g_shell->last_exit_status);
 			temp = ft_strjoin(result, status_str);
 			free(result);
 			result = temp;
@@ -247,6 +247,17 @@ t_token	*tokenizer(char *line, t_shell *g_shell)
 		{
 			if (!tokenizer_handle_quote(line, &i, &word, &in_word, g_shell))
 				return (NULL);
+		}
+		else if (line[i] == '$' && line[i + 1] == '?')
+		{
+			if (in_word)
+			{
+				add_token(&tokens, create_token(word, TOKEN_WORD));
+				word = NULL;
+				in_word = 0;
+			}
+			add_token(&tokens, create_token(ft_itoa(g_shell->last_exit_status), TOKEN_WORD));
+			i += 2;
 		}
 		else if (line[i] == '$' && is_valid_var_char(line[i + 1]))
 			tokenizer_handle_var(line, &i, &word, &in_word, g_shell);

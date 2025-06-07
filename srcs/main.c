@@ -56,7 +56,14 @@ int main (int argc, char **argv, char **envp)
 		return (1);
 	while (1)
 	{
-		g_signal_status = 0; // Reset global signal status
+	 	
+		if (g_signal_status == SIGINT)
+		{
+			shell.last_exit_status = 130; // Set exit status for Ctrl-C
+			g_signal_status = 0; // Reset global signal status
+			ft_putchar_fd('\r', STDOUT_FILENO);
+			// g_signal_status = 0; // Print carriage return to move cursor to the start of the line
+		}
 		// printf("Debug: about to read input, signal_status: %d\n", g_signal_status);
 		input = readline("minishell$");
 		// printf("Debug: input read: '%s', signal is %d\n", input ? input : "NULL", g_signal_status);
