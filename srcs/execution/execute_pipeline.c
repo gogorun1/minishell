@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_pipeline.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: abby <abby@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 19:07:42 by lcao              #+#    #+#             */
-/*   Updated: 2025/05/28 18:34:25 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/08 13:40:41 by abby             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,8 @@ int	execute_pipeline(ast_node_t *node, t_shell *shell)
 // Execute left side of pipe
 void	execute_left_pipe(ast_node_t *node, int pipe_fd[2], t_shell *shell)
 {
+	signal(SIGINT, SIG_DFL);  // Reset to default signal handling in child
+	signal(SIGQUIT, SIG_DFL);
 	close(pipe_fd[0]);
 	dup2(pipe_fd[1], STDOUT_FILENO);
 	close(pipe_fd[1]);
@@ -51,6 +53,8 @@ void	execute_left_pipe(ast_node_t *node, int pipe_fd[2], t_shell *shell)
 // Execute right side of pipe
 void	execute_right_pipe(ast_node_t *node, int pipe_fd[2], t_shell *shell)
 {
+	signal(SIGINT, SIG_DFL);  // Reset to default signal handling in child
+	signal(SIGQUIT, SIG_DFL);
 	close(pipe_fd[1]);
 	dup2(pipe_fd[0], STDIN_FILENO);
 	close(pipe_fd[0]);
@@ -65,10 +69,16 @@ int	wait_for_pipeline(pid_t left_pid, pid_t right_pid)
 
 	waitpid(left_pid, &left_status, 0);
 	waitpid(right_pid, &right_status, 0);
+	
+	// If either process was terminated by a signal, return that status
+	if (WIFSIGNALED(left_status))
+		return (128 + WTERMSIG(left_status));
+	if (WIFSIGNALED(right_status))
+		return (128 + WTERMSIG(right_status));
+	
+	// Otherwise return the exit status of the rightmost command
 	if (WIFEXITED(right_status))
 		return (WEXITSTATUS(right_status));
-	else if (WIFSIGNALED(right_status))
-		return (128 + WTERMSIG(right_status));
 	return (1);
 }
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: abby <abby@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 13:55:40 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/02 16:12:44 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/08 14:21:58 by abby             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,5 +126,7 @@ int main (int argc, char **argv, char **envp)
 		free(input);
 	}
 	rl_clear_history();
+	// free_env(shell.env_list);
+	// clear_history();
 	return (shell.last_exit_status);
 }
