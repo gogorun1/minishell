@@ -173,48 +173,49 @@ static int	tokenizer_handle_quote(const char *line, int *i, char **word, int *in
 	return (1);
 }
 
-static int	tokenizer_handle_var(const char *line, int *i, char **word, int *in_word, t_shell *g_shell)
-{
-	int	start;
-	char	*var_name;
-	char	*var_value;
-	char	*joined;
+// static int	tokenizer_handle_var(const char *line, int *i, char **word, int *in_word, t_shell *g_shell)
+// {
+// 	int	start;
+// 	char	*var_name;
+// 	char	*var_value;
+// 	char	*joined;
 
-	start = *i;
-	(*i)++;
-	while (line[*i] && is_valid_var_char(line[*i]))
-		(*i)++;
-	var_name = ft_strndup(line + start + 1, *i - start - 1);
-	var_value = my_getenv(var_name, g_shell->env_list);
-	free(var_name);
-	if (*in_word)
-	{
-		joined = ft_strjoin(*word, var_value ? var_value : "");
-		free(*word);
-		free(var_value);
-		*word = joined;
-	}
-	else
-	{
-		*word = var_value ? var_value : ft_strdup("");
-		*in_word = 1;
-	}
-	return (1);
-}
+// 	start = *i;
+// 	(*i)++;
+// 	while (line[*i] && is_valid_var_char(line[*i]))
+// 		(*i)++;
+// 	var_name = ft_strndup(line + start + 1, *i - start - 1);
+// 	var_value = my_getenv(var_name, g_shell->env_list);
+// 	free(var_name);
+// 	if (*in_word)
+// 	{
+// 		joined = ft_strjoin(*word, var_value ? var_value : "");
+// 		free(*word);
+// 		free(var_value);
+// 		*word = joined;
+// 	}
+// 	else
+// 	{
+// 		*word = var_value ? var_value : ft_strdup("");
+// 		*in_word = 1;
+// 	}
+// 	return (1);
+// }
 
-static int	tokenizer_handle_word(const char *line, int *i, char **word, int *in_word)
+static int	tokenizer_handle_word(const char *line, int *i, char **word, int *in_word, t_shell *g_shell)
 {
 	int	start;
 	char	*temp;
 	char	*joined;
+	char	*expanded;
 
 	start = *i;
 	while (line[*i] && !is_special_char(line[*i]) &&
 		line[*i] != ' ' && line[*i] != '\t' &&
-		line[*i] != '"' && line[*i] != '\'' &&
-		line[*i] != '$')
+		line[*i] != '"' && line[*i] != '\'')
 		(*i)++;
 	temp = ft_strndup(line + start, *i - start);
+	expanded = expand_variables(temp, g_shell);
 	if (*in_word)
 	{
 		joined = ft_strjoin(*word, temp);
@@ -248,19 +249,19 @@ t_token	*tokenizer(char *line, t_shell *g_shell)
 			if (!tokenizer_handle_quote(line, &i, &word, &in_word, g_shell))
 				return (NULL);
 		}
-		else if (line[i] == '$' && line[i + 1] == '?')
-		{
-			if (in_word)
-			{
-				add_token(&tokens, create_token(word, TOKEN_WORD));
-				word = NULL;
-				in_word = 0;
-			}
-			add_token(&tokens, create_token(ft_itoa(g_shell->last_exit_status), TOKEN_WORD));
-			i += 2;
-		}
-		else if (line[i] == '$' && is_valid_var_char(line[i + 1]))
-			tokenizer_handle_var(line, &i, &word, &in_word, g_shell);
+		// else if (line[i] == '$' && line[i + 1] == '?')
+		// {
+		// 	if (in_word)
+		// 	{
+		// 		add_token(&tokens, create_token(word, TOKEN_WORD));
+		// 		word = NULL;
+		// 		in_word = 0;
+		// 	}
+		// 	add_token(&tokens, create_token(ft_itoa(g_shell->last_exit_status), TOKEN_WORD));
+		// 	i += 2;
+		// }
+		// else if (line[i] == '$' && is_valid_var_char(line[i + 1]))
+		// 	tokenizer_handle_var(line, &i, &word, &in_word, g_shell);
 		else if (line[i] == ' ' || line[i] == '\t')
 		{
 			if (in_word)
@@ -282,7 +283,7 @@ t_token	*tokenizer(char *line, t_shell *g_shell)
 			handle_special_char(line, &i, &tokens);
 		}
 		else
-			tokenizer_handle_word(line, &i, &word, &in_word);
+			tokenizer_handle_word(line, &i, &word, &in_word, g_shell);
 	}
 	if (in_word)
 		add_token(&tokens, create_token(word, TOKEN_WORD));
