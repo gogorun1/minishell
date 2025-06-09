@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 19:09:03 by lcao              #+#    #+#             */
-/*   Updated: 2025/05/28 18:36:54 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/09 16:47:37 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ int	handle_append_redirect(char *filename)
 int	handle_heredoc_redirect(char *delimiter)
 {
 	int	pipe_fd[2];
-
 	if (pipe(pipe_fd) == -1)
 	{
 		perror("pipe");
@@ -70,8 +69,8 @@ int	read_heredoc_input(char *delimiter, int write_fd)
 		line = readline("> ");
 		if (!line)
 		{
-			ft_fprintf(STDERR_FILENO,
-				"minishell: warning: here-document delimited by end-of-file\n");
+			// ft_fprintf(STDERR_FILENO,
+			// 	"minishell: warning: here-document delimited by end-of-file\n");
 			break ;
 		}
 		if (strcmp(line, delimiter) == 0)

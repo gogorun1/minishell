@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_pipeline.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abby <abby@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 19:07:42 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/08 13:40:41 by abby             ###   ########.fr       */
+/*   Updated: 2025/06/09 16:42:39 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,9 @@ void	execute_left_pipe(ast_node_t *node, int pipe_fd[2], t_shell *shell)
 	signal(SIGINT, SIG_DFL);  // Reset to default signal handling in child
 	signal(SIGQUIT, SIG_DFL);
 	close(pipe_fd[0]);
+	// 先处理 heredoc/重定向，保证 heredoc fd 优先于管道
+	if (node->data.binary.left->type == AST_COMMAND)
+		setup_redirections(node->data.binary.left->data.command.redirs);
 	dup2(pipe_fd[1], STDOUT_FILENO);
 	close(pipe_fd[1]);
 	exit(execute_ast(node->data.binary.left, shell));
