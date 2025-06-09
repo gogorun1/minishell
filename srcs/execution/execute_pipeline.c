@@ -67,6 +67,8 @@ int	wait_for_pipeline(pid_t left_pid, pid_t right_pid)
 	int	left_status;
 	int	right_status;
 
+	left_status = 0;
+	right_status = 0;
 	waitpid(left_pid, &left_status, 0);
 	waitpid(right_pid, &right_status, 0);
 	

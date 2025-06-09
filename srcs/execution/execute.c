@@ -109,6 +109,7 @@ int	wait_and_get_status(pid_t pid, char *path, char **envp)
 {
 	int	status;
 
+	status = 0;
 	waitpid(pid, &status, 0);
 	free(path);
 	free_env_array(envp);

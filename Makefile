@@ -84,7 +84,7 @@ $(LIBFT):
 	@make -C $(LIBFT_DIR)
 
 $(NAME): $(OBJS) $(LIBFT)
-	@$(CC) $(CFLAGS) -o $(NAME) $(OBJS) -L$(LIBFT_DIR) -lft $(LIBS)
+	@$(CC) $(CFLAGS) -o $(NAME) $(OBJS) -L$(LIBFT_DIR) -lft $(LIBS) -lreadline
 	@echo "$(COLOR_GREEN)$(COLOR_BOLD)$(NAME) is created $(COLOR_RESET)"
 
 clean:

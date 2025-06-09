@@ -64,7 +64,7 @@ $(OBJ_DIR)/ft_printf/%.o: $(SRCS_DIR)/ft_printf/%.c
 
 # Compile gnl objects
 $(OBJ_DIR)/get_next_line/%.o: $(SRCS_DIR)/get_next_line/%.c
-	@$(CC) $(CFLAGS) -I$(INCLUDES) -c $< -o $@
+	@$(CC) $(CFLAGS) -I$(INCLUDES) -c $< -o $@ 
 
 # create the library
 $(NAME): $(OBJS)

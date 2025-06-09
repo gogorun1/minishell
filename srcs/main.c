@@ -41,13 +41,14 @@ int init_shell(t_shell *shell, char **envp)
 	return (0);
 }
 
-int main (int argc, char **argv, char **envp)
+int main(int argc, char **argv, char **envp)
 {
 	char	*input;
 	t_token	*tokens;
 	// pid_t	pid;
 	t_shell shell;
 	ast_node_t	*ast;
+
 	setup_signal_handlers(); // Set up signal handlers for Ctrl-C and Ctrl-'\'
 
 	(void)argc;
@@ -62,6 +63,7 @@ int main (int argc, char **argv, char **envp)
 			shell.last_exit_status = 130; // Set exit status for Ctrl-C
 			g_signal_status = 0; // Reset global signal status
 			ft_putchar_fd('\r', STDOUT_FILENO);
+			continue; // Continue to the next iteration
 			// g_signal_status = 0; // Print carriage return to move cursor to the start of the line
 		}
 		// printf("Debug: about to read input, signal_status: %d\n", g_signal_status);
@@ -72,15 +74,6 @@ int main (int argc, char **argv, char **envp)
 			printf("exit\n");
 			break; // Exit if EOF is received (Ctrl-D)
 		}
-		if (g_signal_status == SIGINT)
-		{
-			if (input)
-			{
-				free(input); // Free the input if Ctrl-C was pressed
-			}
-			continue; // If Ctrl-C was pressed, just continue to the next prompt
-		}
-
 		if (input[0] == '\0') // Check if the input is empty
 		{
 			printf("Empty input, skipping...\n");
