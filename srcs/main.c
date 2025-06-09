@@ -61,8 +61,9 @@ int main(int argc, char **argv, char **envp)
 		if (g_signal_status == SIGINT)
 		{
 			shell.last_exit_status = 130; // Set exit status for Ctrl-C
-			g_signal_status = 0; // Reset global signal status
+			g_signal_status = 0; // Reset global signal status")
 			ft_putchar_fd('\r', STDOUT_FILENO);
+			printf("clear is triggered\n"); // Print a newline after Ctrl-C
 			continue; // Continue to the next iteration
 			// g_signal_status = 0; // Print carriage return to move cursor to the start of the line
 		}
