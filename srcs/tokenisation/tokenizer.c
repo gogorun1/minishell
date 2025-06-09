@@ -215,17 +215,20 @@ static int	tokenizer_handle_word(const char *line, int *i, char **word, int *in_
 		line[*i] != '"' && line[*i] != '\'')
 		(*i)++;
 	temp = ft_strndup(line + start, *i - start);
+	// printf("temp: %s\n", temp);
 	expanded = expand_variables(temp, g_shell);
+	free(temp);
+	// printf("expanded: %s\n", expanded);
 	if (*in_word)
 	{
-		joined = ft_strjoin(*word, temp);
+		joined = ft_strjoin(*word, expanded);
 		free(*word);
-		free(temp);
+		free(expanded);
 		*word = joined;
 	}
 	else
 	{
-		*word = temp;
+		*word = expanded;
 		*in_word = 1;
 	}
 	return (1);
