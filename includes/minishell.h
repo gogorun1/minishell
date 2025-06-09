@@ -145,6 +145,7 @@ void free_ast(ast_node_t *node);
 ast_node_t *parse_command(parser_t *parser);
 ast_node_t *parse_pipeline(parser_t *parser);
 ast_node_t *parse(t_token *tokens);
+char	*expand_variables(char *str, t_shell *g_shell);
 
 /*builtin*/
 int	builtin_cd(char **args, t_shell *shell);

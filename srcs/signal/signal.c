@@ -12,27 +12,20 @@ void signal_handler(int sig)
 	}
 }
 
-// void signal_handler(int sig)
-// {
-//     if (sig == SIGINT)
-//     {
-//         g_signal_status = sig;
-//         write(STDOUT_FILENO, "\n", 1);
-//         rl_done = 1;  // 重要：让readline立即返回NULL
-//     }
-// }
-
 void setup_signal_handlers(void)
 {
 	rl_catch_signals = 0; // Disable readline's default signal handling
 	
 	struct sigaction sa_int;
-	// Set up SIGINT handler
 	sa_int.sa_handler = signal_handler;
 	sigemptyset(&sa_int.sa_mask);
-	sa_int.sa_flags = 0;
+	sa_int.sa_flags = SA_RESTART | SA_SIGINFO; // Restart syscalls and provide siginfo
 	sigaction(SIGINT, &sa_int, NULL);   // Ctrl-C
-	
 	signal(SIGQUIT, SIG_IGN); // Ctrl-\ ignore SIGQUIT signal
 }
 
+void	setup_child_signals(void)
+{
+	signal(SIGINT, SIG_DFL);   // Ctrl-C
+	signal(SIGQUIT, SIG_DFL); // Ctrl-\ reset to default handler
+}

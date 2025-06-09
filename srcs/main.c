@@ -14,21 +14,6 @@
 
 volatile sig_atomic_t g_signal_status = 0; // For signal handling
 
-// void	free_2d(char **arr)
-// {
-// 	int	i;
-
-// 	if(!arr)
-// 		return ;
-// 	i = 0;
-// 	while(arr[i])
-// 	{
-// 		free(arr[i]);
-// 		i++;
-// 	}
-// 	free(arr);
-// }
-
 int init_shell(t_shell *shell, char **envp)
 {
 	shell->env_list = init_env(envp);
