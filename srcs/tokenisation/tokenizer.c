@@ -63,79 +63,6 @@ void	free_token_list(t_token *head)
 	}
 }
 
-static int	expand_var(const char *str, int i, char **result, t_shell *g_shell)
-{
-	int	var_start;
-	int	var_len;
-	char	*var_value;
-	char	*temp;
-
-	var_start = i + 1;
-	var_len = 0;
-	while (str[var_start + var_len] && is_valid_var_char(str[var_start + var_len]))
-		var_len++;
-	var_value = get_variable_value(str + var_start, var_len, g_shell);
-	if (var_value)
-	{
-		temp = ft_strjoin(*result, var_value);
-		free(*result);
-		*result = temp;
-	}
-	free(var_value);
-	return (var_start + var_len);
-}
-
-char	*expand_variables(char *str, t_shell *g_shell)
-{
-	char	*result;
-	char	*temp;
-	int		i;
-	int		start;
-	char	status_str[12];
-
-	i = 0;
-	start = 0;
-	result = ft_strdup("");
-	while (str[i])
-	{
-		if (str[i] == '$' && str[i + 1] == '?')
-		{
-			if (i > start)
-			{
-				temp = ft_strjoin(result, ft_strndup(str + start, i - start));
-				free(result);
-				result = temp;
-			}
-			printf("%d", g_shell->last_exit_status);
-			temp = ft_strjoin(result, status_str);
-			free(result);
-			result = temp;
-			i += 2;
-			start = i;
-		}
-		else if (str[i] == '$' && is_valid_var_char(str[i + 1]))
-		{
-			if (i > start)
-			{
-				temp = ft_strjoin(result, ft_strndup(str + start, i - start));
-				free(result);
-				result = temp;
-			}
-			i = expand_var(str, i, &result, g_shell);
-			start = i;
-		}
-		else
-			i++;
-	}
-	if (start < (int)ft_strlen(str))
-	{
-		temp = ft_strjoin(result, str + start);
-		free(result);
-		result = temp;
-	}
-	return (result);
-}
-
 static int	tokenizer_handle_quote(const char *line, int *i, char **word, int *in_word, t_shell *g_shell)
 {
 	char	quote;
@@ -252,19 +179,6 @@ t_token	*tokenizer(char *line, t_shell *g_shell)
 			if (!tokenizer_handle_quote(line, &i, &word, &in_word, g_shell))
 				return (NULL);
 		}
-		// else if (line[i] == '$' && line[i + 1] == '?')
-		// {
-		// 	if (in_word)
-		// 	{
-		// 		add_token(&tokens, create_token(word, TOKEN_WORD));
-		// 		word = NULL;
-		// 		in_word = 0;
-		// 	}
-		// 	add_token(&tokens, create_token(ft_itoa(g_shell->last_exit_status), TOKEN_WORD));
-		// 	i += 2;
-		// }
-		// else if (line[i] == '$' && is_valid_var_char(line[i + 1]))
-		// 	tokenizer_handle_var(line, &i, &word, &in_word, g_shell);
 		else if (line[i] == ' ' || line[i] == '\t')
 		{
 			if (in_word)

@@ -53,7 +53,8 @@ SRCS = main.c \
 	utils/utils.c \
 	temps/print.c \
 	signal/signal.c \
-	expand/get_var_value.c
+	expand/get_var_value.c \
+	expand/expand.c \
 
 OBJS = $(addprefix $(OBJS_DIR), $(SRCS:.c=.o))
 DEPS = $(addprefix $(OBJS_DIR), $(SRCS:.c=.d))
