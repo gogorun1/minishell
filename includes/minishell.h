@@ -17,6 +17,8 @@
 # include <signal.h>
 # include <errno.h>
 
+# include <sys/types.h>
+
 /* GLOBAL VARIABLE*/
 extern volatile sig_atomic_t g_signal_status;
 /*

@@ -3,16 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abby <abby@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 13:55:40 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/08 14:21:58 by abby             ###   ########.fr       */
+/*   Updated: 2025/06/11 17:50:45 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-volatile sig_atomic_t g_signal_status = 0; // For signal handling
 
 int init_shell(t_shell *shell, char **envp)
 {
@@ -24,6 +22,11 @@ int init_shell(t_shell *shell, char **envp)
 	}
 	shell->last_exit_status = 0;
 	return (0);
+}
+
+int	event(void)
+{
+	return (EXIT_SUCCESS);
 }
 
 int main(int argc, char **argv, char **envp)
@@ -40,6 +43,7 @@ int main(int argc, char **argv, char **envp)
 	(void)argv;
 	if (init_shell(&shell, envp) != 0)
 		return (1);
+	rl_event_hook = event;
 	while (1)
 	{
 	 	

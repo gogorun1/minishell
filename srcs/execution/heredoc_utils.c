@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 19:09:03 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/09 16:47:37 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/10 16:53:48 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,18 +37,38 @@ int	handle_append_redirect(char *filename)
 int	handle_heredoc_redirect(char *delimiter)
 {
 	int	pipe_fd[2];
+	pid_t	pid;
+	int	status;
+
 	if (pipe(pipe_fd) == -1)
 	{
 		perror("pipe");
 		return (1);
 	}
-	if (read_heredoc_input(delimiter, pipe_fd[1]) != 0)
+	pid = fork();
+	if (pid == -1)
 	{
+		perror("fork");
 		close(pipe_fd[0]);
 		close(pipe_fd[1]);
 		return (1);
 	}
+	if (pid == 0)
+	{
+		// 子进程：heredoc 输入，恢复默认 SIGINT
+		signal(SIGINT, SIG_DFL);
+		close(pipe_fd[0]);
+		read_heredoc_input(delimiter, pipe_fd[1]);
+		close(pipe_fd[1]);
+		exit(0);
+	}
 	close(pipe_fd[1]);
+	waitpid(pid, &status, 0);
+	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
+	{
+		close(pipe_fd[0]);
+		return (130); // heredoc 被 Ctrl+C 中断
+	}
 	if (dup2(pipe_fd[0], STDIN_FILENO) == -1)
 	{
 		perror("dup2");
@@ -66,7 +86,16 @@ int	read_heredoc_input(char *delimiter, int write_fd)
 
 	while (1)
 	{
+		if (g_signal_status == SIGINT)
+		{
+			return (1);
+		}
 		line = readline("> ");
+		if (g_signal_status == SIGINT)
+		{
+			return (1);
+		}
+	 	// Clear the line after Ctrl-C
 		if (!line)
 		{
 			// ft_fprintf(STDERR_FILENO,

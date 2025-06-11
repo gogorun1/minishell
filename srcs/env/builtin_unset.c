@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 15:04:03 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/05 16:08:27 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/10 16:43:16 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,11 @@ static int is_match(const char *a, const char *b)
 /* Delete node with key from env_list */
 static void	remove_env_key(const char *key, t_env **env_list)
 {
-	t_env	*curr = *env_list;
-	t_env	*prev = NULL;
+	t_env	*curr;
+	t_env	*prev;
 
+	curr = *env_list;
+	prev = NULL;
 	while (curr)
 	{
 		if (is_match(curr->key, key))
