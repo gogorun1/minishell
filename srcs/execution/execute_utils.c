@@ -17,7 +17,6 @@ void	execute_child(char *path, char **args, t_env *env)
 {
 	char	**envp;
 
-	set_child_signals();
 	envp = env_to_array(env);
 	if (!envp)
 		exit(1);

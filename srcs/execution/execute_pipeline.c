@@ -71,6 +71,8 @@ int	wait_for_pipeline(pid_t left_pid, pid_t right_pid)
 	right_status = 0;
 	waitpid(left_pid, &left_status, 0);
 	waitpid(right_pid, &right_status, 0);
+	set_parent_signals();
+
 	
 	// If either process was terminated by a signal, return that status
 	if (WIFSIGNALED(left_status))

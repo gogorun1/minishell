@@ -67,6 +67,7 @@ static int	exec_external_fork(char *path, char **args, t_env *env_list)
 	pid = fork();
 	if (pid == 0)
 	{
+		set_child_signals();
 		execute_child(path, args, env_list);
 		exit(1);
 	}

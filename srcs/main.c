@@ -66,6 +66,11 @@ int main(int argc, char **argv, char **envp)
 			printf("exit\n");
 			break; // Exit if EOF is received (Ctrl-D)
 		}
+		if (g_signal_status == 130)
+		{
+			shell.last_exit_status = g_signal_status;
+			g_signal_status = 0;
+		}
 		if (input[0] == '\0') // Check if the input is empty
 		{
 			printf("Empty input, skipping...\n");
