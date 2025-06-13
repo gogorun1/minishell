@@ -70,6 +70,7 @@ int main(int argc, char **argv, char **envp)
 		{
 			shell.last_exit_status = g_signal_status;
 			g_signal_status = 0;
+			continue;
 		}
 		if (input[0] == '\0') // Check if the input is empty
 		{

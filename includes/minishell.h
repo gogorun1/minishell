@@ -151,6 +151,7 @@ ast_node_t *parse(t_token *tokens);
 char	*expand_variables(char *str, t_shell *g_shell);
 void	set_child_signals(void);
 void	set_parent_signals(void);
+void	setup_heredoc_signals();
 
 /*builtin*/
 int	builtin_cd(char **args, t_shell *shell);

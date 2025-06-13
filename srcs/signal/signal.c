@@ -58,9 +58,33 @@ void	signal_handler(int signum)
 	{
 		write(STDOUT_FILENO, "\n", 1);
 		rl_on_new_line();
-		rl_replace_line("", 0);
+		// rl_replace_line("", 0);
 		// rl_redisplay();
-		// rl_done = 1;
+		rl_done = 1;
 	}
 }
 
+void	heredoc_sigint_handler(int signum)
+{
+	if (signum == SIGINT)
+	{
+		g_signal_status = 128 + signum;
+		write(STDERR_FILENO, "\n", 1);
+		exit(130);
+	}
+}
+
+void	setup_heredoc_signals()
+{
+	struct sigaction	sa_int;
+	struct sigaction	sa_quit;
+
+	sigemptyset(&sa_int.sa_mask);
+	sa_int.sa_handler = heredoc_sigint_handler;
+	sa_int.sa_flags = 0;
+	sigaction(SIGINT, &sa_int, NULL);
+	sigemptyset(&sa_quit.sa_mask);
+	sa_quit.sa_handler = SIG_IGN;
+	sa_quit.sa_flags = 0;
+	sigaction(SIGQUIT, &sa_quit, NULL);
+}
