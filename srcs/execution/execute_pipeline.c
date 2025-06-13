@@ -42,8 +42,8 @@ int	execute_pipeline(ast_node_t *node, t_shell *shell)
 // Execute left side of pipe
 void	execute_left_pipe(ast_node_t *node, int pipe_fd[2], t_shell *shell)
 {
-	signal(SIGINT, SIG_DFL);  // Reset to default signal handling in child
-	signal(SIGQUIT, SIG_DFL);
+	// signal(SIGINT, SIG_DFL);  // Reset to default signal handling in child
+	// signal(SIGQUIT, SIG_DFL);
 	close(pipe_fd[0]);
 	dup2(pipe_fd[1], STDOUT_FILENO);
 	close(pipe_fd[1]);
@@ -53,8 +53,8 @@ void	execute_left_pipe(ast_node_t *node, int pipe_fd[2], t_shell *shell)
 // Execute right side of pipe
 void	execute_right_pipe(ast_node_t *node, int pipe_fd[2], t_shell *shell)
 {
-	signal(SIGINT, SIG_DFL);  // Reset to default signal handling in child
-	signal(SIGQUIT, SIG_DFL);
+	// signal(SIGINT, SIG_DFL);  // Reset to default signal handling in child
+	// signal(SIGQUIT, SIG_DFL);
 	close(pipe_fd[1]);
 	dup2(pipe_fd[0], STDIN_FILENO);
 	close(pipe_fd[0]);

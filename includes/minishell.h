@@ -16,6 +16,7 @@
 # include <fcntl.h>
 # include <signal.h>
 # include <errno.h>
+# include <termios.h>
 
 /* GLOBAL VARIABLE*/
 extern volatile sig_atomic_t g_signal_status;
@@ -115,15 +116,17 @@ typedef struct	s_env
 
 // --- Main Shell State Struct ---
 // Encapsulates all the shell's runtime data
-typedef struct s_shell {
-    t_env   *env_list;         // Head of the linked list of environment variables
-    int         last_exit_status;  // Value for $?
+typedef struct s_shell 
+{
+    t_env	*env_list;         // Head of the linked list of environment variables
+    int		last_exit_status;  // Value for $?
+	int		is_child;
+	int		signaled;
     // You might add other fields here as needed:
     // char        *current_pwd;     // Current working directory (for efficiency, or getcwd)
     // t_history   *history_data;    // If you manage history beyond readline's built-in
     // ... any other global-like state
 } t_shell;
-
 
 // Function prototypes
 t_token	*create_token(char *value, t_token_type type);
@@ -146,6 +149,8 @@ ast_node_t *parse_command(parser_t *parser);
 ast_node_t *parse_pipeline(parser_t *parser);
 ast_node_t *parse(t_token *tokens);
 char	*expand_variables(char *str, t_shell *g_shell);
+void	set_child_signals(void);
+void	set_parent_signals(void);
 
 /*builtin*/
 int	builtin_cd(char **args, t_shell *shell);
@@ -211,8 +216,7 @@ void	free_env_array(char **envp);
 void	free_env_array_partial(char **envp, int count);
 
 /* signals */
-void	signal_handler(int sig);
-void	setup_signal_handlers(void);
+void	signal_handler(int signum);
 
 /* expansion */
 char	*get_variable_value(const char *var_name_start, int var_len, t_shell *shell);

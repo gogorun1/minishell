@@ -17,8 +17,7 @@ void	execute_child(char *path, char **args, t_env *env)
 {
 	char	**envp;
 
-	signal(SIGINT, SIG_DFL); // Revert SIGINT to its default (terminate process)
-	signal(SIGQUIT, SIG_DFL);
+	set_child_signals();
 	envp = env_to_array(env);
 	if (!envp)
 		exit(1);

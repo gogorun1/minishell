@@ -33,8 +33,13 @@ int main(int argc, char **argv, char **envp)
 	// pid_t	pid;
 	t_shell shell;
 	ast_node_t	*ast;
+	struct termios	term;
 
-	setup_signal_handlers(); // Set up signal handlers for Ctrl-C and Ctrl-'\'
+	if (isatty(STDIN_FILENO) == false)
+	{
+		fprintf(stderr, "Error: Not a terminal\n");
+		return (1);
+	}
 
 	(void)argc;
 	(void)argv;
@@ -42,16 +47,17 @@ int main(int argc, char **argv, char **envp)
 		return (1);
 	while (1)
 	{
-	 	
-		if (g_signal_status == SIGINT)
-		{
-			shell.last_exit_status = 130; // Set exit status for Ctrl-C
-			g_signal_status = 0; // Reset global signal status")
-			ft_putchar_fd('\r', STDOUT_FILENO);
-			printf("clear is triggered\n"); // Print a newline after Ctrl-C
-			continue; // Continue to the next iteration
-			// g_signal_status = 0; // Print carriage return to move cursor to the start of the line
-		}
+	 	tcgetattr(STDOUT_FILENO, &term);
+		set_parent_signals();
+		// if (g_signal_status == SIGINT)
+		// {
+		// 	shell.last_exit_status = 130; // Set exit status for Ctrl-C
+		// 	g_signal_status = 0; // Reset global signal status")
+		// 	ft_putchar_fd('\r', STDOUT_FILENO);
+		// 	printf("clear is triggered\n"); // Print a newline after Ctrl-C
+		// 	continue; // Continue to the next iteration
+		// 	// g_signal_status = 0; // Print carriage return to move cursor to the start of the line
+		// }
 		// printf("Debug: about to read input, signal_status: %d\n", g_signal_status);
 		input = readline("minishell$");
 		// printf("Debug: input read: '%s', signal is %d\n", input ? input : "NULL", g_signal_status);
@@ -74,7 +80,6 @@ int main(int argc, char **argv, char **envp)
 			free(input);
 			continue;
 		}
-		// print_tokens(tokens);
 		ast = parse(tokens);
 		if (!ast)
 		{
@@ -83,13 +88,6 @@ int main(int argc, char **argv, char **envp)
 			free(input);
 			continue;
 		}
-		// else
-		// {
-		// 	printf("--- 抽象语法树 (AST) 结构 ---\n");
-		// 	print_ast(ast, 0); // 从根节点开始打印，初始缩进为 0
-		// 	printf("--- AST 打印结束 ---\n");
-		// }
-		// Execute the command represented by the AST
 		shell.last_exit_status = execute_ast(ast, &shell);
 		if (shell.last_exit_status == -1)
 		{
@@ -103,6 +101,7 @@ int main(int argc, char **argv, char **envp)
 		free_token(tokens);
 		free_ast(ast);
 		free(input);
+		tcsetattr(STDOUT_FILENO, TCSANOW, &term);
 	}
 	rl_clear_history();
 	// free_env(shell.env_list);
