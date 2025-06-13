@@ -87,12 +87,12 @@ int main(int argc, char **argv, char **envp)
 			free(input);
 			continue;
 		}
-		// else
-		// {
-		// 	printf("--- 抽象语法树 (AST) 结构 ---\n");
-		// 	print_ast(ast, 0); // 从根节点开始打印，初始缩进为 0
-		// 	printf("--- AST 打印结束 ---\n");
-		// }
+		else
+		{
+			printf("--- 抽象语法树 (AST) 结构 ---\n");
+			print_ast(ast, 0); // 从根节点开始打印，初始缩进为 0
+			printf("--- AST 打印结束 ---\n");
+		}
 		// Execute the command represented by the AST
 		shell.last_exit_status = execute_ast(ast, &shell);
 		if (shell.last_exit_status == -1)

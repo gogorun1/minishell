@@ -34,7 +34,7 @@ int	handle_append_redirect(char *filename)
 }
 
 // Handle heredoc redirection (<<)
-int	handle_heredoc_redirect(char *delimiter)
+int	handle_heredoc_redirect(char *delimiter, int fd)
 {
 	int	pipe_fd[2];
 	pid_t	pid;
@@ -56,7 +56,8 @@ int	handle_heredoc_redirect(char *delimiter)
 	if (pid == 0)
 	{
 		// 子进程：heredoc 输入，恢复默认 SIGINT
-		signal(SIGINT, SIG_DFL);
+		close(fd);
+		setup_signal_handlers();
 		close(pipe_fd[0]);
 		read_heredoc_input(delimiter, pipe_fd[1]);
 		close(pipe_fd[1]);
@@ -84,6 +85,7 @@ int	read_heredoc_input(char *delimiter, int write_fd)
 {
 	char	*line;
 
+	write(2, "heredoc\n", 8);
 	while (1)
 	{
 		if (g_signal_status == SIGINT)

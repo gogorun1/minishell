@@ -193,12 +193,12 @@ int wait_for_pipeline(pid_t left_pid, pid_t right_pid);
 
 
 /* redirections */
-int		setup_redirections(redir_t *redirs);
-int		handle_single_redirect(redir_t *redir);
+int		setup_redirections(redir_t *redirs, int fd);
+int		handle_single_redirect(redir_t *redir, int fd);
 int		handle_input_redirect(char *filename);
 int		handle_output_redirect(char *filename);
 int		handle_append_redirect(char *filename);
-int		handle_heredoc_redirect(char *delimiter);
+int		handle_heredoc_redirect(char *delimiter, int fd);
 int		read_heredoc_input(char *delimiter, int write_fd);
 int		write_heredoc_line(char *line, int write_fd);
 

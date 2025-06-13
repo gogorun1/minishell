@@ -146,7 +146,7 @@ ast_node_t *parse_pipeline(parser_t *parser) {
     }
     
     // printf("  Got left command, current token: %s\n", 
-        //    parser->current && parser->current->value ? parser->current->value : "NULL/EOF");
+    //         parser->current && parser->current->value ? parser->current->value : "NULL/EOF");
     
     // Keep parsing pipes
     while (parser->current && parser->current->type == TOKEN_PIPE) {

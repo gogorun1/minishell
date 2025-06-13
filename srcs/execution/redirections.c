@@ -12,20 +12,21 @@
 
 #include "minishell.h"
 
-int	setup_redirections(redir_t *redirs);
-int	handle_single_redirect(redir_t *redir);
+int	setup_redirections(redir_t *redirs, int fd);
+int	handle_single_redirect(redir_t *redir, int fd);
 int	handle_input_redirect(char *filename);
 int	handle_output_redirect(char *filename);
 
 // Setup all redirections for a command
-int	setup_redirections(redir_t *redirs)
+int	setup_redirections(redir_t *redirs, int fd)
 {
 	redir_t	*current;
 
 	current = redirs;
 	while (current)
 	{
-		if (handle_single_redirect(current) != 0)
+		write(2, "setup_redirections\n", 19);
+		if (handle_single_redirect(current, fd) != 0)
 			return (1);
 		current = current->next;
 	}
@@ -33,16 +34,15 @@ int	setup_redirections(redir_t *redirs)
 }
 
 // Handle a single redirection
-int	handle_single_redirect(redir_t *redir)
+int	handle_single_redirect(redir_t *redir, int fd)
 {
+	(void)fd;
 	if (redir->type == REDIR_IN)
 		return (handle_input_redirect(redir->file));
 	else if (redir->type == REDIR_OUT)
 		return (handle_output_redirect(redir->file));
 	else if (redir->type == REDIR_APPEND)
 		return (handle_append_redirect(redir->file));
-	else if (redir->type == REDIR_HEREDOC)
-		return (handle_heredoc_redirect(redir->file));
 	return (1);
 }
 

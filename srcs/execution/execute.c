@@ -40,7 +40,7 @@ int	execute_command(command_t *cmd, t_shell *shell)
 
 	saved_fds[0] = dup(STDIN_FILENO);
 	saved_fds[1] = dup(STDOUT_FILENO);
-	if (setup_redirections(cmd->redirs) != 0)
+	if (setup_redirections(cmd->redirs, -1) != 0)
 	{
 		restore_stdio(saved_fds);
 		return (1);
