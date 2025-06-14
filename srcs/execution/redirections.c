@@ -43,6 +43,8 @@ int	handle_single_redirect(redir_t *redir, int fd)
 		return (handle_output_redirect(redir->file));
 	else if (redir->type == REDIR_APPEND)
 		return (handle_append_redirect(redir->file));
+	else if (redir->type == REDIR_HEREDOC)
+		return (handle_heredoc_redirect(redir->file, fd));
 	return (1);
 }
 

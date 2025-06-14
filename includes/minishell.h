@@ -69,12 +69,32 @@ typedef enum {
     REDIR_HEREDOC
 } redir_type_t;
 
-typedef struct redir {
-    redir_type_t type;
-    char *file;
-    // int fd; // 在parser中不需要fd，执行时才需要
-    struct redir *next;
-} redir_t;
+// typedef struct redir {
+//     redir_type_t type;
+//     char *file;
+//     // int fd; // 在parser中不需要fd，执行时才需要
+//     struct redir *next;
+// } redir_t;
+
+
+// 14 jun----------------------------------------------------
+// Add these fields to your redir_t struct in header file:
+typedef struct s_redir {
+	redir_type_t	type;
+	char			*file;
+	char			*heredoc_content;  // Store heredoc content
+	int				heredoc_fd;        // Pipe fd for execution
+	struct s_redir	*next;
+}	redir_t;
+
+/* Add to your header file (minishell.h) */
+typedef struct s_heredoc_data {
+	char	*delimiter;
+	char	*content;	// Store content as string
+	int		processed;
+}	t_heredoc_data;
+//14 jun---------------------------------------------------------
+
 
 typedef struct {
     char **args;
