@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 17:11:39 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/05 16:51:00 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/14 17:56:48 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,8 @@ int	builtin_exit(char **args)
 		exit(0);
 	if (!is_number(args[1]))
 	{
-		ft_fprintf(2, "minishell: exit: %s: numeric argument required\n", args[1]);
+		ft_fprintf(2, "minishell: exit: %s: numeric argument required\n",
+			args[1]);
 		exit(2);
 	}
 	if (args[2])

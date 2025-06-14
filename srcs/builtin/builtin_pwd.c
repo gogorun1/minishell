@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 16:56:04 by lcao              #+#    #+#             */
-/*   Updated: 2025/05/19 15:49:52 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/14 17:59:46 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,8 @@
 
 int	builtin_pwd(void)
 {
-	/*current working directory*/
 	char	*cwd;
-	
+
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
 	{

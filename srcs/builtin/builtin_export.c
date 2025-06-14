@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 16:27:42 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/05 16:10:38 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/14 19:01:39 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,8 @@ static t_env	*find_node(const char *key, t_env *env)
 /* Create a new node with given key/value and push to head */
 static void	add_node(char *key, char *value, t_env **env)
 {
-	t_env *new;
-	
+	t_env	*new;
+
 	new = malloc(sizeof(t_env));
 	if (!new)
 		return ;
@@ -42,7 +42,8 @@ static void	add_node(char *key, char *value, t_env **env)
 
 static void	update_or_add(char *key, char *value, t_env **env)
 {
-	t_env *node;
+	t_env	*node;
+
 	node = find_node(key, *env);
 	if (node)
 	{
@@ -57,55 +58,39 @@ static void	update_or_add(char *key, char *value, t_env **env)
 	add_node(key, value, env);
 }
 
-int is_valid_var_name(const char *s)
+static int	handle_export_arg_with_equal(char *arg, char *eq,
+	t_env **env, t_shell *shell)
 {
-	if (!s || !is_valid_var_char(s[0]) || s[0] == '\0' || (s[0] >= '0' && s[0] <= '9'))
-		return 0;
-	for (int i = 1; s[i] && s[i] != '='; i++)
+	char	*key;
+	char	*value;
+
+	key = ft_strndup(arg, eq - arg);
+	if (!is_valid_var_name(key))
 	{
-		if (!is_valid_var_char(s[i]) && s[i] != '_')
-			return 0;
+		builtin_error(arg, shell);
+		free(key);
+		return (1);
 	}
-	return 1;
+	value = strdup(eq + 1);
+	update_or_add(key, value, env);
+	return (0);
 }
-/*
-** builtin_export:
-**   - args: ["export", "VAR1=ls", "VAR2=-l", ..., NULL]
-**   - env:  pointer to your t_env * head
-**
-** For each argument KEY=VALUE:
-**   1) split off key and value
-**   2) call update_or_add(key, value, env)
-** in general, export is a builtin that add a variable to 
-   the environment, so that it can be accessed by child process
-   ls, cat, env, echo, etc...
-*/
 
 int	builtin_export(char **args, t_env **env, t_shell *shell)
 {
-	int i = 1;
-	char *eq;
-	char *key;
-	char *value;
-	int has_error = 0;
+	int		i;
+	char	*eq;
+	int		has_error;
 
+	i = 1;
+	has_error = 0;
 	while (args[i])
 	{
 		eq = ft_strchr(args[i], '=');
 		if (eq)
 		{
-			key = ft_strndup(args[i], eq - args[i]);
-			if (!is_valid_var_name(key))
-			{
-				builtin_error(args[i], shell);
-				free(key);
+			if (handle_export_arg_with_equal(args[i], eq, env, shell))
 				has_error = 1;
-			}
-			else
-			{
-				value = strdup(eq + 1);
-				update_or_add(key, value, env);
-			}
 		}
 		else if (!is_valid_var_name(args[i]))
 		{
@@ -114,5 +99,5 @@ int	builtin_export(char **args, t_env **env, t_shell *shell)
 		}
 		i++;
 	}
-	return has_error;
+	return (has_error);
 }

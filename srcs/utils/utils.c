@@ -1,9 +1,8 @@
 #include "minishell.h"
 
-// 检查字符是否可用于变量名
-bool is_valid_var_char(char c)
+int	is_valid_var_char(char c)
 {
-    return (c == '_' || isalnum(c));
+	return (c == '_' || ft_isalnum(c));
 }
 
 // 检查是否为特殊字符

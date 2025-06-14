@@ -159,7 +159,6 @@ char	*find_executable(char *cmd);
 char	*get_env_value(char *var_name);
 // int		handle_quotes(char **input, int *i, t_token **tokens);
 char	*ft_strndup(const char *s, size_t n);
-bool is_valid_var_char(char c);
 bool is_special_char(char c);
 void print_token(t_token *token);
 void print_ast(ast_node_t *node, int indent_level);
@@ -180,7 +179,9 @@ int builtin_error(const char *msg, t_shell *shell);
 
 /*env*/
 int	builtin_unset(char **args, t_env **env_list);
-int print_env_list(t_env *env);
+int	is_valid_var_char(char c);
+int	is_valid_var_name(char *s);
+int	print_env_list(t_env *env);
 t_env	*init_env(char **envp);
 char *my_getenv(const char *key, t_env *envp);
 
@@ -243,5 +244,8 @@ int		ft_var_name_len(const char *s);
 
 /*error*/
 void	error_msg(char *command, char *message, int exit_code, t_shell *shell);
+void	error_cd(const char *path, t_shell *shell);
+void	error_cd_too_many_args(t_shell *shell);
+void	error_cd_home_not_set(t_shell *shell);
 
 #endif
