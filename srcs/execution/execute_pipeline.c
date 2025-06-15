@@ -6,13 +6,11 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 19:07:42 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/09 16:42:39 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/15 17:55:16 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-
 
 // Execute pipeline
 int	execute_pipeline(ast_node_t *node, t_shell *shell)

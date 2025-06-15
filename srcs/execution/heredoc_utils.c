@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 19:09:03 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/10 16:53:48 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/15 18:40:54 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,9 @@ int	handle_append_redirect(char *filename)
 }
 
 // Handle heredoc redirection (<<)
-int	handle_heredoc_redirect(char *delimiter)
+int	handle_heredoc_redirect(char *delimiter, int fd)
 {
+	(void)fd;
 	// Create pipe with stored heredoc content
 	int pipefd[2];
 	if (pipe(pipefd) == -1)

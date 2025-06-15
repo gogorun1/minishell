@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 13:55:40 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/11 17:50:45 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/15 18:33:01 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int init_shell(t_shell *shell, char **envp)
 	shell->env_list = init_env(envp);
 	if (!shell->env_list)
 	{
-		fprintf(stderr, "Error initializing environment variables\n");
+		ft_fprintf(2, "Error initializing environment variables\n");
 		return (1);
 	}
 	shell->last_exit_status = 0;
@@ -94,7 +94,8 @@ int main(int argc, char **argv, char **envp)
 		ast = parse(tokens);
 		if (!ast)
 		{
-			fprintf(stderr, "minishell: parse error\n");
+			ft_fprintf(2, "minishell: parse error\n");
+			shell.last_exit_status = 2;
 			free_token(tokens);
 			free(input);
 			continue;

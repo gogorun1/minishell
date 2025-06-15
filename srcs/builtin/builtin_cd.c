@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 16:43:40 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/14 18:21:09 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/15 18:16:49 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,6 @@ int	builtin_cd(char **args, t_shell *shell)
 		return (1);
 	}
 	if (shell)
-		shell->last_exit_status = 0;
+		shell->last_exit_status = 1;
 	return (0);
 }
