@@ -6,7 +6,7 @@
 #    By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/05/30 00:00:00 by wding             #+#    #+#              #
-#    Updated: 2025/06/15 17:10:21 by lcao             ###   ########.fr        #
+#    Updated: 2025/06/15 20:00:29 by lcao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -45,6 +45,7 @@ SRCS = main.c \
 	execution/execute_env.c \
 	execution/execute_external.c \
 	error/error.c \
+	error/error_cd.c \
 	error/error1.c \
 	error/error2.c \
 	error/builtin_error.c \

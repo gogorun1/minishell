@@ -6,35 +6,14 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/02 17:12:44 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/14 18:19:25 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/15 20:02:46 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-/* CD errors */
-void	error_cd(const char *path, t_shell *shell)
-{
-	ft_putstr_fd("minishell: cd: ", STDERR_FILENO);
-	perror(path);
-	if (shell)
-		shell->last_exit_status = 1;
-}
-
-void	error_cd_too_many_args(t_shell *shell)
-{
-	ft_putstr_fd("minishell: cd: too many arguments\n", STDERR_FILENO);
-	if (shell)
-		shell->last_exit_status = 1;
-}
-
-void	error_cd_home_not_set(t_shell *shell)
-{
-	ft_putstr_fd("minishell: cd: HOME not set\n", STDERR_FILENO);
-	if (shell)
-		shell->last_exit_status = 1;
-}
 
 /* Export errors */
+
 void	error_export(char *identifier, t_shell *shell)
 {
 	error_msg("export", "not a valid identifier", 1, shell);
@@ -44,6 +23,7 @@ void	error_export(char *identifier, t_shell *shell)
 }
 
 /* Exit errors */
+
 void	error_exit(char *arg, t_shell *shell)
 {
 	ft_putstr_fd("minishell: exit: ", STDERR_FILENO);
@@ -53,8 +33,9 @@ void	error_exit(char *arg, t_shell *shell)
 		shell->last_exit_status = 2;
 }
 
-// Unset errors
-void error_unset(const char *identifier, t_shell *shell)
+/* Unset errors */
+
+void	error_unset(const char *identifier, t_shell *shell)
 {
 	ft_putstr_fd("minishell: unset: `", STDERR_FILENO);
 	ft_putstr_fd((char *)identifier, STDERR_FILENO);
@@ -62,8 +43,10 @@ void error_unset(const char *identifier, t_shell *shell)
 	if (shell)
 		shell->last_exit_status = 1;
 }
-// 通用 builtin_error 实现 - 专门用于 export 的标识符错误
-int builtin_error(const char *msg, t_shell *shell)
+
+/* 通用 builtin_error 实现 - 专门用于 export 的标识符错误 */
+
+int	builtin_error(const char *msg, t_shell *shell)
 {
 	ft_putstr_fd("minishell: export: `", STDERR_FILENO);
 	ft_putstr_fd((char *)msg, STDERR_FILENO);
