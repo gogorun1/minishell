@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 13:55:40 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/15 18:33:01 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/15 23:45:10 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ int main(int argc, char **argv, char **envp)
 		tokens = tokenizer(input, &shell);
 		if (!tokens)
 		{
-			fprintf(stderr, "Error: Tokenization failed\n");
+			ft_fprintf(2, "Error: Tokenization failed\n");
 			free(input);
 			continue;
 		}
@@ -96,7 +96,7 @@ int main(int argc, char **argv, char **envp)
 		{
 			ft_fprintf(2, "minishell: parse error\n");
 			shell.last_exit_status = 2;
-			free_token(tokens);
+			free_token_list(tokens);
 			free(input);
 			continue;
 		}
@@ -112,7 +112,7 @@ int main(int argc, char **argv, char **envp)
 		if (shell.last_exit_status == -1)
 		{
 			ft_fprintf(2, "minishell: execution error\n");
-			free_token(tokens);
+			free_token_list(tokens);
 			free_ast(ast);
 			free(input);
 			continue;
@@ -120,12 +120,12 @@ int main(int argc, char **argv, char **envp)
         setup_signal_handlers();
 
 		// Free the tokens and AST after execution
-		free_token(tokens);
+		free_token_list(tokens);
 		free_ast(ast);
 		free(input);
 	}
 	rl_clear_history();
-	// free_env(shell.env_list);
-	// clear_history();
+	free_env(shell.env_list);
+	clear_history();
 	return (shell.last_exit_status);
 }

@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 18:06:10 by lcao              #+#    #+#             */
-/*   Updated: 2025/05/30 19:28:07 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/15 23:51:57 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,4 +52,18 @@ char	*create_env_string(char *key, char *value)
 		return (NULL);
 	fill_env_string(result, key, value);
 	return (result);
+}
+
+void	free_env(t_env *head)
+{
+	t_env	*tmp;
+	while(head)
+	{
+		tmp = head;
+		head = head->next;
+		printf("free env: %s=%s\n", tmp->key, tmp->value);
+		free(tmp->key);
+		free(tmp->value);
+		free(tmp);
+	}
 }
