@@ -102,9 +102,9 @@ int main(int argc, char **argv, char **envp)
 		}
 		else
 		{
-			printf("--- 抽象语法树 (AST) 结构 ---\n");
+			printf("--- (AST)  ---\n");
 			print_ast(ast, 0); // 从根节点开始打印，初始缩进为 0
-			printf("--- AST 打印结束 ---\n");
+			printf("--- AST Print End ---\n");
 		}
 		// Execute the command represented by the AST
         setup_execution_signals();

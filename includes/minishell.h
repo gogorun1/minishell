@@ -10,11 +10,13 @@
 # include <unistd.h>
 # include <string.h>
 # include <sys/wait.h>
+# include <limits.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <stdbool.h>
 # include <fcntl.h>
 # include <signal.h>
+# include <sys/errno.h>
 # include <errno.h>
 
 # include <sys/types.h>
@@ -168,6 +170,7 @@ ast_node_t *parse_pipeline(parser_t *parser);
 ast_node_t *parse(t_token *tokens);
 char	*expand_variables(char *str, t_shell *g_shell);
 void setup_execution_signals(void);
+char	*read_heredoc_content(char *delimiter);
 
 /*builtin*/
 int	builtin_cd(char **args, t_shell *shell);
@@ -222,7 +225,7 @@ int		handle_input_redirect(char *filename);
 int		handle_output_redirect(char *filename);
 int		handle_append_redirect(char *filename);
 int		handle_heredoc_redirect(char *delimiter);
-int		read_heredoc_input(char *delimiter, int write_fd);
+// int		read_heredoc_input(char *delimiter, int write_fd);
 int		write_heredoc_line(char *line, int write_fd);
 
 /* env utils */
