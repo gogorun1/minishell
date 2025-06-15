@@ -6,14 +6,14 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/13 16:47:30 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/13 16:47:33 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/15 17:44:29 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 #include "minishell.h"
 
-void	execute_child(char *path, char **args, t_env *env)
+/*void	execute_child(char *path, char **args, t_env *env)
 {
 	char	**envp;
 
@@ -26,7 +26,7 @@ void	execute_child(char *path, char **args, t_env *env)
 	perror(path);
 	free_env_array(envp);
 	exit(127);
-}
+}*/
 
 int	save_stdio(int saved_fds[2])
 {
@@ -62,6 +62,7 @@ int	wait_for_child(pid_t pid)
         	int signal_num = WTERMSIG(status);
         	if (signal_num == SIGINT)
         	{
+				write(STDOUT_FILENO, "\n", 1);
 				return 130;  // Standard exit code for SIGINT
 			}
 			else if (signal_num == SIGQUIT)
@@ -100,7 +101,7 @@ int	execute_external(command_t *cmd, t_shell *shell)
 	if (pid == -1)
 		return (cleanup_external(path, saved_fds, -1));
 	if (pid == 0)
-		execute_child(path, cmd->args, shell->env_list);
+		run_external_command_in_child(path, cmd->args, shell->env_list);
 	result = wait_for_child(pid);
 	cleanup_external(path, saved_fds, 0);
 	return (result);

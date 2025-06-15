@@ -6,14 +6,14 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 19:10:31 by lcao              #+#    #+#             */
-/*   Updated: 2025/05/28 18:35:14 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/15 17:27:10 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// Execute child process
-void	execute_child(char *path, char **args, t_env *env)
+// Run external command in child process (forked)
+void	run_external_command_in_child(char *path, char **args, t_env *env)
 {
 	char	**envp;
 

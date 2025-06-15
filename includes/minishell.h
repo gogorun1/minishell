@@ -202,7 +202,7 @@ int		execute_external(command_t *cmd, t_shell *shell);
 int		execute_pipeline(ast_node_t *node, t_shell *shell);
 void	execute_left_pipe(ast_node_t *node, int pipe_fd[2], t_shell *shell);
 void	execute_right_pipe(ast_node_t *node, int pipe_fd[2], t_shell *shell);
-void	execute_child(char *path, char **args, t_env *env);
+void	run_external_command_in_child(char *path, char **args, t_env *env);
 void	restore_stdio(int saved_fds[2]);
 
 
