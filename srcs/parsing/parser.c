@@ -43,7 +43,6 @@ char	*read_heredoc_content(char *delimiter)
 		line = readline("> ");
 		if (!line)
 		{
-			// Bash warning for unexpected EOF
 			write(STDERR_FILENO, "minishell: warning: here-document delimited by end-of-file (wanted `", 68);
 			write(STDERR_FILENO, delimiter, strlen(delimiter));
 			write(STDERR_FILENO, "')\n", 3);
@@ -55,7 +54,7 @@ char	*read_heredoc_content(char *delimiter)
 			g_signal_status = 130;
 			return (NULL);
 		}
-		if (ft_strncmp(line, delimiter, ft_strlen(delimiter)) == 0)
+		if (ft_strcmp(line, delimiter) == 0)
 		{
 			free(line);
 			break ;
@@ -115,7 +114,7 @@ static int	handle_redirection(parser_t *parser, ast_node_t *node)
 	parser->current = parser->current->next; // Consume redirection token
 	if (!parser->current || parser->current->type != TOKEN_WORD)
 	{
-		fprintf(stderr, "Parse error: Expected filename after redirection\n");
+		ft_fprintf(2, "Parse error: Expected filename after redirection\n");
 		return (-1);
 	}
 	
