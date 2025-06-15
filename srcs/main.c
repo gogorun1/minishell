@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 13:55:40 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/15 18:33:01 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/15 23:45:10 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ int main(int argc, char **argv, char **envp)
 		tokens = tokenizer(input, &shell);
 		if (!tokens)
 		{
-			fprintf(stderr, "Error: Tokenization failed\n");
+			ft_fprintf(2, "Error: Tokenization failed\n");
 			free(input);
 			continue;
 		}
@@ -125,7 +125,7 @@ int main(int argc, char **argv, char **envp)
 		free(input);
 	}
 	rl_clear_history();
-	// free_env(shell.env_list);
-	// clear_history();
+	free_env(shell.env_list);
+	clear_history();
 	return (shell.last_exit_status);
 }

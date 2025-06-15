@@ -234,6 +234,7 @@ int		write_heredoc_line(char *line, int write_fd);
 /* env utils */
 
 char	*create_env_string(char *key, char *value);
+void	free_env(t_env *head);
 
 /*exeute_env*/
 int		count_env_vars(t_env *env);

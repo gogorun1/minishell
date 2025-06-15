@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 17:11:39 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/14 17:56:48 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/16 01:10:17 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,21 @@ static int	is_number(const char *str)
 	return (1);
 }
 
+void free_args(char **args)
+{
+	int	i;
+
+	if (!args)
+		return ;
+	i = 0;
+	while (args[i])
+	{
+		free(args[i]);
+		i++;
+	}
+	free(args);
+}
+
 int	builtin_exit(char **args)
 {
 	int	status;
@@ -51,5 +66,6 @@ int	builtin_exit(char **args)
 		return (1);
 	}
 	status = ft_atoi(args[1]);
+	free_args(args);
 	exit((unsigned char)status);
 }
