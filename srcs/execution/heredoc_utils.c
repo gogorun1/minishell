@@ -34,9 +34,8 @@ int	handle_append_redirect(char *filename)
 }
 
 // Handle heredoc redirection (<<)
-int	handle_heredoc_redirect(char *delimiter, int fd)
+int	handle_heredoc_redirect(char *delimiter)
 {
-	(void)fd;
 	// Create pipe with stored heredoc content
 	int pipefd[2];
 	if (pipe(pipefd) == -1)

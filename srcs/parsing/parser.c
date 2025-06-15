@@ -233,7 +233,7 @@ char	*read_heredoc_content(char *delimiter)
 		if (!line)
 		{
 			// Bash warning for unexpected EOF
-			write(STDERR_FILENO, "minishell: warning: here-document delimited by end-of-file (wanted `", 64);
+			write(STDERR_FILENO, "minishell: warning: here-document delimited by end-of-file (wanted `", 68);
 			write(STDERR_FILENO, delimiter, strlen(delimiter));
 			write(STDERR_FILENO, "')\n", 3);
 			break; // Use content collected so far
@@ -277,7 +277,7 @@ int	process_heredoc_during_parse(redir_t *redir)
 	return (0);
 }
 
-/* Process all heredocs in a command during parsing */
+/* Process all heredocs in a command during parsing (not in use right now)*/
 int	process_command_heredocs_during_parse(command_t *cmd)
 {
 	redir_t	*current;

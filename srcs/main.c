@@ -29,6 +29,17 @@ int	event(void)
 	return (EXIT_SUCCESS);
 }
 
+static void handle_sigint_in_main(t_shell *shell)
+{
+    if (g_signal_status == SIGINT)
+    {
+        shell->last_exit_status = 130; // Set exit status for Ctrl-C
+        g_signal_status = 0; // Reset global signal status
+        // Just write a newline - don't redisplay prompt
+        // write(STDOUT_FILENO, "\n", 1);
+    }
+}
+
 int main(int argc, char **argv, char **envp)
 {
 	char	*input;
@@ -46,16 +57,17 @@ int main(int argc, char **argv, char **envp)
 	rl_event_hook = event;
 	while (1)
 	{
+        handle_sigint_in_main(&shell);
 	 	
-		if (g_signal_status == SIGINT)
-		{
-			shell.last_exit_status = 130; // Set exit status for Ctrl-C
-			g_signal_status = 0; // Reset global signal status")
-			ft_putchar_fd('\r', STDOUT_FILENO);
-			printf("clear is triggered\n"); // Print a newline after Ctrl-C
-			continue; // Continue to the next iteration
-			// g_signal_status = 0; // Print carriage return to move cursor to the start of the line
-		}
+		// if (g_signal_status == SIGINT)
+		// {
+		// 	shell.last_exit_status = 130; // Set exit status for Ctrl-C
+		// 	g_signal_status = 0; // Reset global signal status")
+		// 	ft_putchar_fd('\r', STDOUT_FILENO);
+		// 	printf("clear is triggered\n"); // Print a newline after Ctrl-C
+		// 	continue; // Continue to the next iteration
+		// 	// g_signal_status = 0; // Print carriage return to move cursor to the start of the line
+		// }
 		// printf("Debug: about to read input, signal_status: %d\n", g_signal_status);
 		input = readline("minishell$");
 		// printf("Debug: input read: '%s', signal is %d\n", input ? input : "NULL", g_signal_status);
@@ -94,6 +106,7 @@ int main(int argc, char **argv, char **envp)
 			printf("--- AST 打印结束 ---\n");
 		}
 		// Execute the command represented by the AST
+        setup_execution_signals();
 		shell.last_exit_status = execute_ast(ast, &shell);
 		if (shell.last_exit_status == -1)
 		{
@@ -103,6 +116,8 @@ int main(int argc, char **argv, char **envp)
 			free(input);
 			continue;
 		}
+        setup_signal_handlers();
+
 		// Free the tokens and AST after execution
 		free_token(tokens);
 		free_ast(ast);

@@ -49,7 +49,7 @@ void	execute_left_pipe(ast_node_t *node, int pipe_fd[2], t_shell *shell)
 	close(pipe_fd[0]);
 	// 先处理 heredoc/重定向，保证 heredoc fd 优先于管道
 	if (node->data.binary.left->type == AST_COMMAND)
-		setup_redirections(node->data.binary.left->data.command.redirs, pipe_fd[1]);
+		setup_redirections(node->data.binary.left->data.command.redirs);
 	dup2(pipe_fd[1], STDOUT_FILENO);
 	close(pipe_fd[1]);
 	exit(execute_ast(node->data.binary.left, shell));

@@ -167,6 +167,7 @@ ast_node_t *parse_command(parser_t *parser);
 ast_node_t *parse_pipeline(parser_t *parser);
 ast_node_t *parse(t_token *tokens);
 char	*expand_variables(char *str, t_shell *g_shell);
+void setup_execution_signals(void);
 
 /*builtin*/
 int	builtin_cd(char **args, t_shell *shell);
@@ -204,6 +205,7 @@ void	execute_right_pipe(ast_node_t *node, int pipe_fd[2], t_shell *shell);
 void	execute_child(char *path, char **args, t_env *env);
 void	restore_stdio(int saved_fds[2]);
 
+
 int     wait_and_get_status(pid_t pid, char *path, char **envp);
 int     handle_fork_error(char *path, char **envp);
 
@@ -214,12 +216,12 @@ int wait_for_pipeline(pid_t left_pid, pid_t right_pid);
 
 
 /* redirections */
-int		setup_redirections(redir_t *redirs, int fd);
-int		handle_single_redirect(redir_t *redir, int fd);
+int		setup_redirections(redir_t *redirs);
+int		handle_single_redirect(redir_t *redir);
 int		handle_input_redirect(char *filename);
 int		handle_output_redirect(char *filename);
 int		handle_append_redirect(char *filename);
-int		handle_heredoc_redirect(char *delimiter, int fd);
+int		handle_heredoc_redirect(char *delimiter);
 int		read_heredoc_input(char *delimiter, int write_fd);
 int		write_heredoc_line(char *line, int write_fd);
 

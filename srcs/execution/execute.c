@@ -40,7 +40,7 @@ int	execute_command(command_t *cmd, t_shell *shell)
 
 	saved_fds[0] = dup(STDIN_FILENO);
 	saved_fds[1] = dup(STDOUT_FILENO);
-	if (setup_redirections(cmd->redirs, -1) != 0)
+	if (setup_redirections(cmd->redirs) != 0)
 	{
 		restore_stdio(saved_fds);
 		return (1);
@@ -102,17 +102,52 @@ int	execute_external(command_t *cmd, t_shell *shell)
 		return (handle_fork_error(path, envp));
 }
 
-// Wait for child and get exit status
+// // Wait for child and get exit status
+// int	wait_and_get_status(pid_t pid, char *path, char **envp)
+// {
+// 	int	status;
+
+// 	waitpid(pid, &status, 0);
+// 	free(path);
+// 	free_env_array(envp);
+// 	if (WIFEXITED(status))
+// 		return (WEXITSTATUS(status));
+// 	else if (WIFSIGNALED(status))
+// 		return (128 + WTERMSIG(status));
+// 	return (1);
+// }
+
 int	wait_and_get_status(pid_t pid, char *path, char **envp)
 {
 	int	status;
+	int signal_num;
+	pid_t result;
 
-	waitpid(pid, &status, 0);
+	result = waitpid(pid, &status, 0);
 	free(path);
 	free_env_array(envp);
-	if (WIFEXITED(status))
-		return (WEXITSTATUS(status));
-	else if (WIFSIGNALED(status))
-		return (128 + WTERMSIG(status));
+	if (result > 0)
+	{
+		// printf("im received waitpid%d\n", result);
+		// printf("exit status is %d\n", WIFSIGNALED(status));
+		if (WIFSIGNALED(status))
+		{
+			signal_num = WTERMSIG(status);
+			if (signal_num == SIGINT)
+			{
+				// printf("im received sigint\n");
+				write(STDOUT_FILENO, "\n", 1);
+				return (130);
+			}
+			else if (signal_num == SIGQUIT)
+			{
+				printf("Exit\n");
+				return (131);
+			}
+			return (128 + signal_num);
+		}
+		else if (WIFEXITED(status))
+			return (WEXITSTATUS(status));
+	}
 	return (1);
 }
