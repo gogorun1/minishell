@@ -34,18 +34,17 @@ int	handle_append_redirect(char *filename)
 }
 
 // Handle heredoc redirection (<<)
-int	handle_heredoc_redirect(char *delimiter)
+int	handle_heredoc_redirect(char *content)
 {
 	// Create pipe with stored heredoc content
 	int pipefd[2];
+
 	if (pipe(pipefd) == -1)
 	{
 		perror("pipe");
 		return (1);
 	}
-			
-	// Write heredoc content to pipe
-	write(pipefd[1], delimiter, strlen(delimiter));
+	write(pipefd[1], content, strlen(content));
 	close(pipefd[1]); // Close write end
 	// Redirect stdin to read from pipe
 	dup2(pipefd[0], STDIN_FILENO);
@@ -97,44 +96,44 @@ int	handle_heredoc_redirect(char *delimiter)
 // 	return (0);
 // }
 
-// Read heredoc input from user
-int	read_heredoc_input(char *delimiter, int write_fd)
-{
-	char	*line;
+// // Read heredoc input from user
+// int	read_heredoc_input(char *delimiter, int write_fd)
+// {
+// 	char	*line;
 
-	write(2, "heredoc\n", 8);
-	while (1)
-	{
-		if (g_signal_status == SIGINT)
-		{
-			return (1);
-		}
-		line = readline("> ");
-		if (g_signal_status == SIGINT)
-		{
-			return (1);
-		}
-	 	// Clear the line after Ctrl-C
-		if (!line)
-		{
-			// ft_fprintf(STDERR_FILENO,
-			// 	"minishell: warning: here-document delimited by end-of-file\n");
-			break ;
-		}
-		if (strcmp(line, delimiter) == 0)
-		{
-			free(line);
-			break ;
-		}
-		if (write_heredoc_line(line, write_fd) != 0)
-		{
-			free(line);
-			return (1);
-		}
-		free(line);
-	}
-	return (0);
-}
+// 	write(2, "heredoc\n", 8);
+// 	while (1)
+// 	{
+// 		if (g_signal_status == SIGINT)
+// 		{
+// 			return (1);
+// 		}
+// 		line = readline("> ");
+// 		if (g_signal_status == SIGINT)
+// 		{
+// 			return (1);
+// 		}
+// 	 	// Clear the line after Ctrl-C
+// 		if (!line)
+// 		{
+// 			// ft_fprintf(STDERR_FILENO,
+// 			// 	"minishell: warning: here-document delimited by end-of-file\n");
+// 			break ;
+// 		}
+// 		if (strcmp(line, delimiter) == 0)
+// 		{
+// 			free(line);
+// 			break ;
+// 		}
+// 		if (write_heredoc_line(line, write_fd) != 0)
+// 		{
+// 			free(line);
+// 			return (1);
+// 		}
+// 		free(line);
+// 	}
+// 	return (0);
+// }
 
 // Write heredoc line to pipe
 int	write_heredoc_line(char *line, int write_fd)

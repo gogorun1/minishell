@@ -25,7 +25,7 @@ int	setup_redirections(redir_t *redirs)
 	current = redirs;
 	while (current)
 	{
-		write(2, "setup_redirections\n", 19);
+		// write(2, "setup_redirections\n", 19);
 		if (handle_single_redirect(current) != 0)
 			return (1);
 		current = current->next;
@@ -43,7 +43,7 @@ int	handle_single_redirect(redir_t *redir)
 	else if (redir->type == REDIR_APPEND)
 		return (handle_append_redirect(redir->file));
 	else if (redir->type == REDIR_HEREDOC)
-		return (handle_heredoc_redirect(redir->file));
+		return (handle_heredoc_redirect(redir->heredoc_content));
 	return (1);
 }
 
