@@ -186,6 +186,10 @@ int	builtin_echo(char **args);
 int	builtin_env_list(t_env *env, t_shell *shell, char **args);
 int	builtin_export(char **args, t_env **env, t_shell *shell);
 int export_error(const char *msg, t_shell *shell);
+void	update_or_add(char *key, char *value, t_env **env);
+t_env	*find_node(const char *key, t_env *env);
+void	add_node(char *key, char *value, t_env **env);
+
 
 /*env*/
 int	builtin_unset(char **args, t_env **env_list);

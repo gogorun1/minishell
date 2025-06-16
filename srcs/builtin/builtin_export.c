@@ -6,13 +6,13 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 16:27:42 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/16 11:05:47 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/16 19:06:27 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 /* Search for a node matching key; return it or NULL */
-static t_env	*find_node(const char *key, t_env *env)
+t_env	*find_node(const char *key, t_env *env)
 {
 	while (env)
 	{
@@ -24,7 +24,7 @@ static t_env	*find_node(const char *key, t_env *env)
 }
 
 /* Create a new node with given key/value and push to head */
-static void	add_node(char *key, char *value, t_env **env)
+void	add_node(char *key, char *value, t_env **env)
 {
 	t_env	*new;
 
@@ -40,7 +40,7 @@ static void	add_node(char *key, char *value, t_env **env)
 	*env = new;
 }
 
-static void	update_or_add(char *key, char *value, t_env **env)
+void	update_or_add(char *key, char *value, t_env **env)
 {
 	t_env	*node;
 
