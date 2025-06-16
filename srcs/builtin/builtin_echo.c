@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 18:52:40 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/14 18:32:20 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/16 19:33:21 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,10 @@ static void	print_arg(const char *arg)
 	// 	|| (arg[0] == '\'' && arg[1] == '\'')))
 	// 	return ;
 	// else
-	printf("%s", arg);
+	if (printf("%s", arg) < 0)
+	{
+		perror("echo");
+	}
 }
 
 int	builtin_echo(char **args)
