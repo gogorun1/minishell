@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 10:00:00 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/15 17:36:42 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/16 01:14:31 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 int			execute_ast(ast_node_t *node, t_shell *shell);
 int			execute_command(command_t *cmd, t_shell *shell);
+//int			execute_external(command_t *cmd, t_shell *shell);
 int			wait_and_get_status(pid_t pid, char *path, char **envp);
 //static int	exec_external_fork(char *path, char **args, t_env *env_list);
 //execute_ast：入口函数，识别节点类型并调用相应的执行函数。
@@ -100,21 +101,6 @@ int	execute_command(command_t *cmd, t_shell *shell)
 	else
 		return (handle_fork_error(path, envp));
 }*/
-
-// // Wait for child and get exit status
-// int	wait_and_get_status(pid_t pid, char *path, char **envp)
-// {
-// 	int	status;
-
-// 	waitpid(pid, &status, 0);
-// 	free(path);
-// 	free_env_array(envp);
-// 	if (WIFEXITED(status))
-// 		return (WEXITSTATUS(status));
-// 	else if (WIFSIGNALED(status))
-// 		return (128 + WTERMSIG(status));
-// 	return (1);
-// }
 
 int	wait_and_get_status(pid_t pid, char *path, char **envp)
 {

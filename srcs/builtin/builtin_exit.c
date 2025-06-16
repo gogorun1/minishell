@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 17:11:39 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/16 01:10:17 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/16 10:48:38 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,25 +47,28 @@ void free_args(char **args)
 	free(args);
 }
 
-int	builtin_exit(char **args)
+int	builtin_exit(char **args, t_shell *shell)
 {
-	int	status;
+    int	status;
 
-	write(1, "exit\n", 5);
-	if (!args[1])
-		exit(0);
-	if (!is_number(args[1]))
-	{
-		ft_fprintf(2, "minishell: exit: %s: numeric argument required\n",
-			args[1]);
-		exit(2);
-	}
-	if (args[2])
-	{
-		ft_fprintf(2, "minishell: exit: too many arguments\n");
-		return (1);
-	}
-	status = ft_atoi(args[1]);
-	free_args(args);
-	exit((unsigned char)status);
+    write(1, "exit\n", 5);
+    if (!args[1])
+        shell->last_exit_status = 0;
+    else if (!is_number(args[1]))
+    {
+        ft_fprintf(2, "minishell: exit: %s: numeric argument required\n",
+            args[1]);
+        shell->last_exit_status = 2;
+    }
+    else if (args[2])
+    {
+        ft_fprintf(2, "minishell: exit: too many arguments\n");
+        return (1);
+    }
+    else
+    {
+        status = ft_atoi(args[1]);
+        shell->last_exit_status = status;
+    }
+    return (-1);  // 特殊值表示需要退出
 }

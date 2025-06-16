@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 13:55:40 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/15 23:45:10 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/16 10:48:52 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,21 @@ static void handle_sigint_in_main(t_shell *shell)
         // write(STDOUT_FILENO, "\n", 1);
     }
 }
-
+void	cleanup_and_exit(t_shell *shell, t_token *tokens, 
+                        ast_node_t *ast, char *input)
+{
+    if (tokens)
+        free_token_list(tokens);
+    if (ast)
+        free_ast(ast);
+    if (input)
+        free(input);
+    rl_clear_history();
+    if (shell->env_list)
+        free_env(shell->env_list);
+    clear_history();
+    exit(shell->last_exit_status);
+}
 int main(int argc, char **argv, char **envp)
 {
 	char	*input;
@@ -110,15 +124,8 @@ int main(int argc, char **argv, char **envp)
         setup_execution_signals();
 		shell.last_exit_status = execute_ast(ast, &shell);
 		if (shell.last_exit_status == -1)
-		{
-			ft_fprintf(2, "minishell: execution error\n");
-			free_token_list(tokens);
-			free_ast(ast);
-			free(input);
-			continue;
-		}
+			cleanup_and_exit(&shell, tokens, ast, input);
         setup_signal_handlers();
-
 		// Free the tokens and AST after execution
 		free_token_list(tokens);
 		free_ast(ast);
