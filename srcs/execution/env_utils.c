@@ -61,7 +61,7 @@ void	free_env(t_env *head)
 	{
 		tmp = head;
 		head = head->next;
-		printf("free env: %s=%s\n", tmp->key, tmp->value);
+		// printf("free env: %s=%s\n", tmp->key, tmp->value);
 		free(tmp->key);
 		free(tmp->value);
 		free(tmp);

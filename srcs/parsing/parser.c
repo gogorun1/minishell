@@ -210,6 +210,7 @@ ast_node_t	*parse_command(parser_t *parser)
 			// This will read heredoc content if it's a heredoc
 			if (handle_redirection(parser, node) == -1)
 			{
+				free_str_array(args);
 				free_ast(node);
 				return (NULL);
 			}

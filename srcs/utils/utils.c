@@ -10,7 +10,7 @@ int	ft_strcmp(const char *s1, const char *s2)
 	return (*(unsigned char *)s1 - *(unsigned char *)s2);
 }
 
-void ft_free_str_array(char **arr)
+void free_str_array(char **arr)
 {
     int i;
 
@@ -160,7 +160,7 @@ char    *find_executable(char *cmd, t_env *env)
 
     found_path = search_in_paths(cmd, paths);
 
-    ft_free_str_array(paths); // Always free paths array after use
+    free_str_array(paths); // Always free paths array after use
     return (found_path);
 }
 

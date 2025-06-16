@@ -174,6 +174,7 @@ char	*read_heredoc_content(char *delimiter);
 char *ft_strcat(char *dest, const char *src);
 char *ft_strjoin3(const char *s1, const char *s2, const char *s3);
 int	ft_strcmp(const char *s1, const char *s2);
+void free_str_array(char **arr);
 
 /*builtin*/
 int	builtin_cd(char **args, t_shell *shell);
