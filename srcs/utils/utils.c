@@ -147,6 +147,9 @@ char    *find_executable(char *cmd, t_env *env)
     char    **paths;
     char    *found_path;
 
+	if (!cmd || !*cmd)
+		return (NULL); // Return NULL if cmd is empty
+
     if (ft_strchr(cmd, '/'))
         return (handle_direct_path(cmd));
 

@@ -6,21 +6,11 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/02 17:12:44 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/15 20:02:46 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/16 11:05:06 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-/* Export errors */
-
-void	error_export(char *identifier, t_shell *shell)
-{
-	error_msg("export", "not a valid identifier", 1, shell);
-	ft_putstr_fd("minishell: export: `", STDERR_FILENO);
-	ft_putstr_fd(identifier, STDERR_FILENO);
-	ft_putstr_fd("': not a valid identifier\n", STDERR_FILENO);
-}
 
 /* Exit errors */
 
@@ -44,9 +34,9 @@ void	error_unset(const char *identifier, t_shell *shell)
 		shell->last_exit_status = 1;
 }
 
-/* 通用 builtin_error 实现 - 专门用于 export 的标识符错误 */
+/*  专门用于 export 的标识符错误 */
 
-int	builtin_error(const char *msg, t_shell *shell)
+int	export_error(const char *msg, t_shell *shell)
 {
 	ft_putstr_fd("minishell: export: `", STDERR_FILENO);
 	ft_putstr_fd((char *)msg, STDERR_FILENO);

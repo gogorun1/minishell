@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 16:27:42 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/14 19:01:39 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/16 11:05:47 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ static int	handle_export_arg_with_equal(char *arg, char *eq,
 	key = ft_strndup(arg, eq - arg);
 	if (!is_valid_var_name(key))
 	{
-		builtin_error(arg, shell);
+		export_error(arg, shell);
 		free(key);
 		return (1);
 	}
@@ -94,7 +94,7 @@ int	builtin_export(char **args, t_env **env, t_shell *shell)
 		}
 		else if (!is_valid_var_name(args[i]))
 		{
-			builtin_error(args[i], shell);
+			export_error(args[i], shell);
 			has_error = 1;
 		}
 		i++;

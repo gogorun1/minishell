@@ -179,11 +179,11 @@ void free_str_array(char **arr);
 /*builtin*/
 int	builtin_cd(char **args, t_shell *shell);
 int	builtin_pwd(void);
-int	builtin_exit(char **args);
+int	builtin_exit(char **args, t_shell *shell);
 int	builtin_echo(char **args);
 int	builtin_env_list(t_env *env, t_shell *shell, char **args);
 int	builtin_export(char **args, t_env **env, t_shell *shell);
-int builtin_error(const char *msg, t_shell *shell);
+int export_error(const char *msg, t_shell *shell);
 
 /*env*/
 int	builtin_unset(char **args, t_env **env_list);

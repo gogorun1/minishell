@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 16:30:06 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/14 18:14:35 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/16 10:44:16 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ int	run_builtin(char **args, t_env **env_list, t_shell *shell)
 	if (strcmp(args[0], "cd") == 0)
 		return (builtin_cd(args, shell));
 	if (strcmp(args[0], "exit") == 0)
-		return (builtin_exit(args));
+		return (builtin_exit(args, shell));
 	if (strcmp(args[0], "pwd") == 0)
 		return (builtin_pwd());
 	if (strcmp(args[0], "env") == 0)

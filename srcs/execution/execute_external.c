@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/13 16:47:30 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/15 17:44:29 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/16 10:25:03 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,13 +68,11 @@ int	wait_for_child(pid_t pid)
 			else if (signal_num == SIGQUIT)
 			{
 				printf("Quit\n");  // bash prints "Quit" for SIGQUIT
-				return 131;  // Standard exit code for SIGQUIT
+				return (131);  // Standard exit code for SIGQUIT
 			}
 		}
 		else if (WIFEXITED(status))
-		{
 			return WEXITSTATUS(status);
-		}
 	}
 	return (-1);
 }
