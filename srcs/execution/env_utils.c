@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 18:06:10 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/15 23:51:57 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/16 10:57:15 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 static void	fill_env_string(char *dest, char *key, char *value);
 char		*create_env_string(char *key, char *value);
+void		free_env(t_env *head);
 
 static void	fill_env_string(char *dest, char *key, char *value)
 {
