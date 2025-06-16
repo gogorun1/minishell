@@ -84,7 +84,7 @@ int	execute_external(command_t *cmd, t_shell *shell)
 	int		saved_fds[2];
 	int		result;
 
-	path = find_executable(cmd->args[0]);
+	path = find_executable(cmd->args[0], shell->env_list);
 	if (!path)
 	{
 		ft_fprintf(STDERR_FILENO, "minishell: %s: command not found\n",

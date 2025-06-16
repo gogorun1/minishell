@@ -1,5 +1,30 @@
 #include "minishell.h"
 
+int	ft_strcmp(const char *s1, const char *s2)
+{
+	while (*s1 && (*s1 == *s2))
+	{
+		s1++;
+		s2++;
+	}
+	return (*(unsigned char *)s1 - *(unsigned char *)s2);
+}
+
+void free_str_array(char **arr)
+{
+    int i;
+
+    if (!arr)
+        return ;
+    i = 0;
+    while (arr[i])
+    {
+        free(arr[i]);
+        i++;
+    }
+    free(arr);
+}
+
 int	is_valid_var_char(char c)
 {
 	return (c == '_' || ft_isalnum(c));
@@ -11,20 +36,31 @@ bool is_special_char(char c)
     return (c == '|' || c == '<' || c == '>');
 }
 
+char *ft_strcat(char *dest, const char *src)
+{
+	char *ptr = dest + ft_strlen(dest);
+	while (*src)
+	{
+		*ptr++ = *src++;
+	}
+	*ptr = '\0';
+	return dest;
+}
+
 char *ft_strjoin3(const char *s1, const char *s2, const char *s3)
 {
 	char *result;
-	size_t len1 = strlen(s1);
-	size_t len2 = strlen(s2);
-	size_t len3 = strlen(s3);
+	size_t len1 = ft_strlen(s1);
+	size_t len2 = ft_strlen(s2);
+	size_t len3 = ft_strlen(s3);
 
 	result = (char *)malloc(len1 + len2 + len3 + 1);
 	if (!result)
 		return NULL;
 
-	strcpy(result, s1);
-	strcat(result, s2);
-	strcat(result, s3);
+	ft_strcpy(result, s1);
+	ft_strcat(result, s2);
+	ft_strcat(result, s3);
 
 	return result;
 }
@@ -75,35 +111,57 @@ void	handle_special_char(char *line, int *i, t_token **tokens)
 }
 
 // 查找可执行文件
-char *find_executable(char *cmd)
+// Helper to handle the case where cmd contains a '/'
+static char *handle_direct_path(char *cmd)
 {
-    if (strchr(cmd, '/'))
+    if (access(cmd, X_OK) == 0)
+        return (ft_strdup(cmd));
+    return (NULL);
+}
+
+// Helper to iterate through PATH directories and find the executable
+static char *search_in_paths(char *cmd, char **paths)
+{
+    char    *full_path;
+    int     i;
+
+    i = 0;
+    while (paths[i])
     {
-        if (access(cmd, X_OK) == 0)
-            return ft_strdup(cmd);
-        return NULL;
-    }
-    char *path_env = getenv("PATH");
-    if (!path_env)
-        return NULL;
-        
-    char *path_copy = ft_strdup(path_env);
-    char *path_token = strtok(path_copy, ":");
-    
-    while (path_token)
-    {
-        char *full_path = ft_strjoin3(path_token, "/", cmd);
+        full_path = ft_strjoin3(paths[i], "/", cmd);
+        if (!full_path)
+            return (NULL);
         if (access(full_path, X_OK) == 0)
-        {
-            free(path_copy);
-            return full_path;
-        }
-        free(full_path);
-        path_token = strtok(NULL, ":");
+            return (full_path);
+        free(full_path); // Free path if not found/executable
+        i++;
     }
-    
-    free(path_copy);
-    return NULL;
+    return (NULL); // Not found in any path
+}
+
+// --- Main find_executable function ---
+
+char    *find_executable(char *cmd, t_env *env)
+{
+    char    *path_env;
+    char    **paths;
+    char    *found_path;
+
+    if (ft_strchr(cmd, '/'))
+        return (handle_direct_path(cmd));
+
+    path_env = my_getenv("PATH", env);
+    if (!path_env)
+        return (NULL);
+
+    paths = ft_split(path_env, ':');
+    if (!paths)
+        return (NULL);
+
+    found_path = search_in_paths(cmd, paths);
+
+    free_str_array(paths); // Always free paths array after use
+    return (found_path);
 }
 
 // Custom getenv to work with your envp array
@@ -120,7 +178,7 @@ char *my_getenv(const char *key, t_env *envp)
 	while (current) 
 	{
 		// printf("Checking env key: %s, key: %s\n", current->key, key); // Debugging line
-		if (strcmp(current->key, key) == 0) 
+		if (ft_strcmp(current->key, key) == 0) 
 		{
 			return current->value; // 返回环境变量的值
 		}
@@ -129,39 +187,62 @@ char *my_getenv(const char *key, t_env *envp)
 	return NULL; // 如果没有找到，返回NULL
 }
 
-// 获取环境变量值
-char *get_env_value(char *var_name)
+/* Free command arguments array */
+static void	free_command_args(char **args)
 {
-	char *value = getenv(var_name);
-	if (value)
-		return ft_strdup(value);
-	return NULL;
+	int	i;
+
+	if (!args)
+		return ;
+	i = 0;
+	while (args[i])
+	{
+		free(args[i]);
+		i++;
+	}
+	free(args);
 }
 
-void free_ast(ast_node_t *node) 
+/* Free redirection list */
+static void	free_redirections(redir_t *redir)
 {
-    if (!node)
-        return;
-    switch (node->type) {
-        case AST_COMMAND:
-            if (node->data.command.args) {
-                for (int i = 0; node->data.command.args[i]; i++)
-                    free(node->data.command.args[i]);
-                free(node->data.command.args);
-            }
-            redir_t *redir = node->data.command.redirs;
-            while (redir) {
-                redir_t *next = redir->next;
-                free(redir->file);
-                free(redir);
-                redir = next;
-            }
-            break;
-        case AST_PIPE:
-            free_ast(node->data.binary.left);
-            free_ast(node->data.binary.right);
-            break;
-            break;
-    }
-    free(node);
+	redir_t	*next;
+
+	while (redir)
+	{
+		next = redir->next;
+		if (redir->file)
+			free(redir->file);
+		if (redir->heredoc_content)
+			free(redir->heredoc_content);
+		free(redir);
+		redir = next;
+	}
 }
+
+/* Free command node data */
+static void	free_command_node(ast_node_t *node)
+{
+	free_command_args(node->data.command.args);
+	free_redirections(node->data.command.redirs);
+}
+
+/* Free pipe node data */
+static void	free_pipe_node(ast_node_t *node)
+{
+	free_ast(node->data.binary.left);
+	free_ast(node->data.binary.right);
+}
+
+/* Free AST node recursively */
+void	free_ast(ast_node_t *node)
+{
+	if (!node)
+		return ;
+	if (node->type == AST_COMMAND)
+		free_command_node(node);
+	else if (node->type == AST_PIPE)
+		free_pipe_node(node);
+	free(node);
+}
+

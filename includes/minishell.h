@@ -157,7 +157,7 @@ void	free_token_list(t_token *head);
 t_token	*tokenizer(char *line, t_shell *g_shell);
 void	print_tokens(t_token *tokens);
 void	handle_special_char(char *line, int *i, t_token **tokens);
-char	*find_executable(char *cmd);
+char	*find_executable(char *cmd, t_env *env);
 char	*get_env_value(char *var_name);
 // int		handle_quotes(char **input, int *i, t_token **tokens);
 char	*ft_strndup(const char *s, size_t n);
@@ -171,6 +171,10 @@ ast_node_t *parse(t_token *tokens);
 char	*expand_variables(char *str, t_shell *g_shell);
 void setup_execution_signals(void);
 char	*read_heredoc_content(char *delimiter);
+char *ft_strcat(char *dest, const char *src);
+char *ft_strjoin3(const char *s1, const char *s2, const char *s3);
+int	ft_strcmp(const char *s1, const char *s2);
+void free_str_array(char **arr);
 
 /*builtin*/
 int	builtin_cd(char **args, t_shell *shell);

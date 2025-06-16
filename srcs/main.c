@@ -108,7 +108,7 @@ int main(int argc, char **argv, char **envp)
 		ast = parse(tokens);
 		if (!ast)
 		{
-			ft_fprintf(2, "minishell: parse error\n");
+			// ft_fprintf(2, "minishell: parse error\n");
 			shell.last_exit_status = 2;
 			free_token_list(tokens);
 			free(input);
