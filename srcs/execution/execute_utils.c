@@ -17,7 +17,7 @@ void	run_external_command_in_child(char *path, char **args, t_env *env)
 {
 	char	**envp;
 
-	printf("it is in the child\n");
+	// printf("it is in the child\n");
 	signal(SIGINT, SIG_DFL); // Revert SIGINT to its default (terminate process)
 	signal(SIGQUIT, SIG_DFL);
 	envp = env_to_array(env);

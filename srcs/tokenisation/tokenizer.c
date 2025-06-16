@@ -143,7 +143,8 @@ static int	tokenizer_handle_word(const char *line, int *i, char **word, int *in_
 		(*i)++;
 	temp = ft_strndup(line + start, *i - start);
 	// printf("temp: %s\n", temp);
-	expanded = expand_variables(temp, g_shell);
+	if (temp)
+		expanded = expand_variables(temp, g_shell);
 	free(temp);
 	// printf("expanded: %s\n", expanded);
 	if (*in_word)
@@ -155,6 +156,11 @@ static int	tokenizer_handle_word(const char *line, int *i, char **word, int *in_
 	}
 	else
 	{
+		if (!*expanded)
+		{
+			free(expanded);
+			return (0);
+		}
 		*word = expanded;
 		*in_word = 1;
 	}
