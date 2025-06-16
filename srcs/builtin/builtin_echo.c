@@ -30,27 +30,27 @@ static int	is_option_n(const char *str)
 
 static void	print_arg(const char *arg)
 {
-	int		i;
-	int		len;
+	// int		i;
+	// int		len;
 
 	if (!arg)
 		return ;
-	len = (int)ft_strlen(arg);
-	if (len >= 2 && ((arg[0] == '"' && arg[len - 1] == '"') \
-		|| (arg[0] == '\'' && arg[len - 1] == '\'')) && len > 2)
-	{
-		i = 1;
-		while (i < len - 1)
-		{
-			putchar(arg[i]);
-			i++;
-		}
-	}
-	else if (len == 2 && ((arg[0] == '"' && arg[1] == '"') \
-		|| (arg[0] == '\'' && arg[1] == '\'')))
-		return ;
-	else
-		printf("%s", arg);
+	// len = (int)ft_strlen(arg);
+	// if (len >= 2 && ((arg[0] == '"' && arg[len - 1] == '"') \
+	// 	|| (arg[0] == '\'' && arg[len - 1] == '\'')) && len > 2)
+	// {
+	// 	i = 1;
+	// 	while (i < len - 1)
+	// 	{
+	// 		putchar(arg[i]);
+	// 		i++;
+	// 	}
+	// }
+	// else if (len == 2 && ((arg[0] == '"' && arg[1] == '"') \
+	// 	|| (arg[0] == '\'' && arg[1] == '\'')))
+	// 	return ;
+	// else
+	printf("%s", arg);
 }
 
 int	builtin_echo(char **args)

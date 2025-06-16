@@ -71,8 +71,9 @@ static int	handle_export_arg_with_equal(char *arg, char *eq,
 		free(key);
 		return (1);
 	}
-	value = strdup(eq + 1);
+	value = ft_strdup(eq + 1);
 	update_or_add(key, value, env);
+	free(value);
 	return (0);
 }
 

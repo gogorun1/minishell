@@ -46,7 +46,7 @@ char	*read_heredoc_content(char *delimiter)
 			write(STDERR_FILENO, "minishell: warning: here-document delimited by end-of-file (wanted `", 68);
 			write(STDERR_FILENO, delimiter, strlen(delimiter));
 			write(STDERR_FILENO, "')\n", 3);
-			return (NULL);
+			return (ft_strdup(buffer));
 		}
 		if (errno == EINTR)
 		{
@@ -288,9 +288,15 @@ int	setup_heredoc_for_execution(redir_t *redir)
 		perror("pipe");
 		return (-1);
 	}
+	if (g_signal_status == SIGQUIT)
+	{
+		g_signal_status = 0;
+		close(pipefd[1]);
+		return (0);
+	}
 	
 	// Write the stored content to pipe
-	write(pipefd[1], redir->heredoc_content, strlen(redir->heredoc_content));
+	write(pipefd[1], redir->heredoc_content, ft_strlen(redir->heredoc_content));
 	close(pipefd[1]); // Close write end
 	
 	redir->heredoc_fd = pipefd[0]; // Store read end

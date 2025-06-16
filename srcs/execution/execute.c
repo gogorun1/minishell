@@ -23,10 +23,18 @@ int			wait_and_get_status(pid_t pid, char *path, char **envp);
 
 int	execute_ast(ast_node_t *node, t_shell *shell)
 {
+	int	temp;
+
+	temp = 0;
 	if (!node)
 		return (0);
 	if (node->type == AST_COMMAND)
-		return (execute_command(&node->data.command, shell));
+	{
+		temp = execute_command(&node->data.command, shell);
+		if (temp == -1)
+			cleanup_and_exit(shell, NULL, node, NULL);
+		return (temp);
+	}
 	else if (node->type == AST_PIPE)
 		return (execute_pipeline(node, shell));
 	return (-1);
@@ -53,8 +61,7 @@ int	execute_command(command_t *cmd, t_shell *shell)
 	if (is_builtin(cmd->args[0]))
 		result = run_builtin(cmd->args, &(shell->env_list), shell);
 	else
-		result = execute_external(cmd, shell);
-	shell->last_exit_status = result;
+		result = execute_external(cmd, shell, saved_fds);
 	restore_stdio(saved_fds);
 	return (result);
 }

@@ -27,10 +27,10 @@ static int	expand_var(const char *str, int i, char **result, t_shell *g_shell)
 char	*expand_variables(char *str, t_shell *g_shell)
 {
 	char	*result;
-	char	*temp;
+	char	*temp = 0;
 	int		i;
 	int		start;
-	char	status_str[12];
+	char	status_str[12] = {0};
 
 	i = 0;
 	start = 0;

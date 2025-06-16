@@ -109,7 +109,13 @@ int main(int argc, char **argv, char **envp)
 		if (!ast)
 		{
 			// ft_fprintf(2, "minishell: parse error\n");
-			shell.last_exit_status = 2;
+			if (g_signal_status == 130)
+			{
+				shell.last_exit_status = 130;
+				g_signal_status = 0;
+			}
+			else
+				shell.last_exit_status = 2;
 			free_token_list(tokens);
 			free(input);
 			continue;
@@ -120,6 +126,7 @@ int main(int argc, char **argv, char **envp)
 			print_ast(ast, 0); // 从根节点开始打印，初始缩进为 0
 			printf("--- AST Print End ---\n");
 		}
+		free_token_list(tokens);
 		// Execute the command represented by the AST
         setup_execution_signals();
 		shell.last_exit_status = execute_ast(ast, &shell);
@@ -127,7 +134,6 @@ int main(int argc, char **argv, char **envp)
 			cleanup_and_exit(&shell, tokens, ast, input);
         setup_signal_handlers();
 		// Free the tokens and AST after execution
-		free_token_list(tokens);
 		free_ast(ast);
 		free(input);
 	}

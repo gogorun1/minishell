@@ -30,8 +30,6 @@
 
 int	save_stdio(int saved_fds[2])
 {
-	saved_fds[0] = dup(STDIN_FILENO);
-	saved_fds[1] = dup(STDOUT_FILENO);
 	if (saved_fds[0] == -1 || saved_fds[1] == -1)
 	{
 		perror("dup");
@@ -77,11 +75,10 @@ int	wait_for_child(pid_t pid)
 	return (-1);
 }
 
-int	execute_external(command_t *cmd, t_shell *shell)
+int	execute_external(command_t *cmd, t_shell *shell, int saved_fds[2])
 {
 	char	*path;
 	pid_t	pid;
-	int		saved_fds[2];
 	int		result;
 
 	path = find_executable(cmd->args[0], shell->env_list);
@@ -92,14 +89,21 @@ int	execute_external(command_t *cmd, t_shell *shell)
 		return (127);
 	}
 	if (save_stdio(saved_fds) == -1)
+	{
 		return (cleanup_external(path, NULL, -1));
+
+	}
 	if (cmd->redirs && setup_redirections(cmd->redirs) != 0)
 		return (cleanup_external(path, saved_fds, 1));
 	pid = fork();
 	if (pid == -1)
 		return (cleanup_external(path, saved_fds, -1));
 	if (pid == 0)
+	{
+		close(saved_fds[0]);
+		close(saved_fds[1]);
 		run_external_command_in_child(path, cmd->args, shell->env_list);
+	}
 	result = wait_for_child(pid);
 	cleanup_external(path, saved_fds, 0);
 	return (result);

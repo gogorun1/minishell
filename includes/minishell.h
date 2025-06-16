@@ -175,6 +175,8 @@ char *ft_strcat(char *dest, const char *src);
 char *ft_strjoin3(const char *s1, const char *s2, const char *s3);
 int	ft_strcmp(const char *s1, const char *s2);
 void free_str_array(char **arr);
+void	cleanup_and_exit(t_shell *shell, t_token *tokens, 
+                        ast_node_t *ast, char *input);
 
 /*builtin*/
 int	builtin_cd(char **args, t_shell *shell);
@@ -205,7 +207,7 @@ int     ft_fprintf(int fd, const char *format, ...);
 /* execution */
 int		execute_ast(ast_node_t *node, t_shell *shell);
 int		execute_command(command_t *cmd, t_shell *shell);
-int		execute_external(command_t *cmd, t_shell *shell);
+int	execute_external(command_t *cmd, t_shell *shell, int saved_fds[2]);
 int		execute_pipeline(ast_node_t *node, t_shell *shell);
 void	execute_left_pipe(ast_node_t *node, int pipe_fd[2], t_shell *shell);
 void	execute_right_pipe(ast_node_t *node, int pipe_fd[2], t_shell *shell);

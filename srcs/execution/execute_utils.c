@@ -30,6 +30,7 @@ void	run_external_command_in_child(char *path, char **args, t_env *env)
 		free_env_array(envp);
 		exit(127);
 	}
+
 }
 
 // Restore stdin/stdout
@@ -37,8 +38,10 @@ void	restore_stdio(int saved_fds[2])
 {
 	if (saved_fds[0] != -1)
 	{
-		dup2(saved_fds[0], STDIN_FILENO);
 		close(saved_fds[0]);
+
+		dup2(saved_fds[0], STDIN_FILENO);
+		
 	}
 	if (saved_fds[1] != -1)
 	{
