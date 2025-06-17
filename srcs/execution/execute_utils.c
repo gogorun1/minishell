@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 19:10:31 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/17 11:43:38 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/17 14:42:26 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,8 @@ void	restore_stdio(int saved_fds[2])
 {
 	if (saved_fds[0] != -1)
 	{
-		close(saved_fds[0]);
 		dup2(saved_fds[0], STDIN_FILENO);
+		close(saved_fds[0]);
 	}
 	if (saved_fds[1] != -1)
 	{

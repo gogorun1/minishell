@@ -290,6 +290,7 @@ int	setup_heredoc_for_execution(redir_t *redir)
 	}
 	if (g_signal_status == SIGQUIT)
 	{
+		printf("sigquit is triggered\n");
 		g_signal_status = 0;
 		close(pipefd[1]);
 		return (0);

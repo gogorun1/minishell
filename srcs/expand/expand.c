@@ -2,14 +2,15 @@
 
 static int	expand_var(const char *str, int i, char **result, t_shell *g_shell)
 {
-	int	var_start;
-	int	var_len;
+	int		var_start;
+	int		var_len;
 	char	*var_value;
 	char	*temp;
 
 	var_start = i + 1;
 	var_len = 0;
-	while (str[var_start + var_len] && is_valid_var_char(str[var_start + var_len]))
+	while (str[var_start + var_len] && is_valid_var_char(str[var_start
+			+ var_len]))
 		var_len++;
 	var_value = get_variable_value(str + var_start, var_len, g_shell);
 	if (var_value)
@@ -26,11 +27,11 @@ static int	expand_var(const char *str, int i, char **result, t_shell *g_shell)
 // and $ with the last exit status. Returns a newly allocated string.
 char	*expand_variables(char *str, t_shell *g_shell)
 {
-	char	*result;
-	char	*temp = 0;
-	int		i;
-	int		start;
-	char	status_str[12] = {0};
+	char *result;
+	char *temp = 0;
+	int i;
+	int start;
+	char status_str[12] = {0};
 
 	i = 0;
 	start = 0;
