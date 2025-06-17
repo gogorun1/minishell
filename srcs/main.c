@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 13:55:40 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/17 16:20:59 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/17 18:06:22 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,12 +131,12 @@ int main(int argc, char **argv, char **envp)
 			free(input);
 			continue;
 		}
-		// else
-		// {
-		// 	printf("--- (AST)  ---\n");
-		// 	print_ast(ast, 0); // 从根节点开始打印，初始缩进为 0
-		// 	printf("--- AST Print End ---\n");
-		// }
+		else
+		{
+			printf("--- (AST)  ---\n");
+			print_ast(ast, 0); // 从根节点开始打印，初始缩进为 0
+			printf("--- AST Print End ---\n");
+		}
 		free_token_list(tokens);
 		// Execute the command represented by the AST
         setup_execution_signals();
