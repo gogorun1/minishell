@@ -66,7 +66,7 @@ void	free_token_list(t_token *head)
 static int	tokenizer_handle_quote(const char *line, int *i, char **word, int *in_word, t_shell *g_shell)
 {
 	char	quote;
-	int	start;
+	int		start;
 	char	*temp;
 	char	*expanded;
 	char	*joined;
@@ -100,35 +100,6 @@ static int	tokenizer_handle_quote(const char *line, int *i, char **word, int *in
 	return (1);
 }
 
-// static int	tokenizer_handle_var(const char *line, int *i, char **word, int *in_word, t_shell *g_shell)
-// {
-// 	int	start;
-// 	char	*var_name;
-// 	char	*var_value;
-// 	char	*joined;
-
-// 	start = *i;
-// 	(*i)++;
-// 	while (line[*i] && is_valid_var_char(line[*i]))
-// 		(*i)++;
-// 	var_name = ft_strndup(line + start + 1, *i - start - 1);
-// 	var_value = my_getenv(var_name, g_shell->env_list);
-// 	free(var_name);
-// 	if (*in_word)
-// 	{
-// 		joined = ft_strjoin(*word, var_value ? var_value : "");
-// 		free(*word);
-// 		free(var_value);
-// 		*word = joined;
-// 	}
-// 	else
-// 	{
-// 		*word = var_value ? var_value : ft_strdup("");
-// 		*in_word = 1;
-// 	}
-// 	return (1);
-// }
-
 static int	tokenizer_handle_word(const char *line, int *i, char **word, int *in_word, t_shell *g_shell)
 {
 	int	start;
@@ -142,11 +113,9 @@ static int	tokenizer_handle_word(const char *line, int *i, char **word, int *in_
 		line[*i] != '"' && line[*i] != '\'')
 		(*i)++;
 	temp = ft_strndup(line + start, *i - start);
-	// printf("temp: %s\n", temp);
 	if (temp)
 		expanded = expand_variables(temp, g_shell);
 	free(temp);
-	// printf("expanded: %s\n", expanded);
 	if (*in_word)
 	{
 		joined = ft_strjoin(*word, expanded);
@@ -161,8 +130,6 @@ static int	tokenizer_handle_word(const char *line, int *i, char **word, int *in_
 			free(expanded);
 			return (0);
 		}
-		printf("expanded: %s\n", expanded);
-		printf("word: %s\n", *word);
 		*word = expanded;
 		*in_word = 1;
 	}
@@ -185,7 +152,11 @@ t_token	*tokenizer(char *line, t_shell *g_shell)
 		if (line[i] == '"' || line[i] == '\'')
 		{
 			if (!tokenizer_handle_quote(line, &i, &word, &in_word, g_shell))
+			{
+				free_token_list(tokens);
+				ft_fprintf(2, "Error: Quote need to be completed\n");
 				return (NULL);
+			}
 		}
 		else if (line[i] == ' ' || line[i] == '\t')
 		{

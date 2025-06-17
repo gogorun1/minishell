@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+         #
+#    By: wding <wding@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/05/30 00:00:00 by wding             #+#    #+#              #
-#    Updated: 2025/06/17 12:32:54 by lcao             ###   ########.fr        #
+#    Updated: 2025/06/17 18:17:47 by wding            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,7 +36,11 @@ SRCS = main.c \
 	env/builtin_unset.c \
 	env/init_env.c \
 	tokenisation/tokenizer.c \
-	parsing/parser.c \
+	parsing/redirection_utils.c \
+    parsing/heredoc_reader.c \
+    parsing/parser_utils.c \
+    parsing/parser_handlers.c \
+    parsing/parser_main.c \
 	execution/execute.c \
 	execution/execute_pipeline.c \
 	execution/redirections.c \
@@ -45,6 +49,7 @@ SRCS = main.c \
 	execution/env_utils.c \
 	execution/execute_env.c \
 	execution/execute_external.c \
+    execution/execute_heredoc.c \
 	error/error.c \
 	error/error_cd.c \
 	error/error1.c \

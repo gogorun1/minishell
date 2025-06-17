@@ -32,6 +32,8 @@ extern volatile sig_atomic_t g_signal_status;
 ** word: any other string
 */
 
+#define HEREDOC_MAX_SIZE 4096
+
 typedef enum e_token_type
 {
 	TOKEN_WORD,			// A sequence of characters that form a word
@@ -68,7 +70,8 @@ typedef enum {
     REDIR_IN,
     REDIR_OUT,
     REDIR_APPEND,
-    REDIR_HEREDOC
+    REDIR_HEREDOC,
+	REDIR_ERR
 } redir_type_t;
 
 // typedef struct redir {
@@ -177,6 +180,42 @@ int	ft_strcmp(const char *s1, const char *s2);
 void free_str_array(char **arr);
 void	cleanup_and_exit(t_shell *shell, t_token *tokens, 
                         ast_node_t *ast, char *input);
+
+/* ---------------------------------Parsing---------------------------------------- */
+/* redirection_utils.c */
+void	add_redirection(command_t *command_data, redir_type_t type, char *filename);
+int		process_heredoc_during_parse(redir_t *redir);
+int		process_command_heredocs_during_parse(command_t *cmd);
+redir_t	*find_last_redirection(ast_node_t *node);
+int		process_heredoc_redirection(ast_node_t *node, redir_type_t type);
+
+/* heredoc_reader.c */
+char	*read_heredoc_content(char *delimiter);
+void	handle_heredoc_eof_warning(char *delimiter);
+int		process_heredoc_line(char *line, char *delimiter, char *buffer);
+int		setup_heredoc_for_execution(redir_t *redir);
+void	handle_heredoc_in_execution(redir_t *redir);
+
+/* parser_utils.c */
+int		is_redirection_token(t_token_type type);
+redir_type_t	get_redirection_type(t_token_type token_type);
+ast_node_t	*init_command_node(void);
+char	**handle_word_token(parser_t *parser, char **args, int *arg_count);
+ast_node_t	*create_pipe_node(ast_node_t *left, ast_node_t *right);
+
+/* parser_handlers.c */
+int		handle_redirection(parser_t *parser, ast_node_t *node);
+int		handle_word_in_parse(parser_t *parser, char ***args, int *arg_count);
+int		handle_redir_in_parse(parser_t *parser, ast_node_t *node);
+int		process_command_tokens(parser_t *parser, ast_node_t *node, char ***args, int *arg_count);
+int		handle_heredoc_sigquit(int *pipefd);
+
+/* parser_main.c */
+ast_node_t	*parse_command(parser_t *parser);
+ast_node_t	*parse_pipeline(parser_t *parser);
+ast_node_t	*parse(t_token *tokens);
+
+/* --------------------------------------------------------------------------------------------*/
 
 /*builtin*/
 int	builtin_cd(char **args, t_shell *shell);

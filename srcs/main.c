@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: wding <wding@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 13:55:40 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/16 10:48:52 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/17 18:13:10 by wding            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,43 +72,28 @@ int main(int argc, char **argv, char **envp)
 	while (1)
 	{
         handle_sigint_in_main(&shell);
-	 	
-		// if (g_signal_status == SIGINT)
-		// {
-		// 	shell.last_exit_status = 130; // Set exit status for Ctrl-C
-		// 	g_signal_status = 0; // Reset global signal status")
-		// 	ft_putchar_fd('\r', STDOUT_FILENO);
-		// 	printf("clear is triggered\n"); // Print a newline after Ctrl-C
-		// 	continue; // Continue to the next iteration
-		// 	// g_signal_status = 0; // Print carriage return to move cursor to the start of the line
-		// }
-		// printf("Debug: about to read input, signal_status: %d\n", g_signal_status);
 		input = readline("minishell$");
-		// printf("Debug: input read: '%s', signal is %d\n", input ? input : "NULL", g_signal_status);
 		if (!input)
 		{
 			printf("exit\n");
-			break; // Exit if EOF is received (Ctrl-D)
+			break;
 		}
-		if (input[0] == '\0') // Check if the input is empty
+		if (input[0] == '\0')
 		{
-			printf("Empty input, skipping...\n");
-			free(input); // Free the empty input
-			continue; // Skip to the next iteration
+			free(input);
+			continue;
 		}
 		add_history(input);
 		tokens = tokenizer(input, &shell);
 		if (!tokens)
 		{
-			ft_fprintf(2, "Error: Tokenization failed\n");
+			shell.last_exit_status = 1;
 			free(input);
 			continue;
 		}
-		// print_tokens(tokens);
 		ast = parse(tokens);
 		if (!ast)
 		{
-			// ft_fprintf(2, "minishell: parse error\n");
 			if (g_signal_status == 130)
 			{
 				shell.last_exit_status = 130;
@@ -120,20 +105,12 @@ int main(int argc, char **argv, char **envp)
 			free(input);
 			continue;
 		}
-		else
-		{
-			printf("--- (AST)  ---\n");
-			print_ast(ast, 0); // 从根节点开始打印，初始缩进为 0
-			printf("--- AST Print End ---\n");
-		}
 		free_token_list(tokens);
-		// Execute the command represented by the AST
         setup_execution_signals();
 		shell.last_exit_status = execute_ast(ast, &shell);
 		if (shell.last_exit_status == -1)
 			cleanup_and_exit(&shell, tokens, ast, input);
         setup_signal_handlers();
-		// Free the tokens and AST after execution
 		free_ast(ast);
 		free(input);
 		printf("--- (End of this command line)  ---\n");
