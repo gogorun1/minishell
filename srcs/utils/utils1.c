@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils1.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: wding <wding@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 21:19:41 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/17 21:19:52 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/17 23:00:33 by wding            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,9 @@ static void	free_command_args(char **args)
 }
 
 /* Free redirection list */
-static void	free_redirections(redir_t *redir)
+static void	free_redirections(t_redir *redir)
 {
-	redir_t	*next;
+	t_redir	*next;
 
 	while (redir)
 	{
@@ -46,21 +46,21 @@ static void	free_redirections(redir_t *redir)
 }
 
 /* Free command node data */
-static void	free_command_node(ast_node_t *node)
+static void	free_command_node(t_ast_node *node)
 {
-	free_command_args(node->data.command.args);
-	free_redirections(node->data.command.redirs);
+	free_command_args(node->u_data.command.args);
+	free_redirections(node->u_data.command.redirs);
 }
 
 /* Free pipe node data */
-static void	free_pipe_node(ast_node_t *node)
+static void	free_pipe_node(t_ast_node *node)
 {
-	free_ast(node->data.binary.left);
-	free_ast(node->data.binary.right);
+	free_ast(node->u_data.s_binary.left);
+	free_ast(node->u_data.s_binary.right);
 }
 
 /* Free AST node recursively */
-void	free_ast(ast_node_t *node)
+void	free_ast(t_ast_node *node)
 {
 	if (!node)
 		return ;

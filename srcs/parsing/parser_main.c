@@ -6,15 +6,15 @@
 /*   By: wding <wding@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 17:52:32 by wding             #+#    #+#             */
-/*   Updated: 2025/06/17 22:01:28 by wding            ###   ########.fr       */
+/*   Updated: 2025/06/17 23:00:57 by wding            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 /* NEW: Initialize command parsing variables and node */
-int	initialize_command_parsing(parser_t *parser, char ***args, int *arg_count,
-		ast_node_t **node)
+int	initialize_command_parsing(t_parser *parser, char ***args, int *arg_count,
+		t_ast_node **node)
 {
 	if (!parser->current || parser->current->type == TOKEN_EOF
 		|| parser->current->type == TOKEN_PIPE)
@@ -31,24 +31,24 @@ int	initialize_command_parsing(parser_t *parser, char ***args, int *arg_count,
 
 /* NEW: Finalize command parsing,
 	checking for empty command and assigning args */
-int	finalize_command_parsing(char ***args, int *arg_count, ast_node_t **node)
+int	finalize_command_parsing(char ***args, int *arg_count, t_ast_node **node)
 {
-	if (*arg_count == 0 && !(*node)->data.command.redirs)
+	if (*arg_count == 0 && !(*node)->u_data.command.redirs)
 	{
 		free_ast(*node);
 		*node = NULL;
 		return (-1);
 	}
-	(*node)->data.command.args = *args;
+	(*node)->u_data.command.args = *args;
 	return (0);
 }
 
 /* Main parse_command function - HEREDOCS ARE READ DURING PARSING */
-ast_node_t	*parse_command(parser_t *parser)
+t_ast_node	*parse_command(t_parser *parser)
 {
 	char		**args;
 	int			arg_count;
-	ast_node_t	*node;
+	t_ast_node	*node;
 	int			ret;
 
 	ret = initialize_command_parsing(parser, &args, &arg_count, &node);
@@ -70,11 +70,11 @@ ast_node_t	*parse_command(parser_t *parser)
 }
 
 /* Parse pipeline with proper error handling */
-ast_node_t	*parse_pipeline(parser_t *parser)
+t_ast_node	*parse_pipeline(t_parser *parser)
 {
-	ast_node_t	*left;
-	ast_node_t	*right;
-	ast_node_t	*pipe_node;
+	t_ast_node	*left;
+	t_ast_node	*right;
+	t_ast_node	*pipe_node;
 
 	left = parse_command(parser);
 	if (!left)
@@ -85,7 +85,7 @@ ast_node_t	*parse_pipeline(parser_t *parser)
 		right = parse_command(parser);
 		if (!right)
 		{
-			error_syntax_context(NULL, left->data.command.args[0]);
+			error_syntax_context(NULL, left->u_data.command.args[0]);
 			free_ast(left);
 			return (NULL);
 		}
@@ -98,9 +98,9 @@ ast_node_t	*parse_pipeline(parser_t *parser)
 }
 
 /* Main parse function - heredocs already processed during parsing */
-ast_node_t	*parse(t_token *tokens)
+t_ast_node	*parse(t_token *tokens)
 {
-	parser_t	parser;
+	t_parser	parser;
 
 	parser.tokens = tokens;
 	parser.current = tokens;

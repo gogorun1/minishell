@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   execute_pipeline.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: wding <wding@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 19:07:42 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/17 14:59:27 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/17 23:00:33 by wding            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	execute_pipeline(ast_node_t *node, t_shell *shell)
+int	execute_pipeline(t_ast_node *node, t_shell *shell)
 {
 	int		pipe_fd[2];
 	pid_t	left_pid;
@@ -39,23 +39,23 @@ int	execute_pipeline(ast_node_t *node, t_shell *shell)
 }
 
 // Execute left side of pipe
-void	execute_left_pipe(ast_node_t *node, int pipe_fd[2], t_shell *shell)
+void	execute_left_pipe(t_ast_node *node, int pipe_fd[2], t_shell *shell)
 {
 	close(pipe_fd[0]);
-	if (node->data.binary.left->type == AST_COMMAND)
-		setup_redirections(node->data.binary.left->data.command.redirs);
+	if (node->u_data.s_binary.left->type == AST_COMMAND)
+		setup_redirections(node->u_data.s_binary.left->u_data.command.redirs);
 	dup2(pipe_fd[1], STDOUT_FILENO);
 	close(pipe_fd[1]);
-	exit(execute_ast(node->data.binary.left, shell));
+	exit(execute_ast(node->u_data.s_binary.left, shell));
 }
 
 // Execute right side of pipe
-void	execute_right_pipe(ast_node_t *node, int pipe_fd[2], t_shell *shell)
+void	execute_right_pipe(t_ast_node *node, int pipe_fd[2], t_shell *shell)
 {
 	close(pipe_fd[1]);
 	dup2(pipe_fd[0], STDIN_FILENO);
 	close(pipe_fd[0]);
-	exit(execute_ast(node->data.binary.right, shell));
+	exit(execute_ast(node->u_data.s_binary.right, shell));
 }
 
 // Wait for both processes in pipeline

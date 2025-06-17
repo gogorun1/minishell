@@ -6,16 +6,16 @@
 /*   By: wding <wding@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 17:52:36 by wding             #+#    #+#             */
-/*   Updated: 2025/06/17 21:21:37 by wding            ###   ########.fr       */
+/*   Updated: 2025/06/17 23:00:57 by wding            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 /* Handle redirection parsing - READS HEREDOC CONTENT IMMEDIATELY */
-int	handle_redirection(parser_t *parser, ast_node_t *node)
+int	handle_redirection(t_parser *parser, t_ast_node *node)
 {
-	redir_type_t	type;
+	t_redir_type	type;
 
 	type = get_redirection_type(parser->current->type);
 	if ((int)type == -1)
@@ -26,7 +26,7 @@ int	handle_redirection(parser_t *parser, ast_node_t *node)
 		ft_fprintf(2, "Parse error: Expected filename after redirection\n");
 		return (-1);
 	}
-	add_redirection(&(node->data.command), type, parser->current->value);
+	add_redirection(&(node->u_data.command), type, parser->current->value);
 	if (process_heredoc_redirection(node, type) == -1)
 		return (-1);
 	parser->current = parser->current->next;
@@ -34,7 +34,7 @@ int	handle_redirection(parser_t *parser, ast_node_t *node)
 }
 
 /* Handle word token in parse command */
-int	handle_word_in_parse(parser_t *parser, char ***args, int *arg_count)
+int	handle_word_in_parse(t_parser *parser, char ***args, int *arg_count)
 {
 	*args = handle_word_token(parser, *args, arg_count);
 	if (!*args)
@@ -43,7 +43,7 @@ int	handle_word_in_parse(parser_t *parser, char ***args, int *arg_count)
 }
 
 /* Handle redirection in parse command */
-int	handle_redir_in_parse(parser_t *parser, ast_node_t *node)
+int	handle_redir_in_parse(t_parser *parser, t_ast_node *node)
 {
 	if (handle_redirection(parser, node) == -1)
 		return (-1);
@@ -51,7 +51,7 @@ int	handle_redir_in_parse(parser_t *parser, ast_node_t *node)
 }
 
 /* Process tokens in parse command loop */
-int	process_command_tokens(parser_t *parser, ast_node_t *node, char ***args,
+int	process_command_tokens(t_parser *parser, t_ast_node *node, char ***args,
 		int *arg_count)
 {
 	if (parser->current->type == TOKEN_WORD)
@@ -77,7 +77,7 @@ int	process_command_tokens(parser_t *parser, ast_node_t *node, char ***args,
 }
 
 /* Check for syntax errors related to pipes */
-int	check_pipe_syntax_errors(parser_t *parser)
+int	check_pipe_syntax_errors(t_parser *parser)
 {
 	t_token	*current;
 

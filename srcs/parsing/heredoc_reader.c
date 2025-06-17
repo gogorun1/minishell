@@ -6,7 +6,7 @@
 /*   By: wding <wding@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 17:52:41 by wding             #+#    #+#             */
-/*   Updated: 2025/06/17 17:52:42 by wding            ###   ########.fr       */
+/*   Updated: 2025/06/17 23:13:41 by wding            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	handle_heredoc_eof_warning(char *delimiter)
 	write(STDERR_FILENO,
 		"minishell: warning: here-document delimited by end-of-file (wanted `",
 		68);
-	write(STDERR_FILENO, delimiter, strlen(delimiter));
+	write(STDERR_FILENO, delimiter, ft_strlen(delimiter));
 	write(STDERR_FILENO, "')\n", 3);
 }
 
@@ -83,7 +83,7 @@ int	handle_heredoc_sigquit(int *pipefd)
 }
 
 /* EXECUTION PHASE: Create pipe from heredoc content */
-int	setup_heredoc_for_execution(redir_t *redir)
+int	setup_heredoc_for_execution(t_redir *redir)
 {
 	int	pipefd[2];
 

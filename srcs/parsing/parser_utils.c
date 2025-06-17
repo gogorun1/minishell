@@ -6,7 +6,7 @@
 /*   By: wding <wding@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 17:52:25 by wding             #+#    #+#             */
-/*   Updated: 2025/06/17 18:58:53 by wding            ###   ########.fr       */
+/*   Updated: 2025/06/17 23:12:46 by wding            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	is_redirection_token(t_token_type type)
 }
 
 /* Get redirection type from token */
-redir_type_t	get_redirection_type(t_token_type token_type)
+t_redir_type	get_redirection_type(t_token_type token_type)
 {
 	if (token_type == TOKEN_REDIRECT_IN)
 		return (REDIR_IN);
@@ -34,46 +34,55 @@ redir_type_t	get_redirection_type(t_token_type token_type)
 }
 
 /* Initialize command node */
-ast_node_t	*init_command_node(void)
+t_ast_node	*init_command_node(void)
 {
-	ast_node_t	*node;
+	t_ast_node	*node;
 
-	node = malloc(sizeof(ast_node_t));
+	node = malloc(sizeof(t_ast_node));
 	if (!node)
 	{
 		perror("malloc error for AST node");
 		return (NULL);
 	}
 	node->type = AST_COMMAND;
-	node->data.command.args = NULL;
-	node->data.command.redirs = NULL;
+	node->u_data.command.args = NULL;
+	node->u_data.command.redirs = NULL;
 	return (node);
 }
 
 /* Handle word token (arguments) */
-char	**handle_word_token(parser_t *parser, char **args, int *arg_count)
+char	**handle_word_token(t_parser *parser, char **args, int *arg_count)
 {
 	char	**new_args;
+	int		i;
 
-	new_args = realloc(args, sizeof(char *) * (*arg_count + 2));
+	new_args = malloc(sizeof(char *) * (*arg_count + 2));
 	if (!new_args)
 	{
-		perror("realloc error for args");
+		perror("malloc error for args");
 		return (NULL);
 	}
-	new_args[*arg_count] = strdup(parser->current->value);
+	i = 0;
+	while (i < *arg_count)
+	{
+		new_args[i] = args[i];
+		i++;
+	}
+	new_args[*arg_count] = ft_strdup(parser->current->value);
 	new_args[*arg_count + 1] = NULL;
 	(*arg_count)++;
+	if (args)
+		free(args);
 	parser->current = parser->current->next;
 	return (new_args);
 }
 
 /* Create pipe node for pipeline */
-ast_node_t	*create_pipe_node(ast_node_t *left, ast_node_t *right)
+t_ast_node	*create_pipe_node(t_ast_node *left, t_ast_node *right)
 {
-	ast_node_t	*pipe_node;
+	t_ast_node	*pipe_node;
 
-	pipe_node = malloc(sizeof(ast_node_t));
+	pipe_node = malloc(sizeof(t_ast_node));
 	if (!pipe_node)
 	{
 		free_ast(left);
@@ -81,7 +90,7 @@ ast_node_t	*create_pipe_node(ast_node_t *left, ast_node_t *right)
 		return (NULL);
 	}
 	pipe_node->type = AST_PIPE;
-	pipe_node->data.binary.left = left;
-	pipe_node->data.binary.right = right;
+	pipe_node->u_data.s_binary.left = left;
+	pipe_node->u_data.s_binary.right = right;
 	return (pipe_node);
 }

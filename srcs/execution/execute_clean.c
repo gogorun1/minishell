@@ -6,13 +6,13 @@
 /*   By: wding <wding@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 22:17:54 by wding             #+#    #+#             */
-/*   Updated: 2025/06/17 22:25:21 by wding            ###   ########.fr       */
+/*   Updated: 2025/06/17 22:56:01 by wding            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	cleanup_and_exit(t_shell *shell, t_token *tokens, ast_node_t *ast,
+void	cleanup_and_exit(t_shell *shell, t_token *tokens, t_ast_node *ast,
 		char *input)
 {
 	if (tokens)

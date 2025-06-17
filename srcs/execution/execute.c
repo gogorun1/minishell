@@ -3,21 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: wding <wding@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 10:00:00 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/17 19:15:55 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/17 23:04:20 by wding            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	execute_ast(ast_node_t *node, t_shell *shell);
-int	execute_command(command_t *cmd, t_shell *shell);
+int	execute_ast(t_ast_node *node, t_shell *shell);
+int	execute_command(t_command *cmd, t_shell *shell);
 int	handle_signal_status(int status);
 int	wait_and_get_status(pid_t pid, char *path, char **envp);
 
-int	execute_ast(ast_node_t *node, t_shell *shell)
+int	execute_ast(t_ast_node *node, t_shell *shell)
 {
 	int	temp;
 
@@ -26,7 +26,7 @@ int	execute_ast(ast_node_t *node, t_shell *shell)
 		return (0);
 	if (node->type == AST_COMMAND)
 	{
-		temp = execute_command(&node->data.command, shell);
+		temp = execute_command(&node->u_data.command, shell);
 		if (temp == -1)
 			cleanup_and_exit(shell, NULL, node, NULL);
 		return (temp);
@@ -37,7 +37,7 @@ int	execute_ast(ast_node_t *node, t_shell *shell)
 }
 
 // Execute a single command with redirections
-int	execute_command(command_t *cmd, t_shell *shell)
+int	execute_command(t_command *cmd, t_shell *shell)
 {
 	int	saved_fds[2];
 	int	result;

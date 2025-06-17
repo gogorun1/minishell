@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_external.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: wding <wding@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/13 16:47:30 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/17 19:31:24 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/17 23:04:20 by wding            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ int	wait_for_child(pid_t pid)
 	return (-1);
 }
 
-static int	handle_command_not_found(command_t *cmd, t_shell *shell)
+static int	handle_command_not_found(t_command *cmd, t_shell *shell)
 {
 	ft_fprintf(STDERR_FILENO, "minishell: %s: command not found\n",
 		cmd->args[0]);
@@ -72,7 +72,7 @@ static int	handle_command_not_found(command_t *cmd, t_shell *shell)
 	return (127);
 }
 
-int	execute_external(command_t *cmd, t_shell *shell, int saved_fds[2])
+int	execute_external(t_command *cmd, t_shell *shell, int saved_fds[2])
 {
 	char	*path;
 	pid_t	pid;

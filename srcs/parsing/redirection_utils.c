@@ -6,27 +6,27 @@
 /*   By: wding <wding@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 17:52:14 by wding             #+#    #+#             */
-/*   Updated: 2025/06/17 17:52:16 by wding            ###   ########.fr       */
+/*   Updated: 2025/06/17 23:13:56 by wding            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 /* Helper function to add a redirection to the command's list */
-void	add_redirection(command_t *command_data, redir_type_t type,
+void	add_redirection(t_command *command_data, t_redir_type type,
 		char *filename)
 {
-	redir_t	*new_redir;
-	redir_t	*current;
+	t_redir	*new_redir;
+	t_redir	*current;
 
-	new_redir = malloc(sizeof(redir_t));
+	new_redir = malloc(sizeof(t_redir));
 	if (!new_redir)
 	{
 		perror("malloc error for redirection");
 		exit(EXIT_FAILURE);
 	}
 	new_redir->type = type;
-	new_redir->file = strdup(filename);
+	new_redir->file = ft_strdup(filename);
 	new_redir->heredoc_content = NULL;
 	new_redir->next = NULL;
 	if (!command_data->redirs)
@@ -41,7 +41,7 @@ void	add_redirection(command_t *command_data, redir_type_t type,
 }
 
 /* Process heredoc during parsing - BEFORE any forks */
-int	process_heredoc_during_parse(redir_t *redir)
+int	process_heredoc_during_parse(t_redir *redir)
 {
 	redir->heredoc_content = read_heredoc_content(redir->file);
 	if (!redir->heredoc_content)
@@ -50,9 +50,9 @@ int	process_heredoc_during_parse(redir_t *redir)
 }
 
 /* Process all heredocs in a command during parsing */
-int	process_command_heredocs_during_parse(command_t *cmd)
+int	process_command_heredocs_during_parse(t_command *cmd)
 {
-	redir_t	*current;
+	t_redir	*current;
 
 	current = cmd->redirs;
 	while (current)
@@ -68,20 +68,20 @@ int	process_command_heredocs_during_parse(command_t *cmd)
 }
 
 /* Find last redirection in the list */
-redir_t	*find_last_redirection(ast_node_t *node)
+t_redir	*find_last_redirection(t_ast_node *node)
 {
-	redir_t	*last_redir;
+	t_redir	*last_redir;
 
-	last_redir = node->data.command.redirs;
+	last_redir = node->u_data.command.redirs;
 	while (last_redir->next)
 		last_redir = last_redir->next;
 	return (last_redir);
 }
 
 /* Process heredoc after adding redirection */
-int	process_heredoc_redirection(ast_node_t *node, redir_type_t type)
+int	process_heredoc_redirection(t_ast_node *node, t_redir_type type)
 {
-	redir_t	*last_redir;
+	t_redir	*last_redir;
 
 	if (type == REDIR_HEREDOC)
 	{

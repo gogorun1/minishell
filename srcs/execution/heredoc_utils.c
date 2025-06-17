@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: wding <wding@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 19:09:03 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/17 14:57:42 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/17 23:13:41 by wding            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ int	handle_heredoc_redirect(char *content)
 		perror("pipe");
 		return (1);
 	}
-	write(pipefd[1], content, strlen(content));
+	write(pipefd[1], content, ft_strlen(content));
 	close(pipefd[1]);
 	dup2(pipefd[0], STDIN_FILENO);
 	close(pipefd[0]);
@@ -53,7 +53,7 @@ int	handle_heredoc_redirect(char *content)
 // Write heredoc line to pipe
 int	write_heredoc_line(char *line, int write_fd)
 {
-	if (write(write_fd, line, strlen(line)) == -1)
+	if (write(write_fd, line, ft_strlen(line)) == -1)
 	{
 		perror("write");
 		return (1);

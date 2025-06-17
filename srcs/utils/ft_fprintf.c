@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_fprintf.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: wding <wding@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 18:27:54 by lcao              #+#    #+#             */
-/*   Updated: 2025/05/28 18:28:01 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/17 23:13:41 by wding            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static int	ft_putstr_fd_len(char *s, int fd)
 		write(fd, "(null)", 6);
 		return (6);
 	}
-	len = strlen(s);
+	len = ft_strlen(s);
 	write(fd, s, len);
 	return (len);
 }
@@ -36,7 +36,7 @@ static int	ft_putnbr_fd_len(int n, int fd)
 	str = ft_itoa(n);
 	if (!str)
 		return (0);
-	len = strlen(str);
+	len = ft_strlen(str);
 	write(fd, str, len);
 	free(str);
 	return (len);

@@ -3,24 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: wding <wding@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 17:11:29 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/17 15:00:38 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/17 22:54:04 by wding            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	setup_redirections(redir_t *redirs);
-int	handle_single_redirect(redir_t *redir);
+int	setup_redirections(t_redir *redirs);
+int	handle_single_redirect(t_redir *redir);
 int	handle_input_redirect(char *filename);
 int	handle_output_redirect(char *filename);
 
 // Setup all redirections for a command
-int	setup_redirections(redir_t *redirs)
+int	setup_redirections(t_redir *redirs)
 {
-	redir_t	*current;
+	t_redir	*current;
 
 	current = redirs;
 	while (current)
@@ -33,7 +33,7 @@ int	setup_redirections(redir_t *redirs)
 }
 
 // Handle a single redirection
-int	handle_single_redirect(redir_t *redir)
+int	handle_single_redirect(t_redir *redir)
 {
 	if (redir->type == REDIR_IN)
 		return (handle_input_redirect(redir->file));
