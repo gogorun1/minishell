@@ -6,45 +6,11 @@
 /*   By: wding <wding@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 17:52:32 by wding             #+#    #+#             */
-/*   Updated: 2025/06/17 21:06:25 by wding            ###   ########.fr       */
+/*   Updated: 2025/06/17 21:15:19 by wding            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-// /* Main parse_command function - HEREDOCS ARE READ DURING PARSING */
-// ast_node_t	*parse_command(parser_t *parser)
-// {
-// 	char		**args;
-// 	int			arg_count;
-// 	ast_node_t	*node;
-
-// 	if (!parser->current || parser->current->type == TOKEN_EOF
-// 		|| parser->current->type == TOKEN_PIPE)
-// 		return (NULL);
-// 	args = NULL;
-// 	arg_count = 0;
-// 	node = init_command_node();
-// 	if (!node)
-// 		return (NULL);
-// 	while (parser->current && parser->current->type != TOKEN_EOF
-// 		&& parser->current->type != TOKEN_PIPE)
-// 	{
-// 		if (process_command_tokens(parser, node, &args, &arg_count) == -1)
-// 		{
-// 			free_str_array(args);
-// 			free_ast(node);
-// 			return (NULL);
-// 		}
-// 	}
-// 	if (arg_count == 0 && !node->data.command.redirs)
-// 	{
-// 		free_ast(node);
-// 		return (NULL);
-// 	}
-// 	node->data.command.args = args;
-// 	return (node);
-// }
 
 /* NEW: Initialize command parsing variables and node */
 int	initialize_command_parsing(parser_t *parser, char ***args, int *arg_count,
@@ -138,5 +104,8 @@ ast_node_t	*parse(t_token *tokens)
 
 	parser.tokens = tokens;
 	parser.current = tokens;
+
+	if (check_pipe_syntax_errors(&parser) == -1)
+		return (NULL);
 	return (parse_pipeline(&parser));
 }

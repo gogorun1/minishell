@@ -6,7 +6,7 @@
 /*   By: wding <wding@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 17:52:36 by wding             #+#    #+#             */
-/*   Updated: 2025/06/17 18:49:52 by wding            ###   ########.fr       */
+/*   Updated: 2025/06/17 21:21:37 by wding            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,8 @@ int	handle_redir_in_parse(parser_t *parser, ast_node_t *node)
 }
 
 /* Process tokens in parse command loop */
-int	process_command_tokens(parser_t *parser, ast_node_t *node,
-		char ***args, int *arg_count)
+int	process_command_tokens(parser_t *parser, ast_node_t *node, char ***args,
+		int *arg_count)
 {
 	if (parser->current->type == TOKEN_WORD)
 	{
@@ -70,9 +70,35 @@ int	process_command_tokens(parser_t *parser, ast_node_t *node,
 			ft_fprintf(2, "Parse error: Unexpected token '%s'\n",
 				parser->current->value);
 		else
-			ft_fprintf(2, "Parse error: Unexpected token '%s'\n",
-				"NULL");
+			ft_fprintf(2, "Parse error: Unexpected token '%s'\n", "NULL");
 		return (-1);
+	}
+	return (0);
+}
+
+/* Check for syntax errors related to pipes */
+int	check_pipe_syntax_errors(parser_t *parser)
+{
+	t_token	*current;
+
+	current = parser->tokens;
+	while (current)
+	{
+		if (current->type == TOKEN_PIPE)
+		{
+			if (current->next && current->next->type == TOKEN_PIPE)
+			{
+				ft_fprintf(2,
+					"bash: syntax error near unexpected token `||'\n");
+				return (-1);
+			}
+			if (!current->next || current->next->type == TOKEN_EOF)
+			{
+				ft_fprintf(2, "bash: syntax error near unexpected token `|'\n");
+				return (-1);
+			}
+		}
+		current = current->next;
 	}
 	return (0);
 }
