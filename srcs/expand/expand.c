@@ -59,9 +59,9 @@ char	*expand_variables(char *str, t_shell *g_shell)
 		{
 			if (i > start)
 			{
-				char *s1 =ft_strndup(str + start, i - start);
+				char *s1 = ft_strndup(str + start, i - start);
 				temp = ft_strjoin(result, s1);
-				free (s1);
+				free(s1);
 				free(result);
 				result = temp;
 			}

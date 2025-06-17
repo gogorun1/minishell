@@ -217,7 +217,7 @@ ast_node_t	*parse_command(parser_t *parser)
 		}
 		else
 		{
-			fprintf(stderr, "Parse error: Unexpected token '%s'\n",
+			ft_fprintf(2, "Parse error: Unexpected token '%s'\n",
 					parser->current->value ? parser->current->value : "NULL");
 			free_ast(node);
 			return (NULL);

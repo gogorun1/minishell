@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/13 16:47:30 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/17 15:00:10 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/17 19:31:24 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,17 @@ int	wait_for_child(pid_t pid)
 	return (-1);
 }
 
+static int	handle_command_not_found(command_t *cmd, t_shell *shell)
+{
+	ft_fprintf(STDERR_FILENO, "minishell: %s: command not found\n",
+		cmd->args[0]);
+	if (shell)
+	{
+		shell->last_exit_status = 127;
+	}
+	return (127);
+}
+
 int	execute_external(command_t *cmd, t_shell *shell, int saved_fds[2])
 {
 	char	*path;
@@ -69,11 +80,7 @@ int	execute_external(command_t *cmd, t_shell *shell, int saved_fds[2])
 
 	path = find_executable(cmd->args[0], shell->env_list);
 	if (!path)
-	{
-		ft_fprintf(STDERR_FILENO, "minishell: %s: command not found\n",
-			cmd->args[0]);
-		return (127);
-	}
+		return (handle_command_not_found(cmd, shell));
 	if (save_stdio(saved_fds) == -1)
 		return (cleanup_external(path, NULL, -1));
 	if (cmd->redirs && setup_redirections(cmd->redirs) != 0)

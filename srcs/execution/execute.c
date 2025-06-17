@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 10:00:00 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/17 15:01:22 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/17 19:15:55 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 int	execute_ast(ast_node_t *node, t_shell *shell);
 int	execute_command(command_t *cmd, t_shell *shell);
+int	handle_signal_status(int status);
 int	wait_and_get_status(pid_t pid, char *path, char **envp);
 
 int	execute_ast(ast_node_t *node, t_shell *shell)
@@ -61,34 +62,39 @@ int	execute_command(command_t *cmd, t_shell *shell)
 	return (result);
 }
 
+int	handle_signal_status(int status)
+{
+	int	signal_num;
+
+	if (WIFSIGNALED(status))
+	{
+		signal_num = WTERMSIG(status);
+		if (signal_num == SIGINT)
+		{
+			write(STDOUT_FILENO, "\n", 1);
+			return (130);
+		}
+		else if (signal_num == SIGQUIT)
+		{
+			printf("Exit\n");
+			return (131);
+		}
+		return (128 + signal_num);
+	}
+	else if (WIFEXITED(status))
+		return (WEXITSTATUS(status));
+	return (1);
+}
+
 int	wait_and_get_status(pid_t pid, char *path, char **envp)
 {
 	int		status;
-	int		signal_num;
 	pid_t	result;
 
 	result = waitpid(pid, &status, 0);
 	free(path);
 	free_env_array(envp);
 	if (result > 0)
-	{
-		if (WIFSIGNALED(status))
-		{
-			signal_num = WTERMSIG(status);
-			if (signal_num == SIGINT)
-			{
-				write(STDOUT_FILENO, "\n", 1);
-				return (130);
-			}
-			else if (signal_num == SIGQUIT)
-			{
-				printf("Exit\n");
-				return (131);
-			}
-			return (128 + signal_num);
-		}
-		else if (WIFEXITED(status))
-			return (WEXITSTATUS(status));
-	}
+		return (handle_signal_status(status));
 	return (1);
 }

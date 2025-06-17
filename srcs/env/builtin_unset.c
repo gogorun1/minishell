@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 15:04:03 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/17 11:57:53 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/17 19:33:44 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static int	is_match(const char *a, const char *b)
 {
 	if (!a || !b)
 		return (0);
-	return (strcmp(a, b) == 0);
+	return (ft_strcmp(a, b) == 0);
 }
 
 /* Delete node with key from env_list */
