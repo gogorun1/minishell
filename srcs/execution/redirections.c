@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 17:11:29 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/15 19:55:01 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/17 15:00:38 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ int	setup_redirections(redir_t *redirs)
 	current = redirs;
 	while (current)
 	{
-		// write(2, "setup_redirections\n", 19);
 		if (handle_single_redirect(current) != 0)
 			return (1);
 		current = current->next;

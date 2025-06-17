@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 10:00:00 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/17 11:44:26 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/17 15:01:22 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,14 +72,11 @@ int	wait_and_get_status(pid_t pid, char *path, char **envp)
 	free_env_array(envp);
 	if (result > 0)
 	{
-		// printf("im received waitpid%d\n", result);
-		// printf("exit status is %d\n", WIFSIGNALED(status));
 		if (WIFSIGNALED(status))
 		{
 			signal_num = WTERMSIG(status);
 			if (signal_num == SIGINT)
 			{
-				// printf("im received sigint\n");
 				write(STDOUT_FILENO, "\n", 1);
 				return (130);
 			}

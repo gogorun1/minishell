@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/02 18:09:29 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/02 18:12:15 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/17 14:55:03 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,6 @@ void	error_syntax_context(char *context, char *token, t_shell *shell)
 	else
 		ft_putstr_fd("newline", STDERR_FILENO);
 	ft_putstr_fd("'\n", STDERR_FILENO);
-	
 	if (shell)
 		shell->last_exit_status = 2;
 }
@@ -59,7 +58,6 @@ void	error_errno(char *command, char *context, t_shell *shell)
 		ft_putstr_fd(": ", STDERR_FILENO);
 	}
 	perror(context);
-	
 	if (shell)
 	{
 		if (errno == ENOENT)

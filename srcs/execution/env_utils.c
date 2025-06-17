@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 18:06:10 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/17 10:56:49 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/17 15:00:58 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,6 @@ void	free_env(t_env *head)
 	{
 		tmp = head;
 		head = head->next;
-		// printf("free env: %s=%s\n", tmp->key, tmp->value);
 		if (tmp->key)
 			free(tmp->key);
 		free(tmp->value);

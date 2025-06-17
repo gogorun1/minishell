@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 16:43:40 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/17 11:51:50 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/17 14:51:02 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,8 +59,6 @@ int	builtin_cd(char **args, t_shell *shell)
 	update_or_add(oldpwd, my_getenv("PWD", shell->env_list), &shell->env_list);
 	pwd = ft_strdup("PWD");
 	update_or_add(pwd, buffer, &shell->env_list);
-	// update_env("OLDPWD", my_getenv("PWD",shell->env_list), &shell->env_list);
-	// update_env("PWD", buffer, &shell->env_list);
 	if (shell)
 		shell->last_exit_status = 1;
 	return (0);
