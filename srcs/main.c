@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 13:55:40 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/17 18:06:22 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/17 21:43:38 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,8 @@ static void handle_sigint_in_main(t_shell *shell)
 {
     if (g_signal_status == SIGINT)
     {
-        shell->last_exit_status = 130; // Set exit status for Ctrl-C
-        g_signal_status = 0; // Reset global signal status
-        // Just write a newline - don't redisplay prompt
-        // write(STDOUT_FILENO, "\n", 1);
+        shell->last_exit_status = 130;
+        g_signal_status = 0;
     }
 }
 void	cleanup_and_exit(t_shell *shell, t_token *tokens, 
@@ -58,7 +56,6 @@ int main(int argc, char **argv, char **envp)
 {
 	char	*input;
 	t_token	*tokens;
-	// pid_t	pid;
 	t_shell shell;
 	ast_node_t	*ast;
 
@@ -75,33 +72,21 @@ int main(int argc, char **argv, char **envp)
 		printf("Non interactive mode forbidden\n");
 		exit (1);
 	}
-	setup_signal_handlers(); // Set up signal handlers for Ctrl-C and Ctrl-'\'
+	setup_signal_handlers();
 	if (init_shell(&shell, envp) != 0)
 		return (1);
 	rl_event_hook = event;
 	while (1)
 	{
         handle_sigint_in_main(&shell);
-	 	
-		// if (g_signal_status == SIGINT)
-		// {
-		// 	shell.last_exit_status = 130; // Set exit status for Ctrl-C
-		// 	g_signal_status = 0; // Reset global signal status")
-		// 	ft_putchar_fd('\r', STDOUT_FILENO);
-		// 	printf("clear is triggered\n"); // Print a newline after Ctrl-C
-		// 	continue; // Continue to the next iteration
-		// 	// g_signal_status = 0; // Print carriage return to move cursor to the start of the line
-		// }
-		// printf("Debug: about to read input, signal_status: %d\n", g_signal_status);
 		input = readline("minishell$");
 
-		// printf("Debug: input read: '%s', signal is %d\n", input ? input : "NULL", g_signal_status);
 		if (!input)
 		{
 			printf("exit\n");
-			break; // Exit if EOF is received (Ctrl-D)
+			break;
 		}
-		if (input[0] == '\0') // Check if the input is empty
+		if (input[0] == '\0')
 		{
 			printf("Empty input, skipping...\n");
 			free(input); // Free the empty input
