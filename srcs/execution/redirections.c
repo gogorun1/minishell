@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 17:11:29 by lcao              #+#    #+#             */
-/*   Updated: 2025/05/29 15:07:31 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/17 15:00:38 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int	handle_single_redirect(redir_t *redir)
 	else if (redir->type == REDIR_APPEND)
 		return (handle_append_redirect(redir->file));
 	else if (redir->type == REDIR_HEREDOC)
-		return (handle_heredoc_redirect(redir->file));
+		return (handle_heredoc_redirect(redir->heredoc_content));
 	return (1);
 }
 

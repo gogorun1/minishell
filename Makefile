@@ -6,7 +6,7 @@
 #    By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/05/30 00:00:00 by wding             #+#    #+#              #
-#    Updated: 2025/06/03 15:33:24 by lcao             ###   ########.fr        #
+#    Updated: 2025/06/17 21:14:12 by lcao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,6 +31,7 @@ SRCS = main.c \
 	builtin/builtin_pwd.c \
 	builtin/builtin_export.c \
 	builtin/builtin_echo.c \
+	builtin/export_utils.c \
 	env/builtin_env_list.c \
 	env/builtin_unset.c \
 	env/init_env.c \
@@ -43,14 +44,19 @@ SRCS = main.c \
 	execution/execute_utils.c \
 	execution/env_utils.c \
 	execution/execute_env.c \
+	execution/execute_external.c \
 	error/error.c \
+	error/error_cd.c \
 	error/error1.c \
 	error/error2.c \
 	error/builtin_error.c \
 	error/utility_error.c \
 	utils/ft_strndup.c \
 	utils/ft_fprintf.c \
-	utils/utils.c \
+	utils/utils1.c \
+	utils/utils2.c \
+	utils/utils3.c \
+	utils/utils4.c \
 	temps/print.c \
 	signal/signal.c \
 	expand/get_var_value.c \

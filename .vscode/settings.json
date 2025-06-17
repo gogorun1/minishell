@@ -1,5 +1,18 @@
 {
+<<<<<<< HEAD
+    "files.associations": {
+        "readline.h": "c",
+        "limits.h": "c"
+    },
+  "[c]": {
+    "editor.defaultFormatter": "keyhr.42-c-format"
+=======
 	"files.associations": {
-		"readline.h": "c"
-	}
+		"readline.h": "c",
+		"limits.h": "c"
+	},
+    "[c]": {
+        "editor.defaultFormatter": "keyhr.42-c-format"
+>>>>>>> 569b46b2c4865731f61c7e9d5e305f52a6045722
+    }
 }

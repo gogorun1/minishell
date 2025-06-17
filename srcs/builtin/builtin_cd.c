@@ -6,37 +6,92 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 16:43:40 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/03 16:54:20 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/17 17:50:19 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+void	update_env(char *key, const char *value, t_env **env)
+{
+	t_env	*node;
+
+	node = find_node(key, *env);
+	if (node)
+	{
+		free(node->value);
+		if (value)
+			node->value = ft_strdup(value);
+		else
+			node->value = NULL;
+		return ;
+	}
+	add_node(key, (char *)value, env);
+}
+
+static const char	*get_cd_target(char **args, t_shell *shell)
+{
+	const char	*path;
+
+	if (args[1] && args[2])
+	{
+		error_cd_too_many_args(shell);
+		return (NULL);
+	}
+	if (!args[1])
+	{
+		path = my_getenv("HOME", shell->env_list);
+		if (!path)
+		{
+			error_cd_home_not_set(shell);
+			return (NULL);
+		}
+	}
+	else
+		path = args[1];
+	return (path);
+}
+
+static int	try_chdir(const char *path, t_shell *shell)
+{
+	if (chdir(path) != 0)
+	{
+		error_cd(path, shell);
+		return (1);
+	}
+	return (0);
+}
+
+static void	update_pwd_env(t_shell *shell)
+{
+	char	buffer[2000];
+	char	*oldpwd;
+	char	*pwd;
+	char	*pwd_val;
+
+	if (!getcwd(buffer, 2000))
+		return ;
+	oldpwd = ft_strdup("OLDPWD");
+	pwd_val = my_getenv("PWD", shell->env_list);
+	if (pwd_val)
+		update_or_add(oldpwd, pwd_val, &shell->env_list);
+	else
+		update_or_add(oldpwd, "", &shell->env_list);
+	pwd = ft_strdup("PWD");
+	update_or_add(pwd, buffer, &shell->env_list);
+}
+
 int	builtin_cd(char **args, t_shell *shell)
 {
 	const char	*path;
 
-	if (args[1] && args[2]) {
-		ft_fprintf(2, "minishell: cd: too many arguments\n");
-		if (shell) shell->last_exit_status = 1;
+	path = get_cd_target(args, shell);
+	if (!path)
 		return (1);
-	}
-	if (!args[1]) {
-		path = my_getenv("HOME", shell->env_list);
-		if (!path) {
-			ft_fprintf(2, "minishell: cd: HOME not set\n");
-			if (shell) shell->last_exit_status = 1;
-			return (1);
-		}
-	} else {
-		path = args[1];
-	}
-	if (chdir(path) != 0) {
-		ft_fprintf(2, "minishell: cd: %s: %s\n", path, strerror(errno));
-		if (shell) shell->last_exit_status = 1;
+	if (try_chdir(path, shell))
 		return (1);
-	}
-	if (shell) shell->last_exit_status = 0;
+	update_pwd_env(shell);
+	if (shell)
+		shell->last_exit_status = 1;
 	return (0);
 }
-

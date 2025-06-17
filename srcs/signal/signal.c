@@ -1,90 +1,56 @@
 #include "minishell.h"
 
-// void signal_handler(int sig)
-// {
-// 	g_signal_status = sig;
-// 	if (sig == SIGINT)
-// 	{
-// 		write(STDOUT_FILENO, "\n", 1);
-// 		rl_on_new_line();
-// 		rl_replace_line("", 0);
-// 		rl_redisplay();
-// 	}
-// }
+volatile sig_atomic_t g_signal_status = 0;
 
-// void setup_signal_handlers(void)
-// {
-// 	rl_catch_signals = 0; // Disable readline's default signal handling
-	
-// 	struct sigaction sa_int;
-// 	sa_int.sa_handler = signal_handler;
-// 	sigemptyset(&sa_int.sa_mask);
-// 	sa_int.sa_flags = SA_RESTART | SA_SIGINFO; // Restart syscalls and provide siginfo
-// 	sigaction(SIGINT, &sa_int, NULL);   // Ctrl-C
-// 	signal(SIGQUIT, SIG_IGN); // Ctrl-\ ignore SIGQUIT signal
-// }
-
-// void	setup_child_signals(void)
-// {
-// 	signal(SIGINT, SIG_DFL);   // Ctrl-C
-// 	signal(SIGQUIT, SIG_DFL); // Ctrl-\ reset to default handler
-// }
-
-int	readline_function(void)
+void interactive_sigint_handler(int sig)
 {
-	return (0);
-}
-
-void	set_parent_signals(void)
-{
-	rl_event_hook = readline_function;
-	signal(SIGINT, signal_handler);
-	signal(SIGQUIT, SIG_IGN);
-	signal(SIGTSTP, SIG_IGN);
-}
-
-void	set_child_signals(void)
-{
-	rl_event_hook = readline_function;
-	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, SIG_DFL);
-	signal(SIGTSTP, SIG_IGN);
-}
-
-void	signal_handler(int signum)
-{
-	g_signal_status = 128 + signum;
-	if (signum == SIGINT)
+	g_signal_status = sig;
+	if (sig == SIGINT)
 	{
-		write(STDOUT_FILENO, "\n", 1);
-		rl_on_new_line();
-		// rl_replace_line("", 0);
-		// rl_redisplay();
+		// write(STDOUT_FILENO, "\n", 1);
 		rl_done = 1;
+		rl_replace_line("", 0);
+		// rl_on_new_line();
+		// rl_redisplay();
 	}
 }
 
-void	heredoc_sigint_handler(int signum)
+void setup_signal_handlers(void)
 {
-	if (signum == SIGINT)
-	{
-		g_signal_status = 128 + signum;
-		write(STDERR_FILENO, "\n", 1);
-		exit(130);
-	}
-}
-
-void	setup_heredoc_signals()
-{
-	struct sigaction	sa_int;
-	struct sigaction	sa_quit;
-
+	rl_catch_signals = 0; // Disable readline's default signal handling
+	
+	struct sigaction sa_int;
+	sa_int.sa_handler = interactive_sigint_handler;
 	sigemptyset(&sa_int.sa_mask);
-	sa_int.sa_handler = heredoc_sigint_handler;
-	sa_int.sa_flags = 0;
-	sigaction(SIGINT, &sa_int, NULL);
-	sigemptyset(&sa_quit.sa_mask);
-	sa_quit.sa_handler = SIG_IGN;
-	sa_quit.sa_flags = 0;
-	sigaction(SIGQUIT, &sa_quit, NULL);
+	sa_int.sa_flags = 0; // Restart interrupted system calls
+	sigaction(SIGINT, &sa_int, NULL);   // Ctrl-C
+	signal(SIGQUIT, SIG_IGN); // Ctrl-\ ignore SIGQUIT signal
+}
+
+// Signal handler during command execution
+void execution_sigint_handler(int sig)
+{
+    (void)sig;
+    // During execution, we want default behavior for child processes
+    // This handler should do minimal work
+    g_signal_status = SIGINT;
+	write(STDOUT_FILENO, "\n", 1);
+}
+
+void setup_execution_signals(void)
+{
+    struct sigaction sa_int, sa_quit;
+    
+    // During execution, ignore SIGINT and SIGQUIT in parent
+    // Child processes will reset to default in execute_child
+    // sa_int.sa_handler = execution_sigint_handler;
+    sa_int.sa_handler = SIG_IGN;
+    sigemptyset(&sa_int.sa_mask);
+    sa_int.sa_flags = 0;
+    sigaction(SIGINT, &sa_int, NULL);
+    
+    sa_quit.sa_handler = SIG_IGN;
+    sigemptyset(&sa_quit.sa_mask);
+    sa_quit.sa_flags = 0;
+    sigaction(SIGQUIT, &sa_quit, NULL);
 }

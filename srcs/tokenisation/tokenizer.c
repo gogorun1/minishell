@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/18 15:45:50 by wding             #+#    #+#             */
-/*   Updated: 2025/06/05 17:23:25 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/17 15:54:02 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,7 +143,8 @@ static int	tokenizer_handle_word(const char *line, int *i, char **word, int *in_
 		(*i)++;
 	temp = ft_strndup(line + start, *i - start);
 	// printf("temp: %s\n", temp);
-	expanded = expand_variables(temp, g_shell);
+	if (temp)
+		expanded = expand_variables(temp, g_shell);
 	free(temp);
 	// printf("expanded: %s\n", expanded);
 	if (*in_word)
@@ -155,6 +156,11 @@ static int	tokenizer_handle_word(const char *line, int *i, char **word, int *in_
 	}
 	else
 	{
+		if (!*expanded)
+		{
+			free(expanded);
+			return (0);
+		}
 		*word = expanded;
 		*in_word = 1;
 	}

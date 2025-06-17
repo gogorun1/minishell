@@ -30,7 +30,7 @@ int execute_command(t_token *tokens, char **env)
     if (pid == 0) // 子进程
     {
         // 查找可执行文件
-        char *path = find_executable(args[0], env);
+        char *path = find_executable(args[0]);
         if (path)
         {
             execve(path, args, env);

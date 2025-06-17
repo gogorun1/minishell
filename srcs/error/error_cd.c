@@ -1,33 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtin_error.c                                    :+:      :+:    :+:   */
+/*   error_cd.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/02 17:12:44 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/17 10:54:09 by lcao             ###   ########.fr       */
+/*   Created: 2025/06/15 20:01:24 by lcao              #+#    #+#             */
+/*   Updated: 2025/06/15 20:02:53 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-/* Unset errors */
-void	error_unset(const char *identifier, t_shell *shell)
+/* CD errors */
+void	error_cd(const char *path, t_shell *shell)
 {
-	ft_putstr_fd("minishell: unset: `", STDERR_FILENO);
-	ft_putstr_fd((char *)identifier, STDERR_FILENO);
-	ft_putstr_fd("': not a valid identifier\n", STDERR_FILENO);
+	ft_putstr_fd("minishell: cd: ", STDERR_FILENO);
+	perror(path);
 	if (shell)
 		shell->last_exit_status = 1;
 }
 
-int	export_error(const char *msg, t_shell *shell)
+void	error_cd_too_many_args(t_shell *shell)
 {
-	ft_putstr_fd("minishell: export: `", STDERR_FILENO);
-	ft_putstr_fd((char *)msg, STDERR_FILENO);
-	ft_putstr_fd("': not a valid identifier\n", STDERR_FILENO);
+	ft_putstr_fd("minishell: cd: too many arguments\n", STDERR_FILENO);
 	if (shell)
 		shell->last_exit_status = 1;
-	return (1);
+}
+
+void	error_cd_home_not_set(t_shell *shell)
+{
+	ft_putstr_fd("minishell: cd: HOME not set\n", STDERR_FILENO);
+	if (shell)
+		shell->last_exit_status = 1;
 }

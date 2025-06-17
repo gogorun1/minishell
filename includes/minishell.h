@@ -10,13 +10,16 @@
 # include <unistd.h>
 # include <string.h>
 # include <sys/wait.h>
+# include <limits.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <stdbool.h>
 # include <fcntl.h>
 # include <signal.h>
+# include <sys/errno.h>
 # include <errno.h>
-# include <termios.h>
+
+# include <sys/types.h>
 
 /* GLOBAL VARIABLE*/
 extern volatile sig_atomic_t g_signal_status;
@@ -68,12 +71,32 @@ typedef enum {
     REDIR_HEREDOC
 } redir_type_t;
 
-typedef struct redir {
-    redir_type_t type;
-    char *file;
-    // int fd; // 在parser中不需要fd，执行时才需要
-    struct redir *next;
-} redir_t;
+// typedef struct redir {
+//     redir_type_t type;
+//     char *file;
+//     // int fd; // 在parser中不需要fd，执行时才需要
+//     struct redir *next;
+// } redir_t;
+
+
+// 14 jun----------------------------------------------------
+// Add these fields to your redir_t struct in header file:
+typedef struct s_redir {
+	redir_type_t	type;
+	char			*file;
+	char			*heredoc_content;  // Store heredoc content
+	int				heredoc_fd;        // Pipe fd for execution
+	struct s_redir	*next;
+}	redir_t;
+
+/* Add to your header file (minishell.h) */
+typedef struct s_heredoc_data {
+	char	*delimiter;
+	char	*content;	// Store content as string
+	int		processed;
+}	t_heredoc_data;
+//14 jun---------------------------------------------------------
+
 
 typedef struct {
     char **args;
@@ -136,11 +159,10 @@ void	free_token_list(t_token *head);
 t_token	*tokenizer(char *line, t_shell *g_shell);
 void	print_tokens(t_token *tokens);
 void	handle_special_char(char *line, int *i, t_token **tokens);
-char	*find_executable(char *cmd);
+char	*find_executable(char *cmd, t_env *env);
 char	*get_env_value(char *var_name);
 // int		handle_quotes(char **input, int *i, t_token **tokens);
 char	*ft_strndup(const char *s, size_t n);
-bool is_valid_var_char(char c);
 bool is_special_char(char c);
 void print_token(t_token *token);
 void print_ast(ast_node_t *node, int indent_level);
@@ -149,22 +171,33 @@ ast_node_t *parse_command(parser_t *parser);
 ast_node_t *parse_pipeline(parser_t *parser);
 ast_node_t *parse(t_token *tokens);
 char	*expand_variables(char *str, t_shell *g_shell);
-void	set_child_signals(void);
-void	set_parent_signals(void);
-void	setup_heredoc_signals();
+void setup_execution_signals(void);
+char	*read_heredoc_content(char *delimiter);
+char *ft_strcat(char *dest, const char *src);
+char *ft_strjoin3(const char *s1, const char *s2, const char *s3);
+int	ft_strcmp(const char *s1, const char *s2);
+void free_str_array(char **arr);
+void	cleanup_and_exit(t_shell *shell, t_token *tokens, 
+                        ast_node_t *ast, char *input);
 
 /*builtin*/
 int	builtin_cd(char **args, t_shell *shell);
 int	builtin_pwd(void);
-int	builtin_exit(char **args);
+int	builtin_exit(char **args, t_shell *shell);
 int	builtin_echo(char **args);
 int	builtin_env_list(t_env *env, t_shell *shell, char **args);
 int	builtin_export(char **args, t_env **env, t_shell *shell);
-int builtin_error(const char *msg, t_shell *shell);
+int export_error(const char *msg, t_shell *shell);
+void	update_or_add(char *key, char *value, t_env **env);
+t_env	*find_node(const char *key, t_env *env);
+void	add_node(char *key, char *value, t_env **env);
+
 
 /*env*/
 int	builtin_unset(char **args, t_env **env_list);
-int print_env_list(t_env *env);
+int	is_valid_var_char(char c);
+int	is_valid_var_name(char *s);
+int	print_env_list(t_env *env);
 t_env	*init_env(char **envp);
 char *my_getenv(const char *key, t_env *envp);
 
@@ -180,12 +213,13 @@ int     ft_fprintf(int fd, const char *format, ...);
 /* execution */
 int		execute_ast(ast_node_t *node, t_shell *shell);
 int		execute_command(command_t *cmd, t_shell *shell);
-int		execute_external(command_t *cmd, t_shell *shell);
+int	execute_external(command_t *cmd, t_shell *shell, int saved_fds[2]);
 int		execute_pipeline(ast_node_t *node, t_shell *shell);
 void	execute_left_pipe(ast_node_t *node, int pipe_fd[2], t_shell *shell);
 void	execute_right_pipe(ast_node_t *node, int pipe_fd[2], t_shell *shell);
-void	execute_child(char *path, char **args, t_env *env);
+void	run_external_command_in_child(char *path, char **args, t_env *env);
 void	restore_stdio(int saved_fds[2]);
+
 
 int     wait_and_get_status(pid_t pid, char *path, char **envp);
 int     handle_fork_error(char *path, char **envp);
@@ -203,12 +237,13 @@ int		handle_input_redirect(char *filename);
 int		handle_output_redirect(char *filename);
 int		handle_append_redirect(char *filename);
 int		handle_heredoc_redirect(char *delimiter);
-int		read_heredoc_input(char *delimiter, int write_fd);
+// int		read_heredoc_input(char *delimiter, int write_fd);
 int		write_heredoc_line(char *line, int write_fd);
 
 /* env utils */
 
 char	*create_env_string(char *key, char *value);
+void	free_env(t_env *head);
 
 /*exeute_env*/
 int		count_env_vars(t_env *env);
@@ -226,5 +261,8 @@ int		ft_var_name_len(const char *s);
 
 /*error*/
 void	error_msg(char *command, char *message, int exit_code, t_shell *shell);
+void	error_cd(const char *path, t_shell *shell);
+void	error_cd_too_many_args(t_shell *shell);
+void	error_cd_home_not_set(t_shell *shell);
 
 #endif

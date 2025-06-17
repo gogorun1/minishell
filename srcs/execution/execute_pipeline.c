@@ -3,16 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   execute_pipeline.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abby <abby@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: wding <wding@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 19:07:42 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/08 13:40:41 by abby             ###   ########.fr       */
+/*   Updated: 2025/06/17 21:32:09 by wding            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// Execute pipeline
 int	execute_pipeline(ast_node_t *node, t_shell *shell)
 {
 	int		pipe_fd[2];
@@ -42,9 +41,9 @@ int	execute_pipeline(ast_node_t *node, t_shell *shell)
 // Execute left side of pipe
 void	execute_left_pipe(ast_node_t *node, int pipe_fd[2], t_shell *shell)
 {
-	// signal(SIGINT, SIG_DFL);  // Reset to default signal handling in child
-	// signal(SIGQUIT, SIG_DFL);
 	close(pipe_fd[0]);
+	if (node->data.binary.left->type == AST_COMMAND)
+		setup_redirections(node->data.binary.left->data.command.redirs);
 	dup2(pipe_fd[1], STDOUT_FILENO);
 	close(pipe_fd[1]);
 	exit(execute_ast(node->data.binary.left, shell));
@@ -53,8 +52,6 @@ void	execute_left_pipe(ast_node_t *node, int pipe_fd[2], t_shell *shell)
 // Execute right side of pipe
 void	execute_right_pipe(ast_node_t *node, int pipe_fd[2], t_shell *shell)
 {
-	// signal(SIGINT, SIG_DFL);  // Reset to default signal handling in child
-	// signal(SIGQUIT, SIG_DFL);
 	close(pipe_fd[1]);
 	dup2(pipe_fd[0], STDIN_FILENO);
 	close(pipe_fd[0]);
@@ -71,16 +68,10 @@ int	wait_for_pipeline(pid_t left_pid, pid_t right_pid)
 	right_status = 0;
 	waitpid(left_pid, &left_status, 0);
 	waitpid(right_pid, &right_status, 0);
-	set_parent_signals();
-
-	
-	// If either process was terminated by a signal, return that status
 	if (WIFSIGNALED(left_status))
 		return (128 + WTERMSIG(left_status));
 	if (WIFSIGNALED(right_status))
 		return (128 + WTERMSIG(right_status));
-	
-	// Otherwise return the exit status of the rightmost command
 	if (WIFEXITED(right_status))
 		return (WEXITSTATUS(right_status));
 	return (1);

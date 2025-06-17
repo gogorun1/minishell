@@ -6,11 +6,12 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/02 17:11:20 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/02 17:12:05 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/17 14:54:23 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
 /* Memory allocation error */
 void	error_malloc(char *context)
 {
