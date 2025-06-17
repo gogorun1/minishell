@@ -6,7 +6,7 @@
 #    By: wding <wding@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/05/30 00:00:00 by wding             #+#    #+#              #
-#    Updated: 2025/06/17 19:26:20 by wding            ###   ########.fr        #
+#    Updated: 2025/06/17 21:35:33 by wding            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -61,7 +61,10 @@ SRCS = main.c \
 	error/utility_error.c \
 	utils/ft_strndup.c \
 	utils/ft_fprintf.c \
-	utils/utils.c \
+	utils/utils1.c \
+	utils/utils2.c \
+	utils/utils3.c \
+	utils/utils4.c \
 	temps/print.c \
 	signal/signal.c \
 	expand/get_var_value.c \
