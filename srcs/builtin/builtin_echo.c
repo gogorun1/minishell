@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 18:52:40 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/16 19:33:21 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/17 14:51:34 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static int	is_option_n(const char *str)
 {
-	int		i;
+	int	i;
 
 	if (!str || str[0] != '-')
 		return (0);
@@ -30,26 +30,8 @@ static int	is_option_n(const char *str)
 
 static void	print_arg(const char *arg)
 {
-	// int		i;
-	// int		len;
-
 	if (!arg)
 		return ;
-	// len = (int)ft_strlen(arg);
-	// if (len >= 2 && ((arg[0] == '"' && arg[len - 1] == '"') \
-	// 	|| (arg[0] == '\'' && arg[len - 1] == '\'')) && len > 2)
-	// {
-	// 	i = 1;
-	// 	while (i < len - 1)
-	// 	{
-	// 		putchar(arg[i]);
-	// 		i++;
-	// 	}
-	// }
-	// else if (len == 2 && ((arg[0] == '"' && arg[1] == '"') \
-	// 	|| (arg[0] == '\'' && arg[1] == '\'')))
-	// 	return ;
-	// else
 	if (printf("%s", arg) < 0)
 	{
 		perror("echo");

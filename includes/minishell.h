@@ -149,14 +149,15 @@ typedef struct s_shell {
     // char        *current_pwd;     // Current working directory (for efficiency, or getcwd)
     // t_history   *history_data;    // If you manage history beyond readline's built-in
     // ... any other global-like state
+	char		*current_line;		// Current line being tokenized
+	int			line_index;			// Current position in line
+	char		*current_word;		// Word being built
+	int			in_word_flag;		// Flag indicating if we're building a word
+	t_token		*token_list;
 } t_shell;
 
 
 // Function prototypes
-t_token	*create_token(char *value, t_token_type type);
-void	add_token(t_token **head, t_token *new_token);
-void	free_token(t_token *token);
-void	free_token_list(t_token *head);
 t_token	*tokenizer(char *line, t_shell *g_shell);
 void	print_tokens(t_token *tokens);
 void	handle_special_char(char *line, int *i, t_token **tokens);
@@ -181,6 +182,27 @@ void free_str_array(char **arr);
 void	cleanup_and_exit(t_shell *shell, t_token *tokens, 
                         ast_node_t *ast, char *input);
 
+/*--------------------------------tokenizer-----------------------------------------*/
+// Token utilities (token_utils.c) - NO CHANGES
+t_token		*create_token(char *str, t_token_type type);
+void		add_token(t_token **head, t_token *new_token);
+void		free_token(t_token *token);
+void		free_token_list(t_token *head);
+
+// Token helpers (token_helpers.c) - UPDATED SIGNATURES
+char		*handle_quote_expansion(char *temp, char quote, t_shell *shell);
+char		*join_or_assign_word(char *temp, t_shell *shell);
+int			check_empty_expansion(char *expanded);
+void		handle_whitespace(t_shell *shell);
+void		handle_special_token(t_shell *shell);
+
+// Token quotes handling (token_quotes.c) - UPDATED SIGNATURES
+int			tokenizer_handle_quote(t_shell *shell);
+int			tokenizer_handle_word(t_shell *shell);
+t_token		*handle_quote_error(t_shell *shell);
+
+// Main tokenizer (tokenizer.c) - UPDATED SIGNATURE
+t_token		*tokenizer(char *line, t_shell *shell);
 /* ---------------------------------Parsing---------------------------------------- */
 /* redirection_utils.c */
 void	add_redirection(command_t *command_data, redir_type_t type, char *filename);

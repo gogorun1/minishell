@@ -6,11 +6,12 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/02 17:10:21 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/02 17:10:47 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/17 14:54:03 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
 /* Enhanced error function with exit status setting */
 void	error_msg(char *command, char *message, int exit_code, t_shell *shell)
 {
@@ -22,7 +23,6 @@ void	error_msg(char *command, char *message, int exit_code, t_shell *shell)
 	}
 	ft_putstr_fd(message, STDERR_FILENO);
 	ft_putstr_fd("\n", STDERR_FILENO);
-	
 	if (shell)
 		shell->last_exit_status = exit_code;
 }

@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 19:10:31 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/17 14:42:26 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/17 14:58:41 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,7 @@ void	run_external_command_in_child(char *path, char **args, t_env *env)
 {
 	char	**envp;
 
-	// printf("it is in the child\n");
-	signal(SIGINT, SIG_DFL); // Revert SIGINT to its default (terminate process)
+	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
 	envp = env_to_array(env);
 	if (!envp)

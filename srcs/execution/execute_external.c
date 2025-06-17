@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/13 16:47:30 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/17 11:39:30 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/17 15:00:10 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ int	wait_for_child(pid_t pid)
 			if (signal_num == SIGINT)
 			{
 				write(STDOUT_FILENO, "\n", 1);
-				return (130); // Standard exit code for SIGINT
+				return (130);
 			}
 			else if (signal_num == SIGQUIT)
 			{
@@ -71,7 +71,7 @@ int	execute_external(command_t *cmd, t_shell *shell, int saved_fds[2])
 	if (!path)
 	{
 		ft_fprintf(STDERR_FILENO, "minishell: %s: command not found\n",
-				cmd->args[0]);
+			cmd->args[0]);
 		return (127);
 	}
 	if (save_stdio(saved_fds) == -1)

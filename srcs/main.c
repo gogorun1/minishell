@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: wding <wding@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 13:55:40 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/17 18:13:10 by wding            ###   ########.fr       */
+/*   Updated: 2025/06/17 18:34:11 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,10 +62,20 @@ int main(int argc, char **argv, char **envp)
 	t_shell shell;
 	ast_node_t	*ast;
 
-	setup_signal_handlers(); // Set up signal handlers for Ctrl-C and Ctrl-'\'
-
+	
 	(void)argc;
 	(void)argv;
+	if (!isatty(STDOUT_FILENO))
+	{
+		printf("Redirection mode forbidden\n");
+		exit (1);
+	}
+	if (!isatty(STDIN_FILENO))
+	{
+		printf("Non interactive mode forbidden\n");
+		exit (1);
+	}
+	setup_signal_handlers(); // Set up signal handlers for Ctrl-C and Ctrl-'\'
 	if (init_shell(&shell, envp) != 0)
 		return (1);
 	rl_event_hook = event;
@@ -73,6 +83,8 @@ int main(int argc, char **argv, char **envp)
 	{
         handle_sigint_in_main(&shell);
 		input = readline("minishell$");
+
+		// printf("Debug: input read: '%s', signal is %d\n", input ? input : "NULL", g_signal_status);
 		if (!input)
 		{
 			printf("exit\n");
@@ -113,8 +125,6 @@ int main(int argc, char **argv, char **envp)
         setup_signal_handlers();
 		free_ast(ast);
 		free(input);
-		printf("--- (End of this command line)  ---\n");
-
 	}
 	rl_clear_history();
 	free_env(shell.env_list);

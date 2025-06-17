@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 19:09:03 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/17 11:45:40 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/17 14:57:42 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,102 +38,17 @@ int	handle_heredoc_redirect(char *content)
 {
 	int	pipefd[2];
 
-	// Create pipe with stored heredoc content
 	if (pipe(pipefd) == -1)
 	{
 		perror("pipe");
 		return (1);
 	}
 	write(pipefd[1], content, strlen(content));
-	close(pipefd[1]); // Close write end
-	// Redirect stdin to read from pipe
+	close(pipefd[1]);
 	dup2(pipefd[0], STDIN_FILENO);
 	close(pipefd[0]);
 	return (0);
 }
-// ------------------change 14 jun by wding----------------------------
-// int	pipe_fd[2];
-// pid_t	pid;
-// int	status;
-
-// if (pipe(pipe_fd) == -1)
-// {
-// 	perror("pipe");
-// 	return (1);
-// }
-// pid = fork();
-// if (pid == -1)
-// {
-// 	perror("fork");
-// 	close(pipe_fd[0]);
-// 	close(pipe_fd[1]);
-// 	return (1);
-// }
-// if (pid == 0)
-// {
-// 	// 子进程：heredoc 输入，恢复默认 SIGINT
-// 	close(fd);
-// 	setup_signal_handlers();
-// 	close(pipe_fd[0]);
-// 	read_heredoc_input(delimiter, pipe_fd[1]);
-// 	close(pipe_fd[1]);
-// 	exit(0);
-// }
-// close(pipe_fd[1]);
-// waitpid(pid, &status, 0);
-// if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
-// {
-// 	close(pipe_fd[0]);
-// 	return (130); // heredoc 被 Ctrl+C 中断
-// }
-// if (dup2(pipe_fd[0], STDIN_FILENO) == -1)
-// {
-// 	perror("dup2");
-// 	close(pipe_fd[0]);
-// 	return (1);
-// }
-// close(pipe_fd[0]);
-// 	return (0);
-// }
-
-// // Read heredoc input from user
-// int	read_heredoc_input(char *delimiter, int write_fd)
-// {
-// 	char	*line;
-
-// 	write(2, "heredoc\n", 8);
-// 	while (1)
-// 	{
-// 		if (g_signal_status == SIGINT)
-// 		{
-// 			return (1);
-// 		}
-// 		line = readline("> ");
-// 		if (g_signal_status == SIGINT)
-// 		{
-// 			return (1);
-// 		}
-// 			// Clear the line after Ctrl-C
-// 		if (!line)
-// 		{
-// 			// ft_fprintf(STDERR_FILENO,
-// 			// 	"minishell: warning: here-document delimited by end-of-file\n");
-// 			break ;
-// 		}
-// 		if (strcmp(line, delimiter) == 0)
-// 		{
-// 			free(line);
-// 			break ;
-// 		}
-// 		if (write_heredoc_line(line, write_fd) != 0)
-// 		{
-// 			free(line);
-// 			return (1);
-// 		}
-// 		free(line);
-// 	}
-// 	return (0);
-// }
 
 // Write heredoc line to pipe
 int	write_heredoc_line(char *line, int write_fd)
