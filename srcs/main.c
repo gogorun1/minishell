@@ -136,6 +136,8 @@ int main(int argc, char **argv, char **envp)
 		// Free the tokens and AST after execution
 		free_ast(ast);
 		free(input);
+		printf("--- (End of this command line)  ---\n");
+
 	}
 	rl_clear_history();
 	free_env(shell.env_list);

@@ -38,10 +38,8 @@ void	restore_stdio(int saved_fds[2])
 {
 	if (saved_fds[0] != -1)
 	{
-		close(saved_fds[0]);
-
 		dup2(saved_fds[0], STDIN_FILENO);
-		
+		close(saved_fds[0]);
 	}
 	if (saved_fds[1] != -1)
 	{

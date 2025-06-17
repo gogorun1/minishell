@@ -2,5 +2,8 @@
 	"files.associations": {
 		"readline.h": "c",
 		"limits.h": "c"
-	}
+	},
+    "[c]": {
+        "editor.defaultFormatter": "keyhr.42-c-format"
+    }
 }
