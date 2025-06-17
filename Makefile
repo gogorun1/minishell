@@ -6,7 +6,7 @@
 #    By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/05/30 00:00:00 by wding             #+#    #+#              #
-#    Updated: 2025/06/15 20:00:29 by lcao             ###   ########.fr        #
+#    Updated: 2025/06/17 12:32:54 by lcao             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,6 +31,7 @@ SRCS = main.c \
 	builtin/builtin_pwd.c \
 	builtin/builtin_export.c \
 	builtin/builtin_echo.c \
+	builtin/export_utils.c \
 	env/builtin_env_list.c \
 	env/builtin_unset.c \
 	env/init_env.c \

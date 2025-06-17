@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 16:43:40 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/16 19:18:56 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/17 11:51:50 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ void	update_env(char *key, const char *value, t_env **env)
 			node->value = ft_strdup(value);
 		else
 			node->value = NULL;
-		// free(key);
 		return ;
 	}
 	add_node(key, (char *)value, env);
@@ -33,7 +32,9 @@ void	update_env(char *key, const char *value, t_env **env)
 int	builtin_cd(char **args, t_shell *shell)
 {
 	const char	*path;
-	char buffer[2000];
+	char		buffer[2000];
+	char		*oldpwd;
+	char		*pwd;
 
 	if (args[1] && args[2])
 	{
@@ -54,9 +55,9 @@ int	builtin_cd(char **args, t_shell *shell)
 		return (1);
 	}
 	getcwd(buffer, 2000);
-	char *oldpwd = ft_strdup("OLDPWD");
+	oldpwd = ft_strdup("OLDPWD");
 	update_or_add(oldpwd, my_getenv("PWD", shell->env_list), &shell->env_list);
-	char *pwd = ft_strdup("PWD");
+	pwd = ft_strdup("PWD");
 	update_or_add(pwd, buffer, &shell->env_list);
 	// update_env("OLDPWD", my_getenv("PWD",shell->env_list), &shell->env_list);
 	// update_env("PWD", buffer, &shell->env_list);

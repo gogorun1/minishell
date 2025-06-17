@@ -6,21 +6,20 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 15:04:03 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/14 19:15:12 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/17 11:57:53 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-
-void error_unset(const char *identifier, t_shell *shell);
+void		error_unset(const char *identifier, t_shell *shell);
 
 /* Helper to compare variable names */
-static int is_match(const char *a, const char *b)
+static int	is_match(const char *a, const char *b)
 {
-	if(!a || !b)
+	if (!a || !b)
 		return (0);
-	return(strcmp(a, b) == 0);
+	return (strcmp(a, b) == 0);
 }
 
 /* Delete node with key from env_list */
@@ -42,18 +41,19 @@ static void	remove_env_key(const char *key, t_env **env_list)
 			free(curr->key);
 			free(curr->value);
 			free(curr);
-			break;
+			break ;
 		}
 		prev = curr;
 		curr = curr->next;
 	}
 }
+
 int	is_valid_var_name(char *s)
 {
 	int	i;
 
-	if (!s || !is_valid_var_char(s[0]) || s[0] == '\0'
-		|| (s[0] >= '0' && s[0] <= '9'))
+	if (!s || !is_valid_var_char(s[0]) || s[0] == '\0' || (s[0] >= '0'
+			&& s[0] <= '9'))
 		return (0);
 	i = 1;
 	while (s[i] && s[i] != '=')
@@ -67,8 +67,8 @@ int	is_valid_var_name(char *s)
 
 int	builtin_unset(char **args, t_env **env_list)
 {
-	int i;
-	int has_error;
+	int	i;
+	int	has_error;
 
 	i = 1;
 	has_error = 0;
@@ -85,5 +85,5 @@ int	builtin_unset(char **args, t_env **env_list)
 		}
 		i++;
 	}
-	return has_error;
+	return (has_error);
 }

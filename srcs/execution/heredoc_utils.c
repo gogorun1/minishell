@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 19:09:03 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/15 19:51:32 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/17 11:45:40 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,9 @@ int	handle_append_redirect(char *filename)
 // Handle heredoc redirection (<<)
 int	handle_heredoc_redirect(char *content)
 {
-	// Create pipe with stored heredoc content
-	int pipefd[2];
+	int	pipefd[2];
 
+	// Create pipe with stored heredoc content
 	if (pipe(pipefd) == -1)
 	{
 		perror("pipe");
@@ -51,48 +51,48 @@ int	handle_heredoc_redirect(char *content)
 	close(pipefd[0]);
 	return (0);
 }
-	// ------------------change 14 jun by wding----------------------------
-	// int	pipe_fd[2];
-	// pid_t	pid;
-	// int	status;
+// ------------------change 14 jun by wding----------------------------
+// int	pipe_fd[2];
+// pid_t	pid;
+// int	status;
 
-	// if (pipe(pipe_fd) == -1)
-	// {
-	// 	perror("pipe");
-	// 	return (1);
-	// }
-	// pid = fork();
-	// if (pid == -1)
-	// {
-	// 	perror("fork");
-	// 	close(pipe_fd[0]);
-	// 	close(pipe_fd[1]);
-	// 	return (1);
-	// }
-	// if (pid == 0)
-	// {
-	// 	// 子进程：heredoc 输入，恢复默认 SIGINT
-	// 	close(fd);
-	// 	setup_signal_handlers();
-	// 	close(pipe_fd[0]);
-	// 	read_heredoc_input(delimiter, pipe_fd[1]);
-	// 	close(pipe_fd[1]);
-	// 	exit(0);
-	// }
-	// close(pipe_fd[1]);
-	// waitpid(pid, &status, 0);
-	// if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
-	// {
-	// 	close(pipe_fd[0]);
-	// 	return (130); // heredoc 被 Ctrl+C 中断
-	// }
-	// if (dup2(pipe_fd[0], STDIN_FILENO) == -1)
-	// {
-	// 	perror("dup2");
-	// 	close(pipe_fd[0]);
-	// 	return (1);
-	// }
-	// close(pipe_fd[0]);
+// if (pipe(pipe_fd) == -1)
+// {
+// 	perror("pipe");
+// 	return (1);
+// }
+// pid = fork();
+// if (pid == -1)
+// {
+// 	perror("fork");
+// 	close(pipe_fd[0]);
+// 	close(pipe_fd[1]);
+// 	return (1);
+// }
+// if (pid == 0)
+// {
+// 	// 子进程：heredoc 输入，恢复默认 SIGINT
+// 	close(fd);
+// 	setup_signal_handlers();
+// 	close(pipe_fd[0]);
+// 	read_heredoc_input(delimiter, pipe_fd[1]);
+// 	close(pipe_fd[1]);
+// 	exit(0);
+// }
+// close(pipe_fd[1]);
+// waitpid(pid, &status, 0);
+// if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
+// {
+// 	close(pipe_fd[0]);
+// 	return (130); // heredoc 被 Ctrl+C 中断
+// }
+// if (dup2(pipe_fd[0], STDIN_FILENO) == -1)
+// {
+// 	perror("dup2");
+// 	close(pipe_fd[0]);
+// 	return (1);
+// }
+// close(pipe_fd[0]);
 // 	return (0);
 // }
 
@@ -113,7 +113,7 @@ int	handle_heredoc_redirect(char *content)
 // 		{
 // 			return (1);
 // 		}
-// 	 	// Clear the line after Ctrl-C
+// 			// Clear the line after Ctrl-C
 // 		if (!line)
 // 		{
 // 			// ft_fprintf(STDERR_FILENO,

@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 17:31:34 by lcao              #+#    #+#             */
-/*   Updated: 2025/05/24 18:04:04 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/17 10:48:51 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,10 @@ static t_env	*create_env_node(char *str)
 	new = malloc(sizeof(t_env));
 	if (!new)
 		return (NULL);
-	/*Find the first '=' character in the string*/
-	equal = strchr(str, '=');
+	equal = ft_strchr(str, '=');
 	if (equal)
 	{
-		/*Copy the key (everything before '=')*/
 		new->key = ft_strndup(str, equal - str);
-		/*Copy the value (everything after '=')*/
 		new->value = ft_strdup(equal + 1);
 	}
 	else
@@ -57,4 +54,3 @@ t_env	*init_env(char **envp)
 	}
 	return (head);
 }
-
