@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 13:55:40 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/16 10:48:52 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/17 16:20:59 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,10 +62,20 @@ int main(int argc, char **argv, char **envp)
 	t_shell shell;
 	ast_node_t	*ast;
 
-	setup_signal_handlers(); // Set up signal handlers for Ctrl-C and Ctrl-'\'
-
+	
 	(void)argc;
 	(void)argv;
+	if (!isatty(STDOUT_FILENO))
+	{
+		printf("Redirection mode forbidden\n");
+		exit (1);
+	}
+	if (!isatty(STDIN_FILENO))
+	{
+		printf("Non interactive mode forbidden\n");
+		exit (1);
+	}
+	setup_signal_handlers(); // Set up signal handlers for Ctrl-C and Ctrl-'\'
 	if (init_shell(&shell, envp) != 0)
 		return (1);
 	rl_event_hook = event;
@@ -84,6 +94,7 @@ int main(int argc, char **argv, char **envp)
 		// }
 		// printf("Debug: about to read input, signal_status: %d\n", g_signal_status);
 		input = readline("minishell$");
+
 		// printf("Debug: input read: '%s', signal is %d\n", input ? input : "NULL", g_signal_status);
 		if (!input)
 		{
@@ -120,12 +131,12 @@ int main(int argc, char **argv, char **envp)
 			free(input);
 			continue;
 		}
-		else
-		{
-			printf("--- (AST)  ---\n");
-			print_ast(ast, 0); // 从根节点开始打印，初始缩进为 0
-			printf("--- AST Print End ---\n");
-		}
+		// else
+		// {
+		// 	printf("--- (AST)  ---\n");
+		// 	print_ast(ast, 0); // 从根节点开始打印，初始缩进为 0
+		// 	printf("--- AST Print End ---\n");
+		// }
 		free_token_list(tokens);
 		// Execute the command represented by the AST
         setup_execution_signals();
@@ -136,8 +147,6 @@ int main(int argc, char **argv, char **envp)
 		// Free the tokens and AST after execution
 		free_ast(ast);
 		free(input);
-		printf("--- (End of this command line)  ---\n");
-
 	}
 	rl_clear_history();
 	free_env(shell.env_list);

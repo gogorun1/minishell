@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/18 15:45:50 by wding             #+#    #+#             */
-/*   Updated: 2025/06/16 18:17:39 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/17 15:54:02 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,8 +161,6 @@ static int	tokenizer_handle_word(const char *line, int *i, char **word, int *in_
 			free(expanded);
 			return (0);
 		}
-		printf("expanded: %s\n", expanded);
-		printf("word: %s\n", *word);
 		*word = expanded;
 		*in_word = 1;
 	}

@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 16:43:40 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/17 15:20:46 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/17 17:50:19 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,10 +67,16 @@ static void	update_pwd_env(t_shell *shell)
 	char	buffer[2000];
 	char	*oldpwd;
 	char	*pwd;
+	char	*pwd_val;
 
-	getcwd(buffer, 2000);
+	if (!getcwd(buffer, 2000))
+		return ;
 	oldpwd = ft_strdup("OLDPWD");
-	update_or_add(oldpwd, my_getenv("PWD", shell->env_list), &shell->env_list);
+	pwd_val = my_getenv("PWD", shell->env_list);
+	if (pwd_val)
+		update_or_add(oldpwd, pwd_val, &shell->env_list);
+	else
+		update_or_add(oldpwd, "", &shell->env_list);
 	pwd = ft_strdup("PWD");
 	update_or_add(pwd, buffer, &shell->env_list);
 }
