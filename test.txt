@@ -1,0 +1,1 @@
+ls | cat -> still reachable within child process

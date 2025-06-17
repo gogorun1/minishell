@@ -6,7 +6,7 @@
 /*   By: wding <wding@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 21:27:14 by wding             #+#    #+#             */
-/*   Updated: 2025/06/17 22:27:16 by wding            ###   ########.fr       */
+/*   Updated: 2025/06/18 00:20:07 by wding            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ static int	process_ast(t_exec_data *data, t_shell *shell)
 		free_token_list(data->tokens);
 		return (1);
 	}
+	free_token_list(data->tokens);
 	return (0);
 }
 
