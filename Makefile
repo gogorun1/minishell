@@ -6,7 +6,7 @@
 #    By: wding <wding@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/05/30 00:00:00 by wding             #+#    #+#              #
-#    Updated: 2025/06/17 21:54:32 by wding            ###   ########.fr        #
+#    Updated: 2025/06/17 22:23:43 by wding            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -53,6 +53,7 @@ SRCS = main.c \
 	execution/execute_env.c \
 	execution/execute_external.c \
     execution/execute_heredoc.c \
+	execution/execute_clean.c \
 	error/error.c \
 	error/error_cd.c \
 	error/error1.c \
@@ -69,6 +70,8 @@ SRCS = main.c \
 	expand/expand_variables.c \
 	expand/expand.c \
 	expand/variable_utils.c \
+	main_loop.c \
+	shell_init.c \
 
 OBJS = $(addprefix $(OBJS_DIR), $(SRCS:.c=.o))
 DEPS = $(addprefix $(OBJS_DIR), $(SRCS:.c=.d))

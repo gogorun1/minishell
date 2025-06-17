@@ -6,7 +6,7 @@
 /*   By: wding <wding@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 21:23:57 by wding             #+#    #+#             */
-/*   Updated: 2025/06/17 21:53:12 by wding            ###   ########.fr       */
+/*   Updated: 2025/06/17 22:30:43 by wding            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,12 +41,12 @@ typedef enum e_token_type
 	TOKEN_PIPE,         // A pipe (|) indicating a command separator
 	TOKEN_REDIRECT_IN,  // A less-than sign (<) indicating input redirection
 	TOKEN_REDIRECT_OUT, // A greater-than sign (>) indicating output redirection
-	TOKEN_APPEND,      
-		// A double greater-than sign (>>) indicating append output redirection
-	TOKEN_HEREDOC,     
-		// A double less-than sign (<<) indicating here-document input redirection
-	TOKEN_EOF,          // End of file or end of input
-	TOKEN_ERROR         // An error token indicating a parsing error
+	TOKEN_APPEND,
+	// A double greater-than sign (>>) indicating append output redirection
+	TOKEN_HEREDOC,
+	// A double less-than sign (<<) indicating here-document input redirection
+	TOKEN_EOF,  // End of file or end of input
+	TOKEN_ERROR // An error token indicating a parsing error
 }								t_token_type;
 
 typedef struct s_token
@@ -79,7 +79,7 @@ typedef struct s_redir
 typedef struct s_heredoc_data
 {
 	char						*delimiter;
-	char *content;
+	char						*content;
 	int							processed;
 }								t_heredoc_data;
 
@@ -144,11 +144,24 @@ typedef struct s_token_data
 
 typedef struct s_expand_data
 {
-	int		i;
-	int		start;
-	char	*result;
-}	t_expand_data;
+	int							i;
+	int							start;
+	char						*result;
+}								t_expand_data;
 
+typedef struct s_cleanup
+{
+	t_token						*tokens;
+	ast_node_t					*ast;
+	char						*input;
+}								t_cleanup;
+
+typedef struct s_exec_data
+{
+	char						*input;
+	t_token						*tokens;
+	ast_node_t					*ast;
+}								t_exec_data;
 
 // Function prototypes
 t_token							*tokenizer(char *line, t_shell *g_shell);
@@ -243,15 +256,17 @@ ast_node_t						*parse_pipeline(parser_t *parser);
 ast_node_t						*parse(t_token *tokens);
 
 /* ---------------------------------------------------------------------------------*/
-/* Function prototypes to add */
-char	*get_variable_value(const char *var_name_start, int var_len, 
-			t_shell *shell);
-int		ft_var_name_len(const char *s);
-char	*expand_variables(char *str, t_shell *shell);
-char	*join_and_free(char *result, char *to_add);
-void	add_literal_part(t_expand_data *data, const char *str);
-void	handle_exit_status(t_expand_data *data, t_shell *shell);
-void	handle_variable(t_expand_data *data, const char *str, t_shell *shell);
+char							*get_variable_value(const char *var_name_start,
+									int var_len, t_shell *shell);
+int								ft_var_name_len(const char *s);
+char							*expand_variables(char *str, t_shell *shell);
+char							*join_and_free(char *result, char *to_add);
+void							add_literal_part(t_expand_data *data,
+									const char *str);
+void							handle_exit_status(t_expand_data *data,
+									t_shell *shell);
+void							handle_variable(t_expand_data *data,
+									const char *str, t_shell *shell);
 
 /*builtin*/
 int								builtin_cd(char **args, t_shell *shell);
@@ -303,6 +318,9 @@ void							restore_stdio(int saved_fds[2]);
 int								wait_and_get_status(pid_t pid, char *path,
 									char **envp);
 int								handle_fork_error(char *path, char **envp);
+void							cleanup_and_exit(t_shell *shell,
+									t_token *tokens, ast_node_t *ast,
+									char *input);
 
 /*execute pipelines*/
 int								handle_pipe_fork_error(int pipe_fd[2]);
@@ -318,7 +336,6 @@ int								handle_input_redirect(char *filename);
 int								handle_output_redirect(char *filename);
 int								handle_append_redirect(char *filename);
 int								handle_heredoc_redirect(char *delimiter);
-// int		read_heredoc_input(char *delimiter, int write_fd);
 int								write_heredoc_line(char *line, int write_fd);
 
 /* env utils */
@@ -350,5 +367,17 @@ void							error_cd_too_many_args(t_shell *shell);
 void							error_cd_home_not_set(t_shell *shell);
 void							error_syntax_context(char *context,
 									char *token);
+
+/* main.c */
+int								event(void);
+
+/* shell_init.c */
+int								init_shell(t_shell *shell, char **envp);
+void							cleanup_and_exit_main(t_shell *shell,
+									t_cleanup *cleanup);
+
+/* main_loop.c */
+void							run_main_loop(t_shell *shell, int input_status);
+void							handle_sigint_in_main(t_shell *shell);
 
 #endif
