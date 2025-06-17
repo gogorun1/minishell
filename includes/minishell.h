@@ -74,16 +74,7 @@ typedef enum {
 	REDIR_ERR
 } redir_type_t;
 
-// typedef struct redir {
-//     redir_type_t type;
-//     char *file;
-//     // int fd; // 在parser中不需要fd，执行时才需要
-//     struct redir *next;
-// } redir_t;
-
-
-// 14 jun----------------------------------------------------
-// Add these fields to your redir_t struct in header file:
+// 14 jun---------------------------------------------------
 typedef struct s_redir {
 	redir_type_t	type;
 	char			*file;
@@ -99,7 +90,6 @@ typedef struct s_heredoc_data {
 	int		processed;
 }	t_heredoc_data;
 //14 jun---------------------------------------------------------
-
 
 typedef struct {
     char **args;
@@ -145,17 +135,14 @@ typedef struct	s_env
 typedef struct s_shell {
     t_env   *env_list;         // Head of the linked list of environment variables
     int         last_exit_status;  // Value for $?
-    // You might add other fields here as needed:
-    // char        *current_pwd;     // Current working directory (for efficiency, or getcwd)
-    // t_history   *history_data;    // If you manage history beyond readline's built-in
-    // ... any other global-like state
-	char		*current_line;		// Current line being tokenized
-	int			line_index;			// Current position in line
-	char		*current_word;		// Word being built
-	int			in_word_flag;		// Flag indicating if we're building a word
-	t_token		*token_list;
 } t_shell;
 
+typedef struct s_token_data
+{
+	t_shell	*shell;
+	char	*word;
+	int		in_word;
+}	t_token_data;
 
 // Function prototypes
 t_token	*tokenizer(char *line, t_shell *g_shell);
@@ -183,26 +170,22 @@ void	cleanup_and_exit(t_shell *shell, t_token *tokens,
                         ast_node_t *ast, char *input);
 
 /*--------------------------------tokenizer-----------------------------------------*/
-// Token utilities (token_utils.c) - NO CHANGES
-t_token		*create_token(char *str, t_token_type type);
-void		add_token(t_token **head, t_token *new_token);
-void		free_token(t_token *token);
-void		free_token_list(t_token *head);
 
-// Token helpers (token_helpers.c) - UPDATED SIGNATURES
-char		*handle_quote_expansion(char *temp, char quote, t_shell *shell);
-char		*join_or_assign_word(char *temp, t_shell *shell);
-int			check_empty_expansion(char *expanded);
-void		handle_whitespace(t_shell *shell);
-void		handle_special_token(t_shell *shell);
+/* token_utils.c */
+t_token	*create_token(char *str, t_token_type type);
+void	add_token(t_token **head, t_token *new_token);
+void	free_token(t_token *token);
+void	free_token_list(t_token *head);
 
-// Token quotes handling (token_quotes.c) - UPDATED SIGNATURES
-int			tokenizer_handle_quote(t_shell *shell);
-int			tokenizer_handle_word(t_shell *shell);
-t_token		*handle_quote_error(t_shell *shell);
+/* token_quote.c */
+int		tokenizer_handle_quote(const char *line, int *i, t_token_data *data);
 
-// Main tokenizer (tokenizer.c) - UPDATED SIGNATURE
-t_token		*tokenizer(char *line, t_shell *shell);
+/* token_word.c */
+int		tokenizer_handle_word(const char *line, int *i, t_token_data *data);
+
+/* tokenizer_main.c */
+t_token	*tokenizer(char *line, t_shell *shell);
+
 /* ---------------------------------Parsing---------------------------------------- */
 /* redirection_utils.c */
 void	add_redirection(command_t *command_data, redir_type_t type, char *filename);
@@ -324,5 +307,6 @@ void	error_msg(char *command, char *message, int exit_code, t_shell *shell);
 void	error_cd(const char *path, t_shell *shell);
 void	error_cd_too_many_args(t_shell *shell);
 void	error_cd_home_not_set(t_shell *shell);
+void	error_syntax_context(char *context, char *token);
 
 #endif

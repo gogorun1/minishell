@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+         #
+#    By: wding <wding@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/05/30 00:00:00 by wding             #+#    #+#              #
-#    Updated: 2025/06/17 18:57:17 by lcao             ###   ########.fr        #
+#    Updated: 2025/06/17 19:26:20 by wding            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,9 +35,9 @@ SRCS = main.c \
 	env/builtin_env_list.c \
 	env/builtin_unset.c \
 	env/init_env.c \
-	tokenisation/tokenizer_new.c \
+	tokenisation/tokenizer_main.c \
 	tokenisation/token_utils.c \
-	tokenisation/token_helpers.c \
+	tokenisation/token_word.c \
 	tokenisation/token_quotes.c \
 	parsing/redirection_utils.c \
     parsing/heredoc_reader.c \

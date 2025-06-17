@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utility_error.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: wding <wding@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/02 18:09:29 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/17 14:55:03 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/17 21:00:05 by wding            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int	check_system_error(int result, char *context, char *command)
 }
 
 /* Enhanced syntax error with better context */
-void	error_syntax_context(char *context, char *token, t_shell *shell)
+void	error_syntax_context(char *context, char *token)
 {
 	ft_putstr_fd("minishell: ", STDERR_FILENO);
 	if (context)
@@ -44,8 +44,6 @@ void	error_syntax_context(char *context, char *token, t_shell *shell)
 	else
 		ft_putstr_fd("newline", STDERR_FILENO);
 	ft_putstr_fd("'\n", STDERR_FILENO);
-	if (shell)
-		shell->last_exit_status = 2;
 }
 
 /* Generic error with errno */

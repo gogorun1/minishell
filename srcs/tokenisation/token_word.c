@@ -1,74 +1,85 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   token_quotes.c                                     :+:      :+:    :+:   */
+/*   token_helpers.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: wding <wding@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 15:54:02 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/17 19:25:21 by wding            ###   ########.fr       */
+/*   Updated: 2025/06/17 19:25:39 by wding            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static char	*extract_quoted_content(const char *line, int *i, char quote)
+static char	*extract_word_content(const char *line, int *i)
 {
 	int		start;
 	char	*temp;
 
 	start = *i;
-	while (line[*i] && line[*i] != quote)
+	while (line[*i] && !is_special_char(line[*i]) &&
+		line[*i] != ' ' && line[*i] != '\t' &&
+		line[*i] != '"' && line[*i] != '\'')
 		(*i)++;
-	if (!line[*i])
-		return (NULL);
 	temp = ft_strndup(line + start, *i - start);
 	return (temp);
 }
 
-static char	*process_quote_content(char *temp, char quote, t_shell *shell)
+static char	*expand_word_content(char *temp, t_shell *shell)
 {
 	char	*expanded;
 
-	if (quote == '"')
+	if (temp)
 	{
 		expanded = expand_variables(temp, shell);
 		free(temp);
 		return (expanded);
 	}
-	return (temp);
+	return (NULL);
 }
 
-static char	*join_to_word(char **word, char *content, int *in_word)
+static int	handle_empty_expansion(char *expanded)
+{
+	if (!*expanded)
+	{
+		free(expanded);
+		return (0);
+	}
+	return (1);
+}
+
+static void	join_or_set_word(char **word, char *expanded, int *in_word)
 {
 	char	*joined;
 
 	if (*in_word)
 	{
-		joined = ft_strjoin(*word, content);
+		joined = ft_strjoin(*word, expanded);
 		free(*word);
-		free(content);
-		return (joined);
+		free(expanded);
+		*word = joined;
 	}
 	else
 	{
+		*word = expanded;
 		*in_word = 1;
-		return (content);
 	}
 }
 
-int	tokenizer_handle_quote(const char *line, int *i, t_token_data *data)
+int	tokenizer_handle_word(const char *line, int *i, t_token_data *data)
 {
-	char	quote;
 	char	*temp;
-	char	*processed;
+	char	*expanded;
 
-	quote = line[(*i)++];
-	temp = extract_quoted_content(line, i, quote);
-	if (!temp)
+	temp = extract_word_content(line, i);
+	expanded = expand_word_content(temp, data->shell);
+	if (!expanded)
 		return (0);
-	processed = process_quote_content(temp, quote, data->shell);
-	data->word = join_to_word(&data->word, processed, &data->in_word);
-	(*i)++;
-	return (1);
+	if (data->in_word || handle_empty_expansion(expanded))
+	{
+		join_or_set_word(&data->word, expanded, &data->in_word);
+		return (1);
+	}
+	return (0);
 }
