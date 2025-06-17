@@ -6,7 +6,7 @@
 /*   By: lcao <lcao@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 16:56:04 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/17 10:42:38 by lcao             ###   ########.fr       */
+/*   Updated: 2025/06/17 15:19:23 by lcao             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int	builtin_pwd(void)
 		perror("pwd");
 		return (1);
 	}
-	printf("🔍 builtin pwd: %s\n", cwd);
+	printf("%s\n", cwd);
 	free(cwd);
 	return (0);
 }
