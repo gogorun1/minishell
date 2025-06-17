@@ -6,7 +6,7 @@
 /*   By: wding <wding@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 17:52:32 by wding             #+#    #+#             */
-/*   Updated: 2025/06/17 21:15:19 by wding            ###   ########.fr       */
+/*   Updated: 2025/06/17 22:01:28 by wding            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,6 @@ ast_node_t	*parse(t_token *tokens)
 
 	parser.tokens = tokens;
 	parser.current = tokens;
-
 	if (check_pipe_syntax_errors(&parser) == -1)
 		return (NULL);
 	return (parse_pipeline(&parser));

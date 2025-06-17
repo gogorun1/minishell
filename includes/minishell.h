@@ -6,7 +6,7 @@
 /*   By: wding <wding@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 21:23:57 by wding             #+#    #+#             */
-/*   Updated: 2025/06/17 21:25:00 by wding            ###   ########.fr       */
+/*   Updated: 2025/06/17 21:53:12 by wding            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,6 +142,14 @@ typedef struct s_token_data
 	int							in_word;
 }								t_token_data;
 
+typedef struct s_expand_data
+{
+	int		i;
+	int		start;
+	char	*result;
+}	t_expand_data;
+
+
 // Function prototypes
 t_token							*tokenizer(char *line, t_shell *g_shell);
 void							print_tokens(t_token *tokens);
@@ -235,6 +243,15 @@ ast_node_t						*parse_pipeline(parser_t *parser);
 ast_node_t						*parse(t_token *tokens);
 
 /* ---------------------------------------------------------------------------------*/
+/* Function prototypes to add */
+char	*get_variable_value(const char *var_name_start, int var_len, 
+			t_shell *shell);
+int		ft_var_name_len(const char *s);
+char	*expand_variables(char *str, t_shell *shell);
+char	*join_and_free(char *result, char *to_add);
+void	add_literal_part(t_expand_data *data, const char *str);
+void	handle_exit_status(t_expand_data *data, t_shell *shell);
+void	handle_variable(t_expand_data *data, const char *str, t_shell *shell);
 
 /*builtin*/
 int								builtin_cd(char **args, t_shell *shell);

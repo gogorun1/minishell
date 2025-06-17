@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   token_helpers.c                                    :+:      :+:    :+:   */
+/*   token_word.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: wding <wding@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 15:54:02 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/17 19:25:39 by wding            ###   ########.fr       */
+/*   Updated: 2025/06/17 22:03:36 by wding            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,8 @@ static char	*extract_word_content(const char *line, int *i)
 	char	*temp;
 
 	start = *i;
-	while (line[*i] && !is_special_char(line[*i]) &&
-		line[*i] != ' ' && line[*i] != '\t' &&
-		line[*i] != '"' && line[*i] != '\'')
+	while (line[*i] && !is_special_char(line[*i]) && line[*i] != ' '
+		&& line[*i] != '\t' && line[*i] != '"' && line[*i] != '\'')
 		(*i)++;
 	temp = ft_strndup(line + start, *i - start);
 	return (temp);

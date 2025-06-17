@@ -6,7 +6,7 @@
 #    By: wding <wding@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/05/30 00:00:00 by wding             #+#    #+#              #
-#    Updated: 2025/06/17 21:35:33 by wding            ###   ########.fr        #
+#    Updated: 2025/06/17 21:54:32 by wding            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -65,10 +65,10 @@ SRCS = main.c \
 	utils/utils2.c \
 	utils/utils3.c \
 	utils/utils4.c \
-	temps/print.c \
 	signal/signal.c \
-	expand/get_var_value.c \
+	expand/expand_variables.c \
 	expand/expand.c \
+	expand/variable_utils.c \
 
 OBJS = $(addprefix $(OBJS_DIR), $(SRCS:.c=.o))
 DEPS = $(addprefix $(OBJS_DIR), $(SRCS:.c=.d))
@@ -86,7 +86,6 @@ $(OBJS_DIR)%.o: $(SRCS_DIR)%.c
 			$(OBJS_DIR)/utils \
 			$(OBJS_DIR)/parsing \
 			$(OBJS_DIR)/tokenisation \
-			$(OBJS_DIR)/temps \
 			$(OBJS_DIR)/execution \
 			$(OBJS_DIR)/signal \
 			$(OBJS_DIR)/expand \

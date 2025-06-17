@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   tokenizer_new.c                                    :+:      :+:    :+:   */
+/*   tokenizer_main.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: wding <wding@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 15:54:02 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/17 19:23:35 by wding            ###   ########.fr       */
+/*   Updated: 2025/06/17 22:04:32 by wding            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,8 @@ static void	handle_whitespace(t_token **tokens, t_token_data *data, int *i)
 	(*i)++;
 }
 
-static void	handle_special(char *line, int *i, t_token **tokens, t_token_data *data)
+static void	handle_special(char *line, int *i, t_token **tokens,
+		t_token_data *data)
 {
 	if (data->in_word)
 	{
@@ -53,9 +54,9 @@ static void	handle_special(char *line, int *i, t_token **tokens, t_token_data *d
 
 t_token	*tokenizer(char *line, t_shell *shell)
 {
-	t_token		*tokens;
+	t_token			*tokens;
 	t_token_data	data;
-	int			i;
+	int				i;
 
 	tokens = NULL;
 	i = 0;
