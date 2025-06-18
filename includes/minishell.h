@@ -6,7 +6,7 @@
 /*   By: wding <wding@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 21:23:57 by wding             #+#    #+#             */
-/*   Updated: 2025/06/18 00:58:15 by wding            ###   ########.fr       */
+/*   Updated: 2025/06/18 02:25:29 by wding            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -367,16 +367,16 @@ void							error_cd_home_not_set(t_shell *shell);
 void							error_syntax_context(char *context,
 									char *token);
 
-// /* main.c */
-// int								event(void);
+/* main.c */
+int								event(void);
 
-// /* shell_init.c */
-// int								init_shell(t_shell *shell, char **envp);
-// void							cleanup_and_exit_main(t_shell *shell,
-// 									t_cleanup *cleanup);
+/* shell_init.c */
+int								init_shell(t_shell *shell, char **envp);
+void							cleanup_and_exit_main(t_shell *shell,
+									t_cleanup *cleanup);
 
-// /* main_loop.c */
-// void							run_main_loop(t_shell *shell, int input_status);
-// void							handle_sigint_in_main(t_shell *shell);
+/* main_loop.c */
+void							run_main_loop(t_shell *shell, int input_status);
+void							handle_sigint_in_main(t_shell *shell);
 
 #endif
