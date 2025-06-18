@@ -6,7 +6,7 @@
 /*   By: wding <wding@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 21:23:57 by wding             #+#    #+#             */
-/*   Updated: 2025/06/18 02:25:29 by wding            ###   ########.fr       */
+/*   Updated: 2025/06/18 04:50:50 by wding            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -301,7 +301,7 @@ int								ft_fprintf(int fd, const char *format, ...);
 
 /* execution */
 int								execute_ast(t_ast_node *node, t_shell *shell);
-int								execute_command(t_command *cmd, t_shell *shell);
+int								execute_command(t_ast_node *node, t_shell *shell);
 int								execute_external(t_command *cmd, t_shell *shell,
 									int saved_fds[2]);
 int								execute_pipeline(t_ast_node *node,
@@ -371,12 +371,12 @@ void							error_syntax_context(char *context,
 int								event(void);
 
 /* shell_init.c */
-int								init_shell(t_shell *shell, char **envp);
-void							cleanup_and_exit_main(t_shell *shell,
-									t_cleanup *cleanup);
+// int								init_shell(t_shell *shell, char **envp);
+// void							cleanup_and_exit_main(t_shell *shell,
+									// t_cleanup *cleanup);
 
 /* main_loop.c */
-void							run_main_loop(t_shell *shell, int input_status);
-void							handle_sigint_in_main(t_shell *shell);
+// void							run_main_loop(t_shell *shell, int input_status);
+// void							handle_sigint_in_main(t_shell *shell);
 
 #endif

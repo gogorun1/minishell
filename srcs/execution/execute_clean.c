@@ -6,7 +6,7 @@
 /*   By: wding <wding@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 22:17:54 by wding             #+#    #+#             */
-/*   Updated: 2025/06/17 22:56:01 by wding            ###   ########.fr       */
+/*   Updated: 2025/06/18 04:31:29 by wding            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,5 @@ void	cleanup_and_exit(t_shell *shell, t_token *tokens, t_ast_node *ast,
 	rl_clear_history();
 	if (shell->env_list)
 		free_env(shell->env_list);
-	clear_history();
 	exit(shell->last_exit_status);
 }

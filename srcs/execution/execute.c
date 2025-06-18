@@ -6,16 +6,11 @@
 /*   By: wding <wding@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 10:00:00 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/17 23:04:20 by wding            ###   ########.fr       */
+/*   Updated: 2025/06/18 04:59:49 by wding            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-int	execute_ast(t_ast_node *node, t_shell *shell);
-int	execute_command(t_command *cmd, t_shell *shell);
-int	handle_signal_status(int status);
-int	wait_and_get_status(pid_t pid, char *path, char **envp);
 
 int	execute_ast(t_ast_node *node, t_shell *shell)
 {
@@ -23,10 +18,12 @@ int	execute_ast(t_ast_node *node, t_shell *shell)
 
 	temp = 0;
 	if (!node)
+	{
 		return (0);
+	}
 	if (node->type == AST_COMMAND)
 	{
-		temp = execute_command(&node->u_data.command, shell);
+		temp = execute_command(node, shell);
 		if (temp == -1)
 			cleanup_and_exit(shell, NULL, node, NULL);
 		return (temp);
@@ -37,28 +34,27 @@ int	execute_ast(t_ast_node *node, t_shell *shell)
 }
 
 // Execute a single command with redirections
-int	execute_command(t_command *cmd, t_shell *shell)
+int	execute_command(t_ast_node *node, t_shell *shell)
 {
 	int	saved_fds[2];
 	int	result;
+	t_command *cmd;
 
+	cmd = &(node->u_data.command);
 	saved_fds[0] = dup(STDIN_FILENO);
 	saved_fds[1] = dup(STDOUT_FILENO);
 	if (setup_redirections(cmd->redirs) != 0)
-	{
-		restore_stdio(saved_fds);
-		return (1);
-	}
-	if (!cmd->args || !cmd->args[0])
-	{
-		restore_stdio(saved_fds);
-		return (0);
-	}
-	if (is_builtin(cmd->args[0]))
+		result = 1;
+	else if (!cmd->args || !cmd->args[0])
+		result = 0;
+	else if (is_builtin(cmd->args[0]))
 		result = run_builtin(cmd->args, &(shell->env_list), shell);
 	else
 		result = execute_external(cmd, shell, saved_fds);
 	restore_stdio(saved_fds);
+	cmd = NULL;
+	free_ast(node);
+	free_env(shell->env_list);
 	return (result);
 }
 

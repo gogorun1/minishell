@@ -6,7 +6,7 @@
 /*   By: wding <wding@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 21:19:41 by lcao              #+#    #+#             */
-/*   Updated: 2025/06/17 23:00:33 by wding            ###   ########.fr       */
+/*   Updated: 2025/06/18 05:02:26 by wding            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,11 @@ static void	free_command_args(char **args)
 	while (args[i])
 	{
 		free(args[i]);
+		args[i] = NULL;
 		i++;
 	}
 	free(args);
+	args = NULL;
 }
 
 /* Free redirection list */
